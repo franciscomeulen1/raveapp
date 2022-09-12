@@ -1,6 +1,6 @@
 import '../index.css';
-export default function Card(){
-    return(
+export default function Card() {
+    return (
         <div className="p-5 inline-flex">
             <div className="card w-96 bg-base-100 shadow-xl">
                 <figure><img src="https://t3.ftcdn.net/jpg/02/87/35/70/240_F_287357045_Ib0oYOxhotdjOEHi0vkggpZTQCsz0r19.jpg" alt="Joda" /></figure>
