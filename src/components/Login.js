@@ -26,7 +26,7 @@ function Login() {
                 <label class="md:w-2/3 block text-gray-500 font-bold">
                     <input class="mr-2 leading-tight" type="checkbox" />
                     <span class="text-sm">
-                        Enviar noticias
+                        Enviar noticias!
                     </span>
                 </label>
             </div>
