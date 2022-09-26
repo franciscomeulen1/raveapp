@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import '../index.css';
 
 export default function NavBar() {
@@ -5,13 +6,18 @@ export default function NavBar() {
     <div className="navbar bg-base-100 object-top top-0 sticky z-10">
     
         <div className="flex-1">
-            <a className="btn btn-ghost normal-case text-xl">RaveApp</a>
+            <Link className="btn btn-ghost normal-case text-xl" to='/'>
+                RaveApp
+            </Link>
             <div className='flex-none gap-2'>
                 <ul className='mt-2 p-2'>
                     <li>
                         <a className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3'>Eventos</a>
                         <a className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3'>Filtros</a>
                         <a className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3'>Mis eventos</a>
+                        <Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/crearevento'>
+                            Crear Evento
+                        </Link>
                     </li>
                 </ul>
                 

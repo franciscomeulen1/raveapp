@@ -1,25 +1,24 @@
-import './index.css';
-import NavBar from './components/NavBar';
-import Card from './components/Card';
-import Footer from './components/Footer';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Routes
+} from "react-router-dom";
+import CrearEvento from "./vistas/CrearEvento";
+import Inicio from "./vistas/Inicio";
 
 function App() {
   return (
+    <Router>
+    
+      <Routes>
+        <Route path="/" exact element={<Inicio />} />
+        <Route path="/crearevento" element={<CrearEvento />} />
+      </Routes>
 
-    <div className='px-10 overflow-hidden'>
-
-      <NavBar />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Footer />
-    </div>
-
+    </Router>
 
   );
 }
