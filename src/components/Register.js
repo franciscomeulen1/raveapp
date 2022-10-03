@@ -1,18 +1,40 @@
-function Login() {
+function Register() {
     return (
 
         <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
             <div className="w-full p-6 m-auto bg-white rounded-md shadow-xl lg:max-w-xl">
                 <h1 className="text-3xl font-semibold text-center text-gray-800 uppercase ">
-                    Ingresar
+                    Registro
                 </h1>
                 <form className="mt-6">
+                    <div className="mb-2 flex gap-x-2">
+                        <label
+                            for="first_name"
+                            className="mt-4 block text-sm font-semibold text-gray-800"
+                        >
+                            Nombre
+                        </label>
+                        <input
+                            type="text"
+                            className="block w-full px-4 py-2 mt-2 text-gray-800 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        />
+                        <label
+                            for="last_name"
+                            className="mt-4 block text-sm font-semibold text-gray-800"
+                        >
+                            Apellido
+                        </label>
+                        <input
+                            type="text"
+                            className="block w-full px-4 py-2 mt-2 text-gray-800 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                        />
+                    </div>
+
                     <div className="mb-2">
                         <label
                             for="email"
                             className="block text-sm font-semibold text-gray-800"
-                        >
-                            Email
+                        >Email
                         </label>
                         <input
                             type="email"
@@ -30,15 +52,9 @@ function Login() {
                             className="block w-full px-4 py-2 mt-2 text-gray-800 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
                         />
                     </div>
-                    <a
-                        href="#"
-                        className="text-xs text-gray-600 hover:underline"
-                    >
-                        ¿Olvidaste tu contraseña?
-                    </a>
                     <div className="mt-6">
                         <button className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600">
-                            Ingresar
+                            Registrarse
                         </button>
                     </div>
                 </form>
@@ -62,12 +78,12 @@ function Login() {
 
                 <p className="mt-8 text-xs font-light text-center text-gray-700">
                     {" "}
-                    ¿No tenes cuenta?{" "}
+                    ¿Ya tenes cuenta?{" "}
                     <a
                         href="#"
                         className="font-medium text-gray-600 hover:underline"
                     >
-                        Registrate
+                        Ingresa aquí
                     </a>
                 </p>
             </div>
@@ -75,4 +91,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;
