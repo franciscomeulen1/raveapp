@@ -1,44 +1,50 @@
 function Login() {
     return (
-        <form class="w-full max-w-sm">
-            <div class="md:flex md:items-center mb-6">
-                <div class="md:w-1/3">
-                    <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
-                        Full Name
-                    </label>
-                </div>
-                <div class="md:w-2/3">
-                    <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name" type="text" value="Jane Doe" />
-                </div>
+        <div>
+            <label htmlFor="my-modal-6" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</label>
+
+            <input type="checkbox" id="my-modal-6" className="modal-toggle" />
+            <div className="modal modal-bottom sm:modal-middle">
+
+                <form className="modal-box">
+
+                    <div className="flex justify-center mb-2">
+                        <button className="btn">Iniciar sesion con Google</button>
+                    </div>
+
+                    <h2 className="font-bold text-3xl mt-3 mb-2">Iniciar Sesión</h2>
+
+                    <div className='form-control w-full max-w-xs'>
+                        <label className="label">
+                            <span className="label-text">Tu email:</span>
+                        </label>
+                        <input type='email'
+                            placeholder="Tu email"
+                            className="input input-bordered w-full max-w-xs"
+                            autoFocus
+                        />
+                    </div>
+
+                    <div className='form-control w-full max-w-xs'>
+                        <label className="label">
+                            <span className="label-text">Tu constraseña:</span>
+                        </label>
+                        <input type='password'
+                            placeholder="Tu constraseña"
+                            className="input input-bordered w-full max-w-xs"
+                            autoFocus
+                        />
+                    </div>
+
+                        <div className="modal-action justify-between">
+                            <button type="submit" htmlFor="my-modal-6" className="btn">Ingresar</button>
+                            <button htmlFor="my-modal-6" className="text-indigo-900 font-medium">Olvidaste la constraseña?</button>
+                        </div>
+
+                </form>
             </div>
-            <div class="md:flex md:items-center mb-6">
-                <div class="md:w-1/3">
-                    <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="inline-password">
-                        Password
-                    </label>
-                </div>
-                <div class="md:w-2/3">
-                    <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-password" type="password" placeholder="******************" />
-                </div>
-            </div>
-            <div class="md:flex md:items-center mb-6">
-                <div class="md:w-1/3"></div>
-                <label class="md:w-2/3 block text-gray-500 font-bold">
-                    <input class="mr-2 leading-tight" type="checkbox" />
-                    <span class="text-sm">
-                        Enviar noticias!
-                    </span>
-                </label>
-            </div>
-            <div class="md:flex md:items-center">
-                <div class="md:w-1/3"></div>
-                <div class="md:w-2/3">
-                    <button class="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
-                        Sign Up
-                    </button>
-                </div>
-            </div>
-        </form>
+
+        </div>
     );
 }
 

@@ -1,11 +1,10 @@
 import React from "react";
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
-  Link,
   Routes
 } from "react-router-dom";
+import Login from "./components/Login";
 import CrearEvento from "./vistas/CrearEvento";
 import Inicio from "./vistas/Inicio";
 
@@ -16,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" exact element={<Inicio />} />
         <Route path="/crearevento" element={<CrearEvento />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
 
     </Router>
