@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../index.css';
 import Login from './Login';
+import Register from './Register';
 
 export default function NavBar() {
     return (
@@ -58,10 +59,9 @@ export default function NavBar() {
                     </ul>
                 </div>
             </div> */}
-            <div>
-                {/* <button className="btn btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</button> */}
+            <div >
                 <Login />
-                <button className="btn btn-info hover:bg-indigo-400 hover:text-cyan-200 navbar-end">Registrarse</button>
+                <Register/>
             </div>
         </div>
     )

@@ -1,9 +1,9 @@
 function Login() {
     return (
         <div>
-            <label htmlFor="my-modal-6" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</label>
+            <label htmlFor="my-modal-1" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</label>
 
-            <input type="checkbox" id="my-modal-6" className="modal-toggle" />
+            <input type="checkbox" id="my-modal-1" className="modal-toggle" />
             <div className="modal modal-bottom sm:modal-middle">
 
                 <form className="modal-box">
@@ -37,7 +37,7 @@ function Login() {
                     </div>
 
                         <div className="modal-action justify-between">
-                            <button type="submit" htmlFor="my-modal-6" className="btn">Ingresar</button>
+                            <button type="submit" htmlFor="my-modal-1" className="btn">Ingresar</button>
                             <button htmlFor="my-modal-6" className="text-indigo-900 font-medium">Olvidaste la constraseña?</button>
                         </div>
 
