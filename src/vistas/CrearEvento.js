@@ -61,8 +61,6 @@ function CrearEvento() {
 
         <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-6'>
 
-          <div className='columns-1'>
-
             <div className='form-control w-full max-w-xs'>
               <label className="label">
                 <span className="label-text">Nombre del evento:</span>
@@ -72,10 +70,8 @@ function CrearEvento() {
                 className="input input-bordered w-full max-w-xs"
               />
             </div>
-          </div>
 
-          <div className='columns-1'>
-            <div className="form-control w-full max-w-xs col-span-3">
+            <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Género musical:</span>
               </label>
@@ -89,8 +85,6 @@ function CrearEvento() {
                 <option>Psy-Trance</option>
               </select>
             </div>
-
-          </div>
 
 
         </div>
