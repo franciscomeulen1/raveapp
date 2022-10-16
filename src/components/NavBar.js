@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import '../index.css';
+import Filtros from './Filtros';
 import Login from './Login';
 import Register from './Register';
 
 export default function NavBar() {
     return (
-        <div className="navbar bg-base-100 object-top top-0 sticky z-10" >
+        <div className="navbar bg-base-100 object-top top-0 sticky z-10 container mx-auto" >
 
             <div className="flex-1">
                 <div className="dropdown">
@@ -13,8 +14,7 @@ export default function NavBar() {
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><button className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3'>Filtros
-                        </button></li>
+                        <li><label htmlFor="my-modal-filtros" className="btn modal-button btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3">Filtros</label></li>
                         <li><Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/crearevento'>
                             Crear Evento
                         </Link></li>
@@ -25,8 +25,7 @@ export default function NavBar() {
                 </Link>
                 <div className='gap-2 navbar hidden lg:flex'>
                     <ul className='mt-2 p-2'>
-                        <li><Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/login'>Filtros
-                        </Link></li>
+                        <li><label htmlFor="my-modal-filtros" className="btn modal-button btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3">Filtros</label></li>
                         <li>
                             <Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/crearevento'>
                                 Crear Evento
@@ -61,8 +60,9 @@ export default function NavBar() {
             </div> */}
             <div >
                 <Login />
-                <Register/>
+                <Register />
             </div>
+            <Filtros />
         </div>
     )
 }

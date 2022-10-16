@@ -6,17 +6,19 @@ import Footer from '../components/Footer';
 
 function Inicio() {
   return (
-    <div className='px-10'>
+    <div>
+      <div className='px-10'>
 
-      <NavBar />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
+        <NavBar />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+      </div>
       <Footer />
     </div>
   )
