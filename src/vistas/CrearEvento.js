@@ -405,6 +405,7 @@ function CrearEvento() {
 
 
       </div>
+
       <Footer />
     </div>
   )
