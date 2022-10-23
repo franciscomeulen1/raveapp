@@ -7,7 +7,7 @@ function CrearEvento() {
       <div className="px-10 mb-11">
         <NavBar />
 
-        <h1 className='px-10 mb-4 mt-2'>Crear evento</h1>
+        <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Crear evento</h1>
 
         <form className='px-10'>
 
