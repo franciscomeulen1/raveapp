@@ -4,7 +4,7 @@ function Login() {
             <label htmlFor="my-modal-login" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</label>
 
             <input type="checkbox" id="my-modal-login" className="modal-toggle" />
-            <div className="modal modal-bottom sm:modal-middle">
+            <label htmlFor="my-modal-login" className="modal modal-middle">
 
                 <form className="modal-box">
 
@@ -42,7 +42,7 @@ function Login() {
                         </div>
 
                 </form>
-            </div>
+            </label>
 
         </div>
     );

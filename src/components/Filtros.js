@@ -4,7 +4,7 @@ function Filtros() {
             {/* <label htmlFor="my-modal-3" className="btn modal-button btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3">Filtros</label>  */}
 
             <input type="checkbox" id="my-modal-filtros" className="modal-toggle" />
-            <div className="modal modal-bottom sm:modal-middle">
+            <label htmlFor="my-modal-filtros" className="modal modal-middle">
 
                 <form className="modal-box">
 
@@ -139,7 +139,7 @@ function Filtros() {
                     </div>
 
                 </form>
-            </div>
+            </label>
 
         </div>
 

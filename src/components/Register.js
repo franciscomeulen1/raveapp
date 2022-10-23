@@ -5,7 +5,7 @@ function Register() {
 
 
             <input type="checkbox" id="my-modal-register" className="modal-toggle" />
-            <div className="modal modal-bottom sm:modal-middle">
+            <label htmlFor="my-modal-register" className="modal modal-middle">
 
                 <form className="modal-box">
 
@@ -64,7 +64,7 @@ function Register() {
                     </div>
 
                 </form>
-            </div>
+            </label>
 
         </div>
     );
