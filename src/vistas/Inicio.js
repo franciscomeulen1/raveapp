@@ -1,8 +1,9 @@
 import React from 'react'
 import '../index.css';
 import NavBar from '../components/NavBar';
-import Card from '../components/Card';
+import Cards from '../components/Cards';
 import Footer from '../components/Footer';
+import Carousel from '../components/Carousel';
 
 function Inicio() {
   return (
@@ -10,15 +11,11 @@ function Inicio() {
       <div className='px-10'>
 
         <NavBar />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </div>
+        </div>
+        <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
+        <Carousel />
+        <Cards />
+        </div>
       <Footer />
     </div>
   )
