@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 export default function TablaDeEntradas() {
     return (
@@ -57,9 +58,9 @@ export default function TablaDeEntradas() {
                     </tbody>
                 </table>
 
-                <div className="flex justify-end my-3">
+                <Link className="flex justify-end my-3" to='/comprar'>
                     <button type="submit" className='btn btn-secondary'>Comprar</button>
-                </div>
+                </Link>
 
             </form>
 

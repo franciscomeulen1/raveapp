@@ -15,6 +15,12 @@ export default function NavBar() {
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
                         <li><label htmlFor="my-modal-filtros" className="btn modal-button btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3">Filtros</label></li>
+                        <li><Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/artistas'>
+                            Artistas
+                        </Link></li>
+                        <li><Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/noticias'>
+                            Noticias
+                        </Link></li>
                         <li><Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/crearevento'>
                             Crear Evento
                         </Link></li>
@@ -26,6 +32,16 @@ export default function NavBar() {
                 <div className='gap-2 navbar hidden lg:flex'>
                     <ul className='mt-2 p-2'>
                         <li><label htmlFor="my-modal-filtros" className="btn modal-button btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3">Filtros</label></li>
+                        <li>
+                            <Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/artistas'>
+                                Artistas
+                            </Link>
+                        </li>
+                        <li>
+                            <Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/noticias'>
+                                Noticias
+                            </Link>
+                        </li>
                         <li>
                             <Link className='btn btn-ghost shadow rounded-box w-auto hover:bg-indigo-400 hover:text-cyan-200 ml-3' to='/crearevento'>
                                 Crear Evento
