@@ -2,7 +2,7 @@ import React from 'react'
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 
-export default function Noticia() {
+export default function Noticia(props) {
     return (
         <div>
             <div className="px-10 mb-11">
