@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import Instagram from '../iconos/instagram.png';
@@ -6,14 +6,23 @@ import Spotify from "../iconos/spotify.png";
 import Soundcloud from "../iconos/soundcloud.png";
 import HeartNoLike from "../iconos/heart-nolike.png"
 import AvatarGroup from '../components/AvatarGroup';
+import { useParams, useLocation } from 'react-router-dom';
 
-export default function Artista() {
+export default function Artista(props) {
+    
+    const location = useLocation();
+    const { nombre } = useParams();
+    const descripcion = location.state.descripcion;
+
+    window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+
     return (
         <div>
             <div className="px-10 mb-11">
                 <NavBar />
                 <div className='flex'>
-                    <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Nombre del artista</h1>
+                    {/* <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Nombre del artista</h1> */}
+                    <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{nombre}</h1>
                     <div className='mt-4'>
                         <a href="https://www.spotify.com" target="_blank" rel='noreferrer'>
                             <img src={Spotify} alt="spotify" width="55%" />
@@ -46,7 +55,8 @@ export default function Artista() {
                     <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="dj" className='rounded-full md:max-w-sm' />
                 </div>
                 <div className='pl-5 font-medium'>
-                    <p>INFORMACION DEL ARTISTA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    {/* <p>INFORMACION DEL ARTISTA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> */}
+                    <p>{descripcion}</p>
                 </div>
 
                 </div>
@@ -55,4 +65,4 @@ export default function Artista() {
             <Footer />
         </div>
     )
-}
+    }

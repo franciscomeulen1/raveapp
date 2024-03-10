@@ -4,6 +4,9 @@ import Footer from '../components/Footer';
 import CardNoticia from '../components/CardNoticia';
 
 export default function Noticias() {
+
+    window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+    
     const noticias = [
         {
             id: 1,

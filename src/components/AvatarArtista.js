@@ -1,16 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-export default function AvatarArtista(props) {
-
+export default function AvatarArtista({nombre, onClick}) {
+    // console.log(nombre);
     return (
         <div>
-            <Link className='grid justify-items-center' to='/artista'>
+            <button className='grid justify-items-center'  onClick={onClick}>
                 <div className="w-32">
                     <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="dj" className='rounded-full' />
                 </div>
-                <div><p className='font-bold'>{props.nombre}</p></div>
-            </Link>
+                <div><p className='font-bold'>{nombre}</p></div>
+            </button>
         </div>
     )
 }

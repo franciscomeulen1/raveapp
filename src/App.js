@@ -27,7 +27,7 @@ function App() {
         <Route path="/evento" element={<Evento />} />
         <Route path="/comprar" element={<Comprar />} />
         <Route path="/artistas" element={<Artistas />} />
-        <Route path="/artista" element={<Artista />} />
+        <Route path="/artistas/:nombre" element={<Artista />} />
         <Route path="/noticias" element={<Noticias />} />
         <Route path="/noticia" element={<Noticia />} />
 
