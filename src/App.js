@@ -29,7 +29,7 @@ function App() {
         <Route path="/artistas" element={<Artistas />} />
         <Route path="/artistas/:nombre" element={<Artista />} />
         <Route path="/noticias" element={<Noticias />} />
-        <Route path="/noticia" element={<Noticia />} />
+        <Route path="/novedad-:noticia" element={<Noticia />} />
 
       </Routes>
 

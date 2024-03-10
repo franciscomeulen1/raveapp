@@ -16,13 +16,13 @@ export default function Card(props) {
                     <div className="card-actions justify-end">
                         {Array.isArray(props.generos) ? (
                             props.generos.map((g, index) => {
-                                return <div key={index} className="badge badge-outline">{g}</div>
+                                return <div key={index} className="badge badge-outline rounded-lg font-semibold text-white bg-black">{g}</div>
                             })
                         ) : (
-                            <div className="badge badge-outline">{props.generos}</div>
+                            <div className="badge badge-outline rounded-lg font-semibold text-white bg-black">{props.generos}</div>
                         )}
                         {props.lgbt === true && (
-                            <div className="badge badge-outline">LGBT</div>
+                            <div className="badge badge-outline px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-red-500 via-green-500 to-purple-500">LGBT</div>
                         )}
                         
                     </div>
