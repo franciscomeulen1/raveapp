@@ -1,11 +1,11 @@
 import '../index.css';
-import { Link } from 'react-router-dom';
 
 export default function Card(props) {
 
     return (
         <div className="p-5 inline-flex">
-            <Link className="card w-96 bg-base-100 shadow-xl" to='/evento'>
+            {/* <button className="card w-96 bg-base-100 shadow-xl" to='/evento'> */}
+            <button className="card w-96 bg-base-100 shadow-xl" onClick={props.onClick}>
                 <figure><img src="https://t3.ftcdn.net/jpg/02/87/35/70/240_F_287357045_Ib0oYOxhotdjOEHi0vkggpZTQCsz0r19.jpg" alt="Joda" /></figure>
                 <div className="card-body">
                     <h2 className="card-title">
@@ -27,7 +27,7 @@ export default function Card(props) {
                         
                     </div>
                 </div>
-            </Link>
+            </button>
         </div>
     );
 };

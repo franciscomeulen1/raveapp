@@ -1,75 +1,105 @@
 import Card from '../components/Card';
+import { useNavigate } from "react-router-dom";
 
 export default function Cards() {
     
     const eventos = [
         {
             id: 1,
-            nombreEvento: "Club 69 - Edicion CIRCUS",
+            nombreEvento: "Nombre de evento 1",
             fecha: "10/05/2024",
             generos: ["Tech-House","Techno"],
             artistas: ["Dich Brothers", "La Cintia", "Luana"],
             lgbt: true,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 1, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },{
             id: 2,
-            nombreEvento: "Under Club - UnderEdition",
+            nombreEvento: "Nombre de evento 2",
             fecha: "15/05/2024",
             generos: "Tech-House",
             artistas: ["Nico Moreno", "T78"],
             lgbt: false,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 2, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },{
             id: 3,
-            nombreEvento: "After El Sotano",
+            nombreEvento: "Nombre de evento 3",
             fecha: "16/05/2024",
             generos: ["Tech-House","Techno"],
             artistas: ["Juan Solis", "Kilah"],
             lgbt: false,
-            after: true
+            after: true,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 3, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },
         {
             id: 4,
-            nombreEvento: "Rio Electronic Music",
+            nombreEvento: "Nombre de evento 4",
             fecha: "20/05/2024",
             generos: "Tech-House",
             artistas: ["Dich Brothers", "La Cintia", "Luana"],
             lgbt: false,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 4, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },{
             id: 5,
-            nombreEvento: "Cocoliche",
+            nombreEvento: "Nombre de evento 5",
             fecha: "22/05/2024",
             generos: "Techno",
             artistas: ["Amelie Lens", "Regal", "Adam Beyer"],
             lgbt: false,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 5, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },{
             id: 6,
-            nombreEvento: "The Magic",
+            nombreEvento: "Nombre de evento 6",
             fecha: "22/05/2024",
             generos: "PsyTrance",
             artistas: "Javier Busola",
             lgbt: false,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 6, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },{
             id: 7,
-            nombreEvento: "Target",
+            nombreEvento: "Nombre de evento 7",
             fecha: "25/05/2024",
             generos: "Tech-House",
             artistas: ["Jay de Lys","Ghezz", "Cadelago"],
             lgbt: true,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 7, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         },{
             id: 8,
-            nombreEvento: "Kritical Techno",
+            nombreEvento: "Nombre de evento 8",
             fecha: "30/05/2024",
             generos: "Techno",
             artistas: ["Enrico Sangiuliano","Josefina Munoz","999999999"],
             lgbt: false,
-            after: false
+            after: false,
+            horario: "23:50hs a 07:00hs",
+            direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+            descripcion: "DESCRIPCION DEL EVENTO 8, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
         }
     ]
+
+    const navigate = useNavigate();
+    const handleCardClick = (evento) => {
+        navigate(`/evento-${evento.nombreEvento}`, { state: { evento } });
+    };
 
     return (
         <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
@@ -80,6 +110,7 @@ export default function Cards() {
                             generos={evento.generos}
                             lgbt={evento.lgbt}
                             after={evento.after}
+                            onClick={() => handleCardClick(evento)}
                          />
         })}
             {/* <Card />

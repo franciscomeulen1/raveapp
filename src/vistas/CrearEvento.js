@@ -2,6 +2,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 
 function CrearEvento() {
+  window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
   return (
     <div>
       <div className="px-10 mb-11">
