@@ -8,7 +8,7 @@ export default function CardNoticia(props) {
                 <figure><img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" alt="Shoes" /></figure>
                 <div className="card-body">
                     <h2 className="card-title text-black">{props.titulo}</h2>
-                    <p className="text-black">{props.encabezado}</p>
+                    <p className="text-black text-left">{props.encabezado}</p>
                 </div>
             </button>
         </div>
