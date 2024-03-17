@@ -99,7 +99,7 @@ export default function Cards() {
 
     const navigate = useNavigate();
     const handleCardClick = (evento) => {
-        navigate(`/evento-${evento.nombreEvento}`, { state: { evento } });
+        navigate(`/evento/${evento.nombreEvento}`, { state: { evento } });
     };
 
     return (

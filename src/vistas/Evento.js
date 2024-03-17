@@ -2,13 +2,18 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import TablaDeEntradas from '../components/TablaDeEntradas';
 import { BsGeoAltFill } from "react-icons/bs";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Evento() {
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
 
     const location = useLocation();
-    const evento = location.state.evento;
+    const evento = location.state.evento;   
+
+    const navigate = useNavigate();
+    const handleComoLlegarClick = (nombreEvento, direccion) => {
+        navigate(`/comollegar/${nombreEvento}`, { state: { nombreEvento, direccion } });
+    };
 
     return (
         <div>
@@ -28,7 +33,7 @@ export default function Evento() {
                         </div>
                         <div className='mb-6 flex justify-between items-center'>
                             <p className='font-semibold'><BsGeoAltFill className='inline' /> {evento.direccion}</p>
-                            <button className='btn bg-cyan-600 rounded-full ml-3'>Cómo llegar</button>
+                            <button className='btn bg-cyan-600 rounded-full ml-3' onClick={() => handleComoLlegarClick(evento.nombreEvento, evento.direccion)}>Cómo llegar</button>
                         </div>
                         <TablaDeEntradas />
                     </div>

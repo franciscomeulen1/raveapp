@@ -13,6 +13,7 @@ import Artistas from "./vistas/Artistas";
 import Artista from "./vistas/Artista";
 import Noticias from "./vistas/Noticias";
 import Noticia from "./vistas/Noticia";
+import ComoLlegar from "./vistas/ComoLlegar";
 
 
 function App() {
@@ -24,12 +25,13 @@ function App() {
         <Route path="/" exact element={<Inicio />} />
         <Route path="/crearevento" element={<CrearEvento />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/evento-:nombre" element={<Evento />} />
+        <Route path="/evento/:nombre" element={<Evento />} />
         <Route path="/comprar" element={<Comprar />} />
         <Route path="/artistas" element={<Artistas />} />
         <Route path="/artistas/:nombre" element={<Artista />} />
         <Route path="/noticias" element={<Noticias />} />
-        <Route path="/novedad-:noticia" element={<Noticia />} />
+        <Route path="/noticias/:noticia" element={<Noticia />} />
+        <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
 
       </Routes>
 

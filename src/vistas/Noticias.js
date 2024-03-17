@@ -31,7 +31,7 @@ export default function Noticias() {
 
     const navigate = useNavigate();
     const handleCardClick = (noticia) => {
-        navigate(`/novedad-${noticia.titulo}`, { state: { noticia } });
+        navigate(`/noticias/${noticia.titulo}`, { state: { noticia } });
     };
 
     return (
