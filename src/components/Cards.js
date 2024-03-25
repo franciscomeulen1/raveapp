@@ -15,7 +15,25 @@ export default function Cards() {
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
             descripcion: "DESCRIPCION DEL EVENTO 1, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-            // entradas: tipo precio cantidad.
+            entradas:[{ 
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },{
             id: 2,
             nombreEvento: "Nombre de evento 2",
@@ -26,7 +44,26 @@ export default function Cards() {
             after: false,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 2, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 2, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },{
             id: 3,
             nombreEvento: "Nombre de evento 3",
@@ -37,7 +74,26 @@ export default function Cards() {
             after: true,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 3, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 3, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },
         {
             id: 4,
@@ -49,7 +105,26 @@ export default function Cards() {
             after: false,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 4, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 4, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },{
             id: 5,
             nombreEvento: "Nombre de evento 5",
@@ -60,7 +135,26 @@ export default function Cards() {
             after: false,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 5, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 5, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },{
             id: 6,
             nombreEvento: "Nombre de evento 6",
@@ -71,7 +165,26 @@ export default function Cards() {
             after: false,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 6, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 6, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },{
             id: 7,
             nombreEvento: "Nombre de evento 7",
@@ -82,7 +195,26 @@ export default function Cards() {
             after: false,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 7, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 7, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         },{
             id: 8,
             nombreEvento: "Nombre de evento 8",
@@ -93,7 +225,26 @@ export default function Cards() {
             after: false,
             horario: "23:50hs a 07:00hs",
             direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-            descripcion: "DESCRIPCION DEL EVENTO 8, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates"
+            descripcion: "DESCRIPCION DEL EVENTO 8, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+            entradas:[{ // entradas: tipo precio cantidad.
+                tipo: "Early Bird - Entrada general",
+                precio: 3000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada general",
+                precio: 5000,
+                cantidad: 900
+            },{
+                tipo: "Early Bird - Entrada VIP",
+                precio: 5000,
+                cantidad: 100,
+                fechaLimite: "10/04/2024"
+            },{
+                tipo: "Entrada VIP",
+                precio: 7000,
+                cantidad: 400
+            }]
         }
     ]
 

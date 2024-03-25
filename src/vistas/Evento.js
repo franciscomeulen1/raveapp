@@ -35,7 +35,7 @@ export default function Evento() {
                             <p className='font-semibold'><BsGeoAltFill className='inline' /> {evento.direccion}</p>
                             <button className='btn bg-cyan-600 rounded-full ml-3' onClick={() => handleComoLlegarClick(evento.nombreEvento, evento.direccion)}>Cómo llegar</button>
                         </div>
-                        <TablaDeEntradas />
+                        <TablaDeEntradas entradas={evento.entradas}/>
                     </div>
 
                     <div className='columns-1 pr-5'>
