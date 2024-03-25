@@ -96,7 +96,7 @@ export default function Artistas() {
                     {clavesOrdenadas.map(letra => {
                         return <div key={letra}>
                             <div><p className='font-bold text-3xl'>{letra}</p></div>
-                            <div class="grid grid-cols-4 gap-4 justify-items-center">
+                            <div className="grid grid-cols-4 gap-4 justify-items-center">
                                 {nombresAgrupados[letra].map(artista => (
                                     <AvatarArtista key={artista.nombre} 
                                     nombre={artista.nombre} 

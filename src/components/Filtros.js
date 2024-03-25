@@ -14,8 +14,8 @@ function Filtros() {
                         <label className="label">
                             <span className="label-text">Género</span>
                         </label>
-                        <select className="select select-bordered">
-                            <option selected>Todos</option>
+                        <select defaultValue="Todos" className="select select-bordered">
+                            <option>Todos</option>
                             <option>Techno</option>
                             <option>Tech-House</option>
                             <option>House</option>
@@ -29,8 +29,8 @@ function Filtros() {
                         <label className="label">
                             <span className="label-text">Ubicación:</span>
                         </label>
-                        <select className="select select-bordered">
-                            <option selected>Todas</option>
+                        <select defaultValue="Todas" className="select select-bordered">
+                            <option>Todas</option>
                             <option>Capital Federal</option>
                             <option>Gran Bs.As. Norte</option>
                             <option>Gran Bs.As. Oeste</option>

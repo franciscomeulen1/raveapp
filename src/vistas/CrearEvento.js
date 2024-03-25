@@ -77,8 +77,8 @@ function CrearEvento() {
               <label className="label">
                 <span className="label-text">Género musical:</span>
               </label>
-              <select className="select select-bordered">
-                <option disabled selected>Seleccione un género</option>
+              <select defaultValue="Seleccione un género" className="select select-bordered">
+                <option disabled>Seleccione un género</option>
                 <option>Techno</option>
                 <option>Tech-House</option>
                 <option>House</option>
@@ -101,8 +101,8 @@ function CrearEvento() {
                 <label className="label">
                   <span className="label-text">Provincia:</span>
                 </label>
-                <select className="select select-bordered">
-                  <option disabled selected>Seleccione una provincia</option>
+                <select defaultValue="Seleccione una provincia" className="select select-bordered">
+                  <option disabled>Seleccione una provincia</option>
                   <option>Buenos Aires</option>
                   <option>Catamarca</option>
                   <option>Chaco</option>
@@ -132,8 +132,8 @@ function CrearEvento() {
                 <label className="label">
                   <span className="label-text">Partido:</span>
                 </label>
-                <select className="select select-bordered">
-                  <option disabled selected>Seleccione un partido</option>
+                <select defaultValue="Seleccione un partido" className="select select-bordered">
+                  <option disabled>Seleccione un partido</option>
                   <option>Partido 1</option>
                   <option>Partido 2</option>
                 </select>
@@ -143,8 +143,8 @@ function CrearEvento() {
                 <label className="label">
                   <span className="label-text">Localidad:</span>
                 </label>
-                <select className="select select-bordered">
-                  <option disabled selected>Seleccione una localidad</option>
+                <select defaultValue="Seleccione una localidad" className="select select-bordered">
+                  <option disabled>Seleccione una localidad</option>
                   <option>Localidad 1</option>
                   <option>Localidad 2</option>
                 </select>
@@ -238,8 +238,8 @@ function CrearEvento() {
                     <option>2023</option>
                     <option>2024</option>
                   </select>
-                  <select className="select select-bordered">
-                    <option disabled selected>Hora</option>
+                  <select defaultValue="Hora" className="select select-bordered">
+                    <option disabled >Hora</option>
                     <option>00</option>
                     <option>01</option>
                     <option>02</option>
@@ -253,8 +253,8 @@ function CrearEvento() {
                     <option>10</option>
                     <option>11</option>
                   </select>
-                  <select className="select select-bordered">
-                    <option disabled selected>Minutos</option>
+                  <select defaultValue="Minutos" className="select select-bordered">
+                    <option disabled >Minutos</option>
                     <option>00</option>
                     <option>05</option>
                     <option>10</option>
@@ -332,8 +332,8 @@ function CrearEvento() {
                     <option>2023</option>
                     <option>2024</option>
                   </select>
-                  <select className="select select-bordered">
-                    <option disabled selected>Hora</option>
+                  <select defaultValue="Hora" className="select select-bordered">
+                    <option disabled >Hora</option>
                     <option>00</option>
                     <option>01</option>
                     <option>02</option>
@@ -347,8 +347,8 @@ function CrearEvento() {
                     <option>10</option>
                     <option>11</option>
                   </select>
-                  <select className="select select-bordered">
-                    <option disabled selected>Minutos</option>
+                  <select defaultValue="Minutos" className="select select-bordered">
+                    <option disabled>Minutos</option>
                     <option>00</option>
                     <option>05</option>
                     <option>10</option>
