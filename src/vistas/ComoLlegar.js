@@ -6,7 +6,7 @@ import { GoogleMap, DirectionsRenderer, useJsApiLoader } from '@react-google-map
 
 const libraries = ['places'];
 
-export default function ComoLlegar2() {
+export default function ComoLlegar() {
     const location = useLocation();
     const nombreEvento = location.state.nombreEvento;
     // const direccionEvento = location.state.direccion; // A resolver despues en base a como recibo la dirección.
