@@ -13,6 +13,7 @@ export default function Artista(props) {
     const location = useLocation();
     const { nombre } = useParams();
     const descripcion = location.state.descripcion;
+    const likes = location.state.likes;
 
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
 
@@ -45,7 +46,7 @@ export default function Artista(props) {
                  <div className='flex px-10 items-center'>
                 <div><img src={HeartNoLike} alt="heart" width="80%" /></div>
                  <AvatarGroup />
-                 <p className='font-semibold text-lg ml-3'>A 98 personas les gusta esto.</p>
+                 <p className='font-semibold text-lg ml-3'>A {likes} personas les gusta esto.</p>
                  </div>
  
                 {/* -------------------------------------------------------- */}

@@ -13,47 +13,57 @@ export default function Artistas() {
             id: 1,
             nombre: "Amelie Lens",
             descripcion: "INFORMACION DEL ARTISTA AMELIE LENS - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            // cantMg: 78
+           likes: 98,
         }, {
             id: 2,
             nombre: "Charlotte de Wite",
             descripcion: "INFORMACION DEL ARTISTA CHARLOTTE DE WITE - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 99,
         }, {
             id: 3,
             nombre: "99999999999",
             descripcion: "INFORMACION DEL ARTISTA 99999999999 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 100,
         }, {
             id: 4,
             nombre: "T78",
             descripcion: "INFORMACION DEL ARTISTA T78 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 101,
         }, {
             id: 5,
             nombre: "Adam Beyer",
             descripcion: "INFORMACION DEL ARTISTA ADAM BEYER - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 102,
         }, {
             id: 6,
             nombre: "Boris Brejcha",
             descripcion: "INFORMACION DEL ARTISTA BORIS BREJCHA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 103,
         }, {
             id: 7,
             nombre: "Regal",
             descripcion: "INFORMACION DEL ARTISTA REGAL - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 104,
         }, {
             id: 8,
             nombre: "Aly & Flia",
             descripcion: "INFORMACION DEL ARTISTA ALY & FLIA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 105,
         }, {
             id: 9,
             nombre: "Anetha",
             descripcion: "INFORMACION DEL ARTISTA ANETHA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 106,
         }, {
             id: 10,
             nombre: "Armin Van Buuren",
             descripcion: "INFORMACION DEL ARTISTA ARMIN VAN BUUREN - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 107,
         }, {
             id: 11,
             nombre: "Above & Beyond",
             descripcion: "INFORMACION DEL ARTISTA ABOVE & BEYOND - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            likes: 108,
         }
     ]
 
@@ -62,7 +72,7 @@ export default function Artistas() {
         if (!result[primeraLetra]) {
             result[primeraLetra] = [];
         }
-        result[primeraLetra].push({ nombre: artista.nombre, descripcion: artista.descripcion });
+        result[primeraLetra].push({ nombre: artista.nombre, descripcion: artista.descripcion, likes: artista.likes });
         return result;
     }, {});
     
@@ -72,8 +82,8 @@ export default function Artistas() {
     // console.log(clavesOrdenadas);
 
     const navigate = useNavigate();
-    const handleCardClick = (nombre, descripcion) => {
-        navigate(`/artistas/${nombre}`, { state: { descripcion } });
+    const handleCardClick = (nombre, descripcion, likes) => {
+        navigate(`/artistas/${nombre}`, { state: { descripcion, likes } });
     };
 
     return (
@@ -91,7 +101,7 @@ export default function Artistas() {
                                     <AvatarArtista key={artista.nombre} 
                                     nombre={artista.nombre} 
                                     descripcion={artista.descripcion}
-                                    onClick={() => handleCardClick(artista.nombre, artista.descripcion)}/>
+                                    onClick={() => handleCardClick(artista.nombre, artista.descripcion, artista.likes)}/>
                                 ))}
                             </div>
                             <div className="divider"></div>
