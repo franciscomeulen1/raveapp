@@ -72,7 +72,7 @@ export default function ComoLlegar() {
             },
             (result, status) => {
                 if (status === window.google.maps.DirectionsStatus.OK) {
-                    // console.log(result);
+                    console.log(result);
                     setDirections(result);
                 } else {
                     console.error(`Error al calcular la ruta: ${status}`);
@@ -120,12 +120,13 @@ export default function ComoLlegar() {
                                             .map((route, index) => ({
                                                 index,
                                                 duration: route.legs[0].duration.text, // Duración total del recorrido
+                                                durationValue: route.legs[0].duration.value,
                                             }))
-                                            .sort((a, b) => a.duration - b.duration) // Ordenar por duración ascendente
-                                            .map(({ index, duration }) => (
+                                            .sort((a, b) => a.durationValue - b.durationValue) // Ordenar por duración ascendente
+                                            .map(({ index, duration }, sortedIndex) => (
                                                 <div key={index} className='my-1'>
                                                     <button onClick={() => handleRouteSelection(index)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                        Ruta {index + 1} - Duración Total: {duration}
+                                                        Ruta {sortedIndex + 1} - Duración Total: {duration}
                                                     </button>
                                                     <br />
                                                 </div>
@@ -142,7 +143,8 @@ export default function ComoLlegar() {
                                                 <li key={index}>
                                                     {step.travel_mode === 'WALKING' ? "- " + step.instructions : ''}
                                                     {step.travel_mode === 'TRANSIT' && step.transit.line.vehicle.type === "SUBWAY" ? "- Subte " + step.transit.line.short_name + ": " + step.instructions :
-                                                        (step.travel_mode === 'TRANSIT' ? "- " + step.transit.line.vehicle.name + " " + step.transit.line.name + ": " + step.instructions : '')}
+                                                        (step.travel_mode === 'TRANSIT' && step.transit.line.vehicle.type === "BUS" ? "- Autobus " + step.transit.line.short_name + ": " + step.instructions :
+                                                            (step.travel_mode === 'TRANSIT' ? "- " + step.transit.line.vehicle.name + " " + step.transit.line.name + ": " + step.instructions : ''))}
                                                 </li>
                                             ))}
                                         </ol>
