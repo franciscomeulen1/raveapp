@@ -3,9 +3,10 @@ import Footer from '../components/Footer';
 
 function CrearEvento() {
   window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+
   return (
     <div>
-      <div className="px-10 mb-11">
+      <div className="sm:px-10 mb-11">
         <NavBar />
 
         <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Crear evento</h1>
@@ -59,6 +60,8 @@ function CrearEvento() {
             </div>
           </div>
 
+         {/* ----------------------------------------------------------------------------------- */}
+
           <h2>Datos del evento</h2>
 
           <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-6'>
@@ -73,19 +76,41 @@ function CrearEvento() {
               />
             </div>
 
-            <div className="form-control w-full max-w-xs">
+            <div className="form-control w-full max-w-xs grid grid-cols-2">
               <label className="label">
                 <span className="label-text">Género musical:</span>
               </label>
-              <select defaultValue="Seleccione un género" className="select select-bordered">
-                <option disabled>Seleccione un género</option>
-                <option>Techno</option>
-                <option>Tech-House</option>
-                <option>House</option>
-                <option>Progressive</option>
-                <option>Trance</option>
-                <option>Psy-Trance</option>
-              </select>
+              <div></div>
+              <label className="label cursor-pointer justify-start">
+                <span className="label-text mr-2">Techno</span>
+                <input type="checkbox" value="techno" className="checkbox" />
+              </label>
+
+              <label className="label cursor-pointer justify-start">
+                <span className="label-text mr-2">Tech-House</span>
+                <input type="checkbox" value="techhouse" className="checkbox" />
+              </label>
+
+              <label className="label cursor-pointer justify-start">
+                <span className="label-text mr-2">House</span>
+                <input type="checkbox" value="house" className="checkbox" />
+              </label>
+
+              <label className="label cursor-pointer justify-start">
+                <span className="label-text mr-2">Progressive</span>
+                <input type="checkbox" value="progressive" className="checkbox" />
+              </label>
+
+              <label className="label cursor-pointer justify-start">
+                <span className="label-text mr-2">Trance</span>
+                <input type="checkbox" value="trance" className="checkbox" />
+              </label>
+
+              <label className="label cursor-pointer justify-start">
+                <span className="label-text mr-2">Psy-Trance</span>
+                <input type="checkbox" value="psytrance" className="checkbox" />
+              </label>
+
             </div>
 
 

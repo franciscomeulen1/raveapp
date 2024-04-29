@@ -88,15 +88,15 @@ export default function Artistas() {
 
     return (
         <div>
-            <div className="px-10 mb-11">
+            <div className="sm:px-10 mb-11">
                 <NavBar />
                 <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Artistas</h1>
                 <div className='mx-28'>
 
                     {clavesOrdenadas.map(letra => {
                         return <div key={letra}>
-                            <div><p className='font-bold text-3xl'>{letra}</p></div>
-                            <div className="grid grid-cols-4 gap-4 justify-items-center">
+                            <div><p className='font-bold text-3xl mb-4'>{letra}</p></div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-28 gap-y-8 justify-items-center">
                                 {nombresAgrupados[letra].map(artista => (
                                     <AvatarArtista key={artista.nombre} 
                                     nombre={artista.nombre} 

@@ -87,12 +87,12 @@ export default function ComoLlegar() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <div className="px-10 mb-11" style={{ flex: '1' }}>
+            <div className="sm:px-10 mb-11" style={{ flex: '1' }}>
                 <NavBar />
                 <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Cómo llegar a: {nombreEvento}</h1>
-                <div className='grid grid-cols-3 mx-10 gap-3'>
+                <div className='grid md:grid-cols-3 mx-10 gap-3'>
                     {/* IZQUIERDA */}
-                    <div>
+                    <div className='columns-1'>
                         <label className="form-control w-full max-w-xs" htmlFor="origin">
                             <div className="label">
                                 <span className="label-text font-semibold text-lg">Dirección de origen:</span>
@@ -107,7 +107,7 @@ export default function ComoLlegar() {
                             </div>
                             <input type="text" id="destination" value={destination} onChange={(e) => setDestination(e.target.value)} onFocus={autocompleteDestination} placeholder="Ingrese la dirección de destino" className="input input-bordered w-full max-w-xs" />
                         </label>
-                        <button onClick={handleDirections} className="btn btn-info btn-xs sm:btn-sm md:btn-md rounded-full font-bold my-4">
+                        <button onClick={handleDirections} className="btn btn-info btn-sm md:btn-md rounded-full font-bold my-4">
                             Buscar rutas
                         </button>
 
@@ -156,10 +156,10 @@ export default function ComoLlegar() {
 
                     </div>
                     {/* DERECHA - MAPA */}
-                    <div className='col-span-2'>
+                    <div className='col-span-1 md:col-span-2'>
                         {isLoaded && (
                             <GoogleMap
-                                mapContainerStyle={{ width: '100%', height: '100%' }}
+                                mapContainerStyle={{ width: 'auto', height: '100vh' }}
                                 center={{ lat: -34.61315, lng: -58.37723 }} // Coordenadas de Buenos Aires, Argentina
                                 zoom={12}
                             >

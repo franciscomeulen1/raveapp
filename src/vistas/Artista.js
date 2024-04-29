@@ -18,8 +18,8 @@ export default function Artista(props) {
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
 
     return (
-        <div>
-            <div className="px-10 mb-11">
+        <div style={{ minHeight: '100vh', position: 'relative' }}>
+            <div className="sm:px-10 mb-11"  style={{ paddingBottom: '60px' }}>
                 <NavBar />
                 <div className='flex'>
                     {/* <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Nombre del artista</h1> */}
@@ -51,11 +51,11 @@ export default function Artista(props) {
  
                 {/* -------------------------------------------------------- */}
 
-                <div className='md:flex sm:mx-28 mt-5 space-y-5'>
-                <div className='image-full'>
-                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="dj" className='rounded-full md:max-w-sm' />
+                <div className='grid md:grid-cols-4 lg:grid-cols-3 sm:mx-28 mt-5 space-y-5'>
+                <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
+                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="dj" className='rounded-full sm:w-full md:max-w-sm' />
                 </div>
-                <div className='pl-5 font-medium'>
+                <div className='md:col-span-2 lg:col-span-2 pl-5 font-medium'>
                     {/* <p>INFORMACION DEL ARTISTA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> */}
                     <p>{descripcion}</p>
                 </div>
@@ -63,7 +63,7 @@ export default function Artista(props) {
                 </div>
 
             </div>
-            <Footer />
+            <Footer style={{ position: 'absolute', bottom: 0, width: '100%' }}/>
         </div>
     )
     }

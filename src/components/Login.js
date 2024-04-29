@@ -1,7 +1,7 @@
 function Login() {
     return (
         <div>
-            <label htmlFor="my-modal-login" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</label>
+            <label htmlFor="my-modal-login" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2 btn-sm md:btn-md">Ingresar</label>
 
             <input type="checkbox" id="my-modal-login" className="modal-toggle" />
             <label htmlFor="my-modal-login" className="modal modal-middle">

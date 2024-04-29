@@ -1,7 +1,7 @@
 function Register() {
     return (
         <div>
-            <label htmlFor="my-modal-register" className="btn modal-button btn-info hover:bg-indigo-400 hover:text-cyan-200 mx-2">Registrarme</label>
+            <label htmlFor="my-modal-register" className="btn modal-button btn-info hover:bg-indigo-400 hover:text-cyan-200 mx-2 btn-sm md:btn-md">Registrarme</label>
 
 
             <input type="checkbox" id="my-modal-register" className="modal-toggle" />

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { useLocation } from 'react-router-dom';
@@ -10,23 +10,23 @@ export default function Noticia(props) {
     const noticia = location.state.noticia;
 
     return (
-        <div>
-            <div className="px-10 mb-11">
-                <NavBar />
-
-                <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{noticia.titulo}</h1>
-                <div className='grid justify-center space-y-5'>
-
-                    <div className='card'>
-                        <figure><img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" alt="Shoes" /></figure>
-                    </div>
-
-                    <div className='mx-16'>
-                        <p className='font-medium'>{noticia.noticia}</p>
+        <div className="flex flex-col min-h-screen">
+            
+            <div className="flex-1">
+                <div className="sm:px-10 mb-11">
+                <NavBar/>
+                    <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{noticia.titulo}</h1>
+                    <div className='grid justify-center space-y-5'>
+                        <div className='card mx-3'>
+                            <figure><img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" alt="Shoes" /></figure>
+                        </div>
+                        <div className='mx-16'>
+                            <p className='font-medium'>{noticia.noticia}</p>
+                        </div>
                     </div>
                 </div>
             </div>
             <Footer />
         </div>
-    )
+    );
 }
