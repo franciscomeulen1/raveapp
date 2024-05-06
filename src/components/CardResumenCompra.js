@@ -3,8 +3,8 @@ import '../index.css';
 export default function CardResumenCompra() {
     return (
         <div>
-            <div className="bg-base-100 shadow-xl mx-16">
-                <div className="grid grid-cols-3 justify-between">
+            <div className="bg-base-100 shadow-xl mx-5 md:mx-16">
+                <div className="grid grid-cols-3 justify-between gap-x-6">
                     <div className='justify-self-center my-2'>
                         <figure className="w-40 ml-5"><img src="https://t3.ftcdn.net/jpg/02/87/35/70/240_F_287357045_Ib0oYOxhotdjOEHi0vkggpZTQCsz0r19.jpg" alt="Movie" /></figure>
                     </div>

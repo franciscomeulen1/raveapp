@@ -2,6 +2,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import CardResumenCompra from '../components/CardResumenCompra';
 export default function Comprar() {
+    window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
     return (
         <div>
             <div className="sm:px-10 mb-11">
@@ -9,7 +10,7 @@ export default function Comprar() {
                 <h1 className='mx-10 sm:px-10 mt-2 mb-3 text-2xl font-bold'>Estas comprando:</h1>
                 <CardResumenCompra />
                 <h2 className='mx-10 sm:px-10 mt-4 mb-3 text-2xl font-bold'>Tus datos:</h2>
-                <form className="grid sm:grid-cols-2 justify-center px-16">
+                <form className="grid sm:grid-cols-2 justify-center px-16 gap-x-3">
                     <div className='form-control'>
                         <label className="label">
                             <span className="label-text">Nombre:</span>
