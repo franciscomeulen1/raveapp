@@ -1,5 +1,6 @@
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
+import InputDeArtistas from '../components/InputDeArtistas';
 
 function CrearEvento() {
   window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
@@ -15,10 +16,10 @@ function CrearEvento() {
 
           <div className='grid sm:grid-cols-2 gap-10 mb-6'>
             <div className='columns-1'>
-              <h2>Datos personales:</h2>
+              <h2 className='text-xl font-bold'>Datos personales:</h2>
               <div className='form-control w-full max-w-xs'>
                 <label className="label">
-                  <span className="label-text">Tu nombre:</span>
+                  <span className="label-text font-semibold text-lg">Tu nombre:</span>
                 </label>
                 <input type='text'
                   placeholder="Escribe tu nombre"
@@ -28,7 +29,7 @@ function CrearEvento() {
               </div>
               <div className='form-control w-full max-w-xs'>
                 <label className="label">
-                  <span className="label-text">Tu apellido:</span>
+                  <span className="label-text  font-semibold text-lg">Tu apellido:</span>
                 </label>
                 <input type='text'
                   placeholder="Escribe tu apellido"
@@ -37,7 +38,7 @@ function CrearEvento() {
               </div>
               <div className='form-control w-full max-w-xs'>
                 <label className="label">
-                  <span className="label-text">Tu telefono:</span>
+                  <span className="label-text  font-semibold text-lg">Tu telefono:</span>
                 </label>
                 <input type='text'
                   placeholder="Escribe tu telefono"
@@ -46,7 +47,7 @@ function CrearEvento() {
               </div>
               <div className='form-control w-full max-w-xs'>
                 <label className="label">
-                  <span className="label-text">Email:</span>
+                  <span className="label-text font-semibold text-lg">Email:</span>
                 </label>
                 <input type='text'
                   placeholder="Escribe tu email"
@@ -62,23 +63,28 @@ function CrearEvento() {
 
          {/* ----------------------------------------------------------------------------------- */}
 
-          <h2>Datos del evento</h2>
+          <h2 className='text-xl font-bold'>Datos del evento:</h2>
 
-          <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-6'>
+          
+  
+             {/* NOMBRE DEL EVENTO */}
 
-            <div className='form-control w-full max-w-xs'>
+            <div className='form-control w-full mb-4'>
               <label className="label">
-                <span className="label-text">Nombre del evento:</span>
+                <span className="label-text font-semibold text-lg">Nombre del evento:</span>
               </label>
               <input type='text'
                 placeholder="Nombre del evento"
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full max-w-lg"
+                style={{ width: '100%' }} // Sobrescribe el ancho del input
               />
             </div>
 
-            <div className="form-control w-full max-w-xs grid grid-cols-2">
+            {/* GENERO MUSICAL */}
+
+            <div className="form-control w-full max-w-xs grid grid-cols-2 mb-4">
               <label className="label">
-                <span className="label-text">Género musical:</span>
+                <span className="label-text font-semibold text-lg">Género musical:</span>
               </label>
               <div></div>
               <label className="label cursor-pointer justify-start">
@@ -113,10 +119,11 @@ function CrearEvento() {
 
             </div>
 
-
+          <div className='mb-5'>
+          <InputDeArtistas />
           </div>
 
-          <h3>Ubicación del evento:</h3>
+          <h3 className='text-xl font-bold'>Ubicación del evento:</h3>
 
           <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-6'>
 
@@ -124,7 +131,7 @@ function CrearEvento() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Provincia:</span>
+                  <span className="label-text font-semibold text-lg">Provincia:</span>
                 </label>
                 <select defaultValue="Seleccione una provincia" className="select select-bordered">
                   <option disabled>Seleccione una provincia</option>
@@ -155,7 +162,7 @@ function CrearEvento() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Partido:</span>
+                  <span className="label-text font-semibold text-lg">Partido:</span>
                 </label>
                 <select defaultValue="Seleccione un partido" className="select select-bordered">
                   <option disabled>Seleccione un partido</option>
@@ -166,7 +173,7 @@ function CrearEvento() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Localidad:</span>
+                  <span className="label-text font-semibold text-lg">Localidad:</span>
                 </label>
                 <select defaultValue="Seleccione una localidad" className="select select-bordered">
                   <option disabled>Seleccione una localidad</option>
@@ -177,7 +184,7 @@ function CrearEvento() {
 
               <div className='form-control w-full max-w-xs'>
                 <label className="label">
-                  <span className="label-text">Dirección:</span>
+                  <span className="label-text font-semibold text-lg">Dirección:</span>
                 </label>
                 <input type='text'
                   placeholder="Dirección del evento"
@@ -187,28 +194,28 @@ function CrearEvento() {
 
               <div className="form-control">
                 <label className="label cursor-pointer justify-start">
-                  <span className="label-text mr-2">Es After?</span>
+                  <span className="label-text mr-2 font-semibold text-lg">Es After?</span>
                   <input type="checkbox" className="checkbox checkbox-primary" />
                 </label>
               </div>
 
               <div className="form-control">
                 <label className="label cursor-pointer justify-start">
-                  <span className="label-text mr-2">Es un evento LGBT?</span>
+                  <span className="label-text mr-2 font-semibold text-lg">Es un evento LGBT?</span>
                   <input type="checkbox" className="checkbox checkbox-primary" />
                 </label>
               </div>
 
-              <div className="form-control w-full max-w-xs">
+              <div className="form-control w-full max-w-md">
                 <label className="label">
-                  <span className="label-text">Descripción del evento:</span>
+                  <span className="label-text font-semibold text-lg">Descripción del evento:</span>
                 </label>
                 <textarea className="textarea textarea-bordered h-24" placeholder="Descripcion..."></textarea>
               </div>
 
               <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text">Fecha y hora de inicio del evento:</span>
+                  <span className="label-text font-semibold text-lg">Fecha y hora de inicio del evento:</span>
                 </label>
                 <div className='inline-flex'>
                   <select className="select select-bordered">
@@ -302,7 +309,7 @@ function CrearEvento() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Fecha y hora fin del evento:</span>
+                  <span className="label-text font-semibold text-lg">Fecha y hora fin del evento:</span>
                 </label>
                 <div className='inline-flex'>
                   <select className="select select-bordered">
@@ -396,21 +403,21 @@ function CrearEvento() {
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Agregar video:</span>
+                  <span className="label-text font-semibold text-lg">Agregar video:</span>
                 </label>
                 <input type="text" placeholder="Pegá el link de YouTube aquí" className="input input-bordered w-full max-w-xs" />
               </div>
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Agregar música:</span>
+                  <span className="label-text font-semibold text-lg">Agregar música:</span>
                 </label>
                 <input type="text" placeholder="Pegá el link de Spotify o SoundCloud aquí" className="input input-bordered w-full max-w-xs" />
               </div>
 
               <div className="form-control w-full max-w-xs">
                 <label className="label">
-                  <span className="label-text">Foto del evento:</span>
+                  <span className="label-text font-semibold text-lg">Foto del evento:</span>
                 </label>
                 <input type="file" className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" />
               </div>
@@ -418,14 +425,14 @@ function CrearEvento() {
 
           </div>
 
-          <div className="form-control">
+          <div className="form-control mb-4">
             <label className="cursor-pointer label justify-start">
               <input type="checkbox" className="checkbox checkbox-accent mr-2" />
               <span className="label-text">Acepto terminos y condiciones</span>
             </label>
           </div>
 
-          <button type="submit" className="btn btn-secondary rounded-xl">Crear Evento</button>
+          <button type="button" className="btn btn-secondary rounded-xl">Crear Evento</button>
 
         </form>
 
