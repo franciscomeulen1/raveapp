@@ -18,7 +18,7 @@ export default function Noticia(props) {
                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{noticia.titulo}</h1>
                     <div className='grid justify-center space-y-5'>
                         <div className='card mx-3'>
-                            <figure><img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" alt="Shoes" /></figure>
+                            <figure><img src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg" alt="Shoes" /></figure>
                         </div>
                         <div className='mx-16'>
                             <p className='font-medium'>{noticia.noticia}</p>
