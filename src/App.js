@@ -15,6 +15,7 @@ import Noticias from "./vistas/Noticias";
 import Noticia from "./vistas/Noticia";
 import ComoLlegar from "./vistas/ComoLlegar";
 import EntradasAdquiridas from "./vistas/EntradasAdquiridas";
+import EventosFavoritos from "./vistas/EventosFavoritos";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/noticias/:noticia" element={<Noticia />} />
         <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
         <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
+        <Route path="/eventosfavoritos" element={<EventosFavoritos />} />
 
       </Routes>
 
