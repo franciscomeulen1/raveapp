@@ -1,6 +1,7 @@
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import TablaDeEntradas from '../components/TablaDeEntradas';
+import Resenias from '../components/Resenias';
 import { BsGeoAltFill } from "react-icons/bs";
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -8,7 +9,7 @@ export default function Evento() {
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
 
     const location = useLocation();
-    const evento = location.state.evento;   
+    const evento = location.state.evento;
 
     const navigate = useNavigate();
     const handleComoLlegarClick = (nombreEvento, direccion) => {
@@ -35,7 +36,7 @@ export default function Evento() {
                             <p className='font-semibold'><BsGeoAltFill className='inline' /> {evento.direccion}</p>
                             <button className='btn bg-cyan-600 rounded-full ml-3' onClick={() => handleComoLlegarClick(evento.nombreEvento, evento.direccion)}>Cómo llegar</button>
                         </div>
-                        <TablaDeEntradas entradas={evento.entradas}/>
+                        <TablaDeEntradas entradas={evento.entradas} />
                     </div>
 
                     <div className='columns-1 pr-5'>
@@ -46,11 +47,15 @@ export default function Evento() {
                         <iframe title="musicaSoundCloud" width="100%" height="450" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1406208106&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true" className='mb-6'>
                         </iframe>
 
-                        
+                        <div>
+                            <Resenias />
+                        </div>
+
+
                     </div>
 
                     <div className='columns-1 pr-5'>
-                    <iframe height="315" src="https://www.youtube.com/embed/zmqS5hEi_QI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen className='w-full '></iframe>
+                        <iframe height="315" src="https://www.youtube.com/embed/zmqS5hEi_QI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen className='w-full '></iframe>
                     </div>
 
                 </div>
