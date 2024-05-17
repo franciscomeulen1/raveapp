@@ -14,6 +14,7 @@ import Artista from "./vistas/Artista";
 import Noticias from "./vistas/Noticias";
 import Noticia from "./vistas/Noticia";
 import ComoLlegar from "./vistas/ComoLlegar";
+import EntradasAdquiridas from "./vistas/EntradasAdquiridas";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/noticias" element={<Noticias />} />
         <Route path="/noticias/:noticia" element={<Noticia />} />
         <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
+        <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
 
       </Routes>
 

@@ -1,0 +1,14 @@
+/* Estilos para el corazon de me gusta */
+
+/* Por defecto, el corazón es blanco con bordes negros */
+.heart {
+    color: "#000000";
+    position: absolute;
+    left: 10px; /* Ajusta la posición a la izquierda */
+    bottom: 10px; /* Ajusta la posición hacia abajo */
+}
+
+/* Cuando se hace clic en el corazón, cambia a color rojo */
+.heart.liked {
+    color: red;
+}

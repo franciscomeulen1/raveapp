@@ -12,11 +12,11 @@ function Inicio() {
       <div className='sm:px-10'>
 
         <NavBar />
-        </div>
-        <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
+      </div>
+      <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
         <Carousel />
         <Cards />
-        </div>
+      </div>
       <Footer />
     </div>
   )
