@@ -5,13 +5,13 @@ import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons'; // Im
 const Resenias = () => {
     const resenias = [
         {
-            nombre: 'Usuario 1',
+            nombre: 'Carlos Menem',
             calificacion: 4,
             diasAtras: 3,
             comentario: 'Excelente evento, me encantó la música y el ambiente.',
         },
         {
-            nombre: 'Usuario 2',
+            nombre: 'Teté Coustarot',
             calificacion: 3,
             diasAtras: 5,
             comentario: '¡Increíble experiencia! Sin duda volvería a asistir.',
@@ -36,8 +36,8 @@ const Resenias = () => {
 
     return (
         <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold underline underline-offset-8">Reseñas del evento</h2>
+            <div className="flex items-center justify-between mb-4 gap-x-1">
+                <h2 className="text-xl font-bold underline underline-offset-8">Reseñas del evento</h2>
                 <div className="flex items-center">
                     <div className="flex items-center">
                         {/* Mostrar las estrellas del promedio */}

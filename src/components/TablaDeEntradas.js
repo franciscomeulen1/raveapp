@@ -23,7 +23,7 @@ export default function TablaDeEntradas(props) {
                     <tbody>
                     {entradas.map((entrada, index) => (
                             <tr key={index}>
-                                <td>{entrada.tipo}</td>
+                                <td className='lg-min:text-sm'>{entrada.tipo}</td>
                                 <td>${entrada.precio}</td>
                                 <td>
                                 <select name={`cant-entrada-${index}`} className="select select-bordered w-full max-w-xs">
