@@ -51,7 +51,12 @@ const InputUbicacionEvento = () => {
       fetch(`https://apis.datos.gob.ar/georef/api/localidades?municipio=${selectedMunicipio}&max=200`)
         .then(response => response.json())
         .then(data => {
-          const localidadesOrdenadas = data.localidades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+          // Eliminar duplicados
+          const localidadesUnicas = Array.from(new Set(data.localidades.map(a => a.nombre)))
+            .map(nombre => {
+              return data.localidades.find(a => a.nombre === nombre);
+            });
+          const localidadesOrdenadas = localidadesUnicas.sort((a, b) => a.nombre.localeCompare(b.nombre));
           setLocalidades(localidadesOrdenadas);
         })
         .catch(error => console.error('Error fetching localidades:', error));
@@ -90,7 +95,7 @@ const InputUbicacionEvento = () => {
           >
             <option value="">Seleccione un municipio</option>
             {municipios.map(municipio => (
-              <option key={municipio.nombre} value={municipio.nombre}>{municipio.nombre}</option>
+              <option key={municipio.id} value={municipio.nombre}>{municipio.nombre}</option>
             ))}
           </select>
         </div>
@@ -123,4 +128,5 @@ const InputUbicacionEvento = () => {
 };
 
 export default InputUbicacionEvento;
+
 
