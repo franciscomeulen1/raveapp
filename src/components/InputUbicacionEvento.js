@@ -2,47 +2,64 @@ import React, { useState, useEffect } from 'react';
 
 const InputUbicacionEvento = () => {
   const [provincias, setProvincias] = useState([]);
-  const [partidos, setPartidos] = useState([]);
+  const [municipios, setMunicipios] = useState([]);
   const [localidades, setLocalidades] = useState([]);
 
   const [selectedProvincia, setSelectedProvincia] = useState('');
-  const [selectedPartido, setSelectedPartido] = useState('');
+  const [selectedMunicipio, setSelectedMunicipio] = useState('');
   const [selectedLocalidad, setSelectedLocalidad] = useState('');
 
   useEffect(() => {
     // Obtener provincias
-    fetch('https://apis.datos.gob.ar/georef/api/provincias')
+    fetch('https://apis.datos.gob.ar/georef/api/provincias?max=100')
       .then(response => response.json())
-      .then(data => setProvincias(data.provincias))
+      .then(data => {
+        const provinciasOrdenadas = data.provincias.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        setProvincias(provinciasOrdenadas);
+      })
       .catch(error => console.error('Error fetching provincias:', error));
   }, []);
 
   useEffect(() => {
-    if (selectedProvincia) {
-      // Obtener partidos para la provincia seleccionada
-      fetch(`https://apis.datos.gob.ar/georef/api/departamentos?provincia=${selectedProvincia}`)
+    if (selectedProvincia === 'Ciudad Autónoma de Buenos Aires') {
+      setMunicipios([{ nombre: 'Ciudad Autónoma de Buenos Aires' }]);
+      setSelectedMunicipio('Ciudad Autónoma de Buenos Aires');
+      setLocalidades([{ nombre: 'Ciudad Autónoma de Buenos Aires' }]);
+      setSelectedLocalidad('Ciudad Autónoma de Buenos Aires');
+    } else if (selectedProvincia) {
+      // Obtener municipios para la provincia seleccionada
+      fetch(`https://apis.datos.gob.ar/georef/api/municipios?provincia=${selectedProvincia}&max=200`)
         .then(response => response.json())
-        .then(data => setPartidos(data.departamentos))
-        .catch(error => console.error('Error fetching partidos:', error));
+        .then(data => {
+          // Filtrar municipios para excluir las comunas de la Ciudad Autónoma de Buenos Aires
+          const municipiosFiltrados = data.municipios.filter(municipio => !municipio.nombre.includes('Comuna'));
+          const municipiosOrdenados = municipiosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+          setMunicipios(municipiosOrdenados);
+        })
+        .catch(error => console.error('Error fetching municipios:', error));
     } else {
-      setPartidos([]);
+      setMunicipios([]);
+      setLocalidades([]);
     }
-    setSelectedPartido('');
+    setSelectedMunicipio('');
     setSelectedLocalidad('');
   }, [selectedProvincia]);
 
   useEffect(() => {
-    if (selectedPartido) {
-      // Obtener localidades para el partido seleccionado
-      fetch(`https://apis.datos.gob.ar/georef/api/localidades?departamento=${selectedPartido}`)
+    if (selectedMunicipio && selectedProvincia !== 'Ciudad Autónoma de Buenos Aires') {
+      // Obtener localidades para el municipio seleccionado
+      fetch(`https://apis.datos.gob.ar/georef/api/localidades?municipio=${selectedMunicipio}&max=200`)
         .then(response => response.json())
-        .then(data => setLocalidades(data.localidades))
+        .then(data => {
+          const localidadesOrdenadas = data.localidades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+          setLocalidades(localidadesOrdenadas);
+        })
         .catch(error => console.error('Error fetching localidades:', error));
     } else {
       setLocalidades([]);
     }
     setSelectedLocalidad('');
-  }, [selectedPartido]);
+  }, [selectedMunicipio, selectedProvincia]);
 
   return (
     <div>
@@ -57,28 +74,28 @@ const InputUbicacionEvento = () => {
         >
           <option value="">Seleccione una provincia</option>
           {provincias.map(provincia => (
-            <option key={provincia.id} value={provincia.id}>{provincia.nombre}</option>
+            <option key={provincia.id} value={provincia.nombre}>{provincia.nombre}</option>
           ))}
         </select>
       </div>
-      {selectedProvincia && (
+      {selectedProvincia && selectedProvincia !== 'Ciudad Autónoma de Buenos Aires' && (
         <div className="form-control w-full max-w-xs">
           <label className="label">
-            <span className="label-text font-semibold text-lg">Partido:</span>
+            <span className="label-text font-semibold text-lg">Municipio:</span>
           </label>
           <select
-            value={selectedPartido}
-            onChange={(e) => setSelectedPartido(e.target.value)}
+            value={selectedMunicipio}
+            onChange={(e) => setSelectedMunicipio(e.target.value)}
             className="select select-bordered"
           >
-            <option value="">Seleccione un partido</option>
-            {partidos.map(partido => (
-              <option key={partido.id} value={partido.id}>{partido.nombre}</option>
+            <option value="">Seleccione un municipio</option>
+            {municipios.map(municipio => (
+              <option key={municipio.nombre} value={municipio.nombre}>{municipio.nombre}</option>
             ))}
           </select>
         </div>
       )}
-      {selectedPartido && (
+      {selectedMunicipio && (
         <div className="form-control w-full max-w-xs">
           <label className="label">
             <span className="label-text font-semibold text-lg">Localidad:</span>
@@ -90,7 +107,7 @@ const InputUbicacionEvento = () => {
           >
             <option value="">Seleccione una localidad</option>
             {localidades.map(localidad => (
-              <option key={localidad.id} value={localidad.id}>{localidad.nombre}</option>
+              <option key={localidad.id} value={localidad.nombre}>{localidad.nombre}</option>
             ))}
           </select>
         </div>
@@ -106,3 +123,4 @@ const InputUbicacionEvento = () => {
 };
 
 export default InputUbicacionEvento;
+
