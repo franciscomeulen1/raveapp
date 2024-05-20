@@ -149,69 +149,6 @@ function CrearEvento() {
 
             <InputUbicacionEvento />
 
-              {/* <div className="form-control w-full max-w-xs">
-                <label className="label">
-                  <span className="label-text font-semibold text-lg">Provincia:</span>
-                </label>
-                <select defaultValue="Seleccione una provincia" className="select select-bordered">
-                  <option disabled>Seleccione una provincia</option>
-                  <option>Buenos Aires</option>
-                  <option>Catamarca</option>
-                  <option>Chaco</option>
-                  <option>Córdoba</option>
-                  <option>Corrientes</option>
-                  <option>Entre Ríos</option>
-                  <option>Formosa</option>
-                  <option>Jujuy</option>
-                  <option>La Pampa</option>
-                  <option>La Rioja</option>
-                  <option>Mendoza</option>
-                  <option>Misiones</option>
-                  <option>Neuquén</option>
-                  <option>Río Negro</option>
-                  <option>Salta</option>
-                  <option>San Juan</option>
-                  <option>San Luis</option>
-                  <option>Santa Cruz</option>
-                  <option>Santa Fe</option>
-                  <option>Santiago del Estero</option>
-                  <option>Tierra del Fuego</option>
-                  <option>Tucumán</option>
-                </select>
-              </div> */}
-
-              {/* <div className="form-control w-full max-w-xs">
-                <label className="label">
-                  <span className="label-text font-semibold text-lg">Partido:</span>
-                </label>
-                <select defaultValue="Seleccione un partido" className="select select-bordered">
-                  <option disabled>Seleccione un partido</option>
-                  <option>Partido 1</option>
-                  <option>Partido 2</option>
-                </select>
-              </div> */}
-
-              {/* <div className="form-control w-full max-w-xs">
-                <label className="label">
-                  <span className="label-text font-semibold text-lg">Localidad:</span>
-                </label>
-                <select defaultValue="Seleccione una localidad" className="select select-bordered">
-                  <option disabled>Seleccione una localidad</option>
-                  <option>Localidad 1</option>
-                  <option>Localidad 2</option>
-                </select>
-              </div> */}
-
-              {/* <div className='form-control w-full max-w-xs'>
-                <label className="label">
-                  <span className="label-text font-semibold text-lg">Dirección:</span>
-                </label>
-                <input type='text'
-                  placeholder="Dirección del evento"
-                  className="input input-bordered w-full"
-                />
-              </div> */}
-
               <div className="form-control">
                 <label className="label cursor-pointer justify-start">
                   <span className="label-text mr-2 font-semibold text-lg">Es After?</span>
