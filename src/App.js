@@ -17,6 +17,8 @@ import ComoLlegar from "./vistas/ComoLlegar";
 import EntradasAdquiridas from "./vistas/EntradasAdquiridas";
 import EventosFavoritos from "./vistas/EventosFavoritos";
 import MisEventos from "./vistas/MisEventos";
+import EntradasVendidas from "./vistas/EntradasVendidas";
+import CancelarEvento from "./vistas/CancelarEvento";
 
 
 function App() {
@@ -38,6 +40,8 @@ function App() {
         <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
         <Route path="/eventosfavoritos" element={<EventosFavoritos />} />
         <Route path="/miseventos" element={<MisEventos />} />
+        <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
+        <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
 
       </Routes>
 

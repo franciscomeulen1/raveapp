@@ -72,7 +72,7 @@ function Inicio() {
     }, {
       id: 3,
       nombreEvento: "Nombre de evento 3",
-      fecha: "16/05/2024",
+      fecha: "16/10/2024",
       generos: ["Tech-House", "Techno"],
       artistas: ["Juan Solis", "Kilah"],
       lgbt: false,
@@ -115,7 +115,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/10/2024"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -124,7 +124,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/10/2024"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -133,7 +133,7 @@ function Inicio() {
     }, {
       id: 5,
       nombreEvento: "Nombre de evento 5",
-      fecha: "22/05/2024",
+      fecha: "22/10/2024",
       generos: "Techno",
       artistas: ["Amelie Lens", "Regal", "Adam Beyer"],
       lgbt: false,
@@ -154,7 +154,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "5/10/2024"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -163,7 +163,7 @@ function Inicio() {
     }, {
       id: 6,
       nombreEvento: "Nombre de evento 6",
-      fecha: "22/05/2024",
+      fecha: "22/10/2024",
       generos: "PsyTrance",
       artistas: "Javier Busola",
       lgbt: false,
@@ -184,7 +184,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/10/2024"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -193,7 +193,7 @@ function Inicio() {
     }, {
       id: 7,
       nombreEvento: "Nombre de evento 7",
-      fecha: "25/05/2024",
+      fecha: "25/10/2024",
       generos: "Tech-House",
       artistas: ["Jay de Lys", "Ghezz", "Cadelago"],
       lgbt: true,
@@ -214,7 +214,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "15/10/2024"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -223,7 +223,7 @@ function Inicio() {
     }, {
       id: 8,
       nombreEvento: "Nombre de evento 8",
-      fecha: "30/05/2024",
+      fecha: "30/10/2024",
       generos: "Techno",
       artistas: ["Enrico Sangiuliano", "Josefina Munoz", "999999999"],
       lgbt: false,
@@ -244,7 +244,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "30/10/2024"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -264,13 +264,15 @@ function Inicio() {
   const eventosNoFinalizados = eventos.filter(evento => !esEventoFinalizado(evento.fecha));
 
   return (
-    <div>
-      <div className='sm:px-10'>
-        <NavBar />
-      </div>
-      <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
-        <Carousel />
-        <Cards eventos={eventosNoFinalizados} />
+    <div className="flex flex-col min-h-screen">
+      <div className='flex-1'>
+        <div className='sm:px-10'>
+          <NavBar />
+        </div>
+        <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
+          <Carousel />
+          <Cards eventos={eventosNoFinalizados} />
+        </div>
       </div>
       <Footer />
     </div>

@@ -1,6 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const EventoItem = ({ fecha, nombre, finalizado }) => {
+const EventoItem = ({ fecha, nombre, finalizado, id }) => {
+
+    const navigate = useNavigate();
+
+    const handleEntradasVendidas = () => {
+        navigate(`/entradas-vendidas/${id}`);
+    };
+    const handleCancelClick = () => {
+        navigate(`/cancelar-evento/${id}`, { state: { nombre } });
+    };
+
     return (
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className="flex items-center">
@@ -17,8 +28,9 @@ const EventoItem = ({ fecha, nombre, finalizado }) => {
                     <span className="text-red-600 font-semibold text-xl mr-6">Finalizado</span>
                 ) : (
                     <>
+                        <button className="btn btn-info w-full md:w-auto" onClick={handleEntradasVendidas}>Entradas vendidas</button>
                         <button className="btn btn-primary w-full md:w-auto">Modificar</button>
-                        <button className="btn btn-error w-full md:w-auto">Cancelar evento</button>
+                        <button className="btn btn-error w-full md:w-auto" onClick={handleCancelClick}>Cancelar evento</button>
                     </>
                 )}
             </div>

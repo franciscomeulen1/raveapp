@@ -5,11 +5,12 @@ import EventoItem from '../components/EventoItem';
 
 const MisEventos = () => {
     const [eventos] = useState([
-        { fecha: '2024-06-01', nombre: 'Nombre del evento 1', finalizado: false },
-        { fecha: '2024-06-15', nombre: 'Nombre del evento 2', finalizado: false },
-        { fecha: '2024-07-01', nombre: 'Nombre del evento 3', finalizado: false },
-        { fecha: '2024-05-01', nombre: 'Nombre del evento 4', finalizado: true },
+        { id: 1, fecha: '2024-06-01', nombre: 'Nombre del evento 1', finalizado: false },
+        { id: 2, fecha: '2024-06-15', nombre: 'Nombre del evento 2', finalizado: false },
+        { id: 3, fecha: '2024-07-01', nombre: 'Nombre del evento 3', finalizado: false },
+        { id: 4, fecha: '2024-05-01', nombre: 'Nombre del evento 4', finalizado: true },
     ]);
+    
 
     const [orden, setOrden] = useState('asc');
     const [busqueda, setBusqueda] = useState('');
