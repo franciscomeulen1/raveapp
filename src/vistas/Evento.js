@@ -6,6 +6,8 @@ import { BsGeoAltFill } from "react-icons/bs";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
+import RainbowIcon from "../iconos/rainbow.png";
+import AfterIcon from "../iconos/confetti.png";
 
 export default function Evento() {
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
@@ -31,24 +33,44 @@ export default function Evento() {
                         <div className='mb-6 flex justify-center'>
                             <img src="https://www.dondeir.com/wp-content/uploads/2018/09/fiesta-1.jpg" width="450" height="auto" alt="imagen de evento" className='rounded-xl' />
                         </div>
+
                         <div className='flex items-center gap-x-1 mb-4'>
-                            <AiFillSound style={{ color: "#080808" }} className='inline size-6'/>
+                            <AiFillSound style={{ color: "#080808" }} className='inline size-6' />
                             <p className='font-bold'>
-                            <span class="underline underline-offset-4">Artistas:</span>
-                            <span className='text-lg'> {evento.artistas.join(' - ')} </span></p>
+                                <span class="underline underline-offset-4">Artistas:</span>
+                                <span className='text-lg'> {evento.artistas.join(' - ')} </span></p>
                         </div>
+
                         <div className='flex items-center gap-x-2 mb-2'>
                             <FaCalendarAlt style={{ color: "#080808" }} className='size-5' />
                             <p><span className='font-bold'>Fecha y hora:</span> {evento.fecha} - {evento.horario}</p>
                         </div>
-                        <div className='mb-6 flex justify-between items-center'>
+                        <div className='flex justify-between items-center'>
                             <div className='flex items-center gap-x-2'>
                                 <BsGeoAltFill style={{ color: "#080808" }} className='size-5' />
                                 <p className='font-semibold'> {evento.direccion}</p>
                             </div>
                             <button className='btn bg-cyan-600 rounded-full ml-3' onClick={() => handleComoLlegarClick(evento.nombreEvento, evento.direccion)}>Cómo llegar</button>
                         </div>
+
+                        <div className="flex gap-x-5 mt-2">
+                        {evento.lgbt ?
+                        <div className='flex items-center gap-x-2'>
+                            <img src={RainbowIcon} alt="Rainbow" className='w-6 h-6' />
+                            <p className='font-bold'>LGBT</p>
+                        </div> : ""
+                        }
+                        {evento.after ?
+                            <div className='flex items-center gap-x-2'>
+                            <img src={AfterIcon} alt="after" className='w-6 h-6' />
+                            <p className='font-bold'>AFTER</p>
+                        </div> : ""
+                        }
+                        </div>
+
+                        <div className='mt-5'>
                         <TablaDeEntradas entradas={evento.entradas} />
+                        </div>
                     </div>
 
                     {/* Description Section */}
