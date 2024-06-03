@@ -41,6 +41,9 @@ export default function Card(props) {
                         {props.lgbt === true && (
                             <div className="badge badge-outline px-4 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-red-500 via-green-500 to-purple-500">LGBT</div>
                         )}
+                        {props.after === true && (
+                            <div className="badge badge-outline px-4 py-2 rounded-lg font-semibold text-white bg-pink-800 ">After</div>
+                        )}
                     </div>
                 </div>
             </div>
