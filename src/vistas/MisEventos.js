@@ -5,12 +5,130 @@ import EventoItem from '../components/EventoItem';
 
 const MisEventos = () => {
     const [eventos] = useState([
-        { id: 1, fecha: '2024-06-01', nombre: 'Nombre del evento 1', finalizado: false },
-        { id: 2, fecha: '2024-06-15', nombre: 'Nombre del evento 2', finalizado: false },
-        { id: 3, fecha: '2024-07-01', nombre: 'Nombre del evento 3', finalizado: false },
-        { id: 4, fecha: '2024-05-01', nombre: 'Nombre del evento 4', finalizado: true },
+        { id: 1,
+          nombre: "Nombre de evento 1",
+          fecha: "10/05/2025",
+          generos: ["Tech-House", "Techno"],
+          artistas: ["Dich Brothers", "La Cintia", "Luana"],
+          lgbt: true,
+          after: false,
+          horario: "23:50hs a 07:00hs",
+          direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+          descripcion: "DESCRIPCION DEL EVENTO 1, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+          finalizado: false,
+          entradas: [{
+            tipo: "Early Bird - Entrada general",
+            precio: 3000,
+            cantidad: 100,
+            fechaLimite: "10/04/2025"
+          }, {
+            tipo: "Entrada general",
+            precio: 5000,
+            cantidad: 900
+          }, {
+            tipo: "Early Bird - Entrada VIP",
+            precio: 5000,
+            cantidad: 100,
+            fechaLimite: "10/04/2025"
+          }, {
+            tipo: "Entrada VIP",
+            precio: 7000,
+            cantidad: 400
+          }] 
+        },
+        { id: 2,
+          nombre: "Nombre de evento 2",
+          fecha: "15/05/2025",
+          generos: "Tech-House",
+          artistas: ["Nico Moreno", "T78"],
+          lgbt: false,
+          after: false,
+          horario: "23:50hs a 07:00hs",
+          direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+          descripcion: "DESCRIPCION DEL EVENTO 2, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+          finalizado: false,
+          entradas: [{ // entradas: tipo precio cantidad.
+            tipo: "Early Bird - Entrada general",
+            precio: 3000,
+            cantidad: 100,
+            fechaLimite: "10/04/2025"
+          }, {
+            tipo: "Entrada general",
+            precio: 5000,
+            cantidad: 900
+          }, {
+            tipo: "Early Bird - Entrada VIP",
+            precio: 5000,
+            cantidad: 100,
+            fechaLimite: "10/04/2025"
+          }, {
+            tipo: "Entrada VIP",
+            precio: 7000,
+            cantidad: 400
+          }]  
+        },
+        { id: 3,
+          nombre: "Nombre de evento 3",
+          fecha: "16/10/2025",
+          generos: ["Tech-House", "Techno"],
+          artistas: ["Juan Solis", "Kilah"],
+          lgbt: false,
+          after: true,
+          horario: "07:00hs a 12:00hs",
+          direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+          descripcion: "DESCRIPCION DEL EVENTO 3, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+          finalizado: false,
+          entradas: [{ // entradas: tipo precio cantidad.
+            tipo: "Early Bird - Entrada general",
+            precio: 3000,
+            cantidad: 100,
+            fechaLimite: "10/04/2025"
+          }, {
+            tipo: "Entrada general",
+            precio: 5000,
+            cantidad: 900
+          }, {
+            tipo: "Early Bird - Entrada VIP",
+            precio: 5000,
+            cantidad: 100,
+            fechaLimite: "10/04/2025"
+          }, {
+            tipo: "Entrada VIP",
+            precio: 7000,
+            cantidad: 400
+          }] 
+        },
+        { id: 4,
+          nombre: "Nombre de evento 4",
+          fecha: "20/05/2025",
+          generos: "Tech-House",
+          artistas: ["Dich Brothers", "La Cintia", "Luana"],
+          lgbt: false,
+          after: false,
+          horario: "23:50hs a 07:00hs",
+          direccion: " Av. Cnel. Niceto Vega 6599, CABA",
+          descripcion: "DESCRIPCION DEL EVENTO 4, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
+          finalizado: true,
+          entradas: [{ // entradas: tipo precio cantidad.
+            tipo: "Early Bird - Entrada general",
+            precio: 3000,
+            cantidad: 100,
+            fechaLimite: "10/10/2025"
+          }, {
+            tipo: "Entrada general",
+            precio: 5000,
+            cantidad: 900
+          }, {
+            tipo: "Early Bird - Entrada VIP",
+            precio: 5000,
+            cantidad: 100,
+            fechaLimite: "10/10/2025"
+          }, {
+            tipo: "Entrada VIP",
+            precio: 7000,
+            cantidad: 400
+          }] },
     ]);
-    
 
     const [orden, setOrden] = useState('asc');
     const [busqueda, setBusqueda] = useState('');
@@ -60,7 +178,7 @@ const MisEventos = () => {
                         </div>
                         <div className="space-y-4">
                             {eventosFiltrados.map((evento, index) => (
-                                <EventoItem key={index} {...evento} />
+                                <EventoItem key={evento.id} evento={evento} />
                             ))}
                         </div>
                     </div>
@@ -72,45 +190,3 @@ const MisEventos = () => {
 };
 
 export default MisEventos;
-
-
-// import React from 'react';
-// import NavBar from '../components/NavBar';
-// import Footer from '../components/Footer';
-// import EventoItem from '../components/EventoItem';
-
-// const MisEventos = () => {
-//     const eventos = [
-//         { fecha: '2024-06-01', nombre: 'Nombre del evento 1', finalizado: false },
-//         { fecha: '2024-06-15', nombre: 'Nombre del evento 2', finalizado: false },
-//         { fecha: '2024-07-01', nombre: 'Nombre del evento 3', finalizado: false },
-//         { fecha: '2024-05-01', nombre: 'Nombre del evento 4', finalizado: true },
-//     ];
-
-//     return (
-//         <div className="flex flex-col min-h-screen">
-//             <div className="flex-1">
-//                 <div className="sm:px-10 mb-11">
-//                     <NavBar />
-//                     <div className="container mx-auto">
-//                         <h1 className='mb-8 mt-2 px-4 text-3xl font-bold underline underline-offset-8'>Mis eventos:</h1>
-//                         <div className="mb-4 px-4">
-//                             <select className="select select-bordered">
-//                                 <option value="fecha">Ordenar por fecha</option>
-//                                 {/* Puedes agregar más opciones de ordenamiento aquí */}
-//                             </select>
-//                         </div>
-//                         <div className="space-y-4">
-//                             {eventos.map((evento, index) => (
-//                                 <EventoItem key={index} {...evento} />
-//                             ))}
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <Footer />
-//         </div>
-//     );
-// };
-
-// export default MisEventos;

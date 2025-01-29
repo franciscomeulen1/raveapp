@@ -6,7 +6,7 @@ export default function CardNoticia(props) {
         <div className="p-4">
             <button className="bg-white shadow-lg rounded-lg overflow-hidden" onClick={props.onClick}>
                 <img
-                    src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
+                    src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp"
                     alt="noticia"
                     className="w-full h-auto"
                 />

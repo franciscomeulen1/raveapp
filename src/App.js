@@ -19,6 +19,10 @@ import EventosFavoritos from "./vistas/EventosFavoritos";
 import MisEventos from "./vistas/MisEventos";
 import EntradasVendidas from "./vistas/EntradasVendidas";
 import CancelarEvento from "./vistas/CancelarEvento";
+import ModifDatosPersonales from "./vistas/ModifDatosPersonales";
+import EventosAValidar from "./vistas/EventosAValidar";
+import EventoAValidar from "./vistas/EventoAValidar";
+import ModifDeEvento from "./vistas/ModifDeEvento";
 
 
 function App() {
@@ -42,6 +46,10 @@ function App() {
         <Route path="/miseventos" element={<MisEventos />} />
         <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
         <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
+        <Route path="/modificar-evento/:id" element={<ModifDeEvento />} />
+        <Route path="/modifdatospersonales" element={<ModifDatosPersonales />} />
+        <Route path="/eventosavalidar" element={<EventosAValidar />} />
+        <Route path="/eventoavalidar" element={<EventoAValidar />} />
 
       </Routes>
 

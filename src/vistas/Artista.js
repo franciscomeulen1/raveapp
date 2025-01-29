@@ -53,7 +53,7 @@ export default function Artista(props) {
 
                 <div className='grid md:grid-cols-4 lg:grid-cols-3 sm:mx-28 mt-5 space-y-5'>
                 <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="dj" className='rounded-full sm:w-full md:max-w-sm' />
+                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="dj" className='rounded-full sm:w-full md:max-w-sm' />
                 </div>
                 <div className='md:col-span-2 lg:col-span-2 pl-5 font-medium'>
                     {/* <p>INFORMACION DEL ARTISTA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> */}

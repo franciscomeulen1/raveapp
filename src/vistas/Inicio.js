@@ -12,7 +12,7 @@ function Inicio() {
     {
       id: 1,
       nombreEvento: "Nombre de evento 1",
-      fecha: "10/05/2024",
+      fecha: "10/05/2025",
       generos: ["Tech-House", "Techno"],
       artistas: ["Dich Brothers", "La Cintia", "Luana"],
       lgbt: true,
@@ -24,7 +24,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -33,7 +33,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -42,7 +42,7 @@ function Inicio() {
     }, {
       id: 2,
       nombreEvento: "Nombre de evento 2",
-      fecha: "15/05/2024",
+      fecha: "15/05/2025",
       generos: "Tech-House",
       artistas: ["Nico Moreno", "T78"],
       lgbt: false,
@@ -54,7 +54,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -63,7 +63,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -72,7 +72,7 @@ function Inicio() {
     }, {
       id: 3,
       nombreEvento: "Nombre de evento 3",
-      fecha: "16/10/2024",
+      fecha: "16/10/2025",
       generos: ["Tech-House", "Techno"],
       artistas: ["Juan Solis", "Kilah"],
       lgbt: false,
@@ -84,7 +84,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -93,7 +93,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -103,7 +103,7 @@ function Inicio() {
     {
       id: 4,
       nombreEvento: "Nombre de evento 4",
-      fecha: "20/05/2024",
+      fecha: "20/05/2025",
       generos: "Tech-House",
       artistas: ["Dich Brothers", "La Cintia", "Luana"],
       lgbt: false,
@@ -115,7 +115,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/10/2024"
+        fechaLimite: "10/10/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -124,7 +124,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/10/2024"
+        fechaLimite: "10/10/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -133,7 +133,7 @@ function Inicio() {
     }, {
       id: 5,
       nombreEvento: "Nombre de evento 5",
-      fecha: "22/10/2024",
+      fecha: "22/10/2025",
       generos: "Techno",
       artistas: ["Amelie Lens", "Regal", "Adam Beyer"],
       lgbt: false,
@@ -145,7 +145,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -154,7 +154,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "5/10/2024"
+        fechaLimite: "5/10/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -163,7 +163,7 @@ function Inicio() {
     }, {
       id: 6,
       nombreEvento: "Nombre de evento 6",
-      fecha: "22/10/2024",
+      fecha: "22/10/2025",
       generos: "PsyTrance",
       artistas: ["Javier Busola"],
       lgbt: false,
@@ -175,7 +175,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -184,7 +184,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "10/10/2024"
+        fechaLimite: "10/10/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -193,7 +193,7 @@ function Inicio() {
     }, {
       id: 7,
       nombreEvento: "Nombre de evento 7",
-      fecha: "25/10/2024",
+      fecha: "25/10/2025",
       generos: "Tech-House",
       artistas: ["Jay de Lys", "Ghezz", "Cadelago"],
       lgbt: true,
@@ -205,7 +205,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -214,7 +214,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "15/10/2024"
+        fechaLimite: "15/10/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
@@ -223,7 +223,7 @@ function Inicio() {
     }, {
       id: 8,
       nombreEvento: "Nombre de evento 8",
-      fecha: "30/10/2024",
+      fecha: "30/10/2025",
       generos: "Techno",
       artistas: ["Enrico Sangiuliano", "Josefina Munoz", "999999999"],
       lgbt: false,
@@ -235,7 +235,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada general",
         precio: 3000,
         cantidad: 100,
-        fechaLimite: "10/04/2024"
+        fechaLimite: "10/04/2025"
       }, {
         tipo: "Entrada general",
         precio: 5000,
@@ -244,7 +244,7 @@ function Inicio() {
         tipo: "Early Bird - Entrada VIP",
         precio: 5000,
         cantidad: 100,
-        fechaLimite: "30/10/2024"
+        fechaLimite: "30/10/2025"
       }, {
         tipo: "Entrada VIP",
         precio: 7000,
