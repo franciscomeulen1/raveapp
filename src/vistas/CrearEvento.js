@@ -32,7 +32,7 @@ function CrearEvento() {
 
         <form className='px-10'>
 
-          <div className='grid sm:grid-cols-2 gap-10 mb-6'>
+          {/* <div className='grid sm:grid-cols-2 gap-10 mb-6'>
             <div className='columns-1'>
               <h2 className='text-xl font-bold'>Datos personales:</h2>
               <div className='form-control w-full max-w-xs'>
@@ -77,7 +77,7 @@ function CrearEvento() {
             <div className='columns-1'>
               <img src="https://www.dondeir.com/wp-content/uploads/2018/09/fiesta-1.jpg" width="550" height="auto" alt="imagen de evento" />
             </div>
-          </div>
+          </div> */}
 
           {/* ----------------------------------------------------------------------------------- */}
 
