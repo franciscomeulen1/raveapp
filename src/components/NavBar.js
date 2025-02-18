@@ -3,7 +3,6 @@ import { useState } from 'react';
 import '../index.css';
 import Filtros from './Filtros';
 import Login from './Login';
-import Register from './Register';
 
 function NavLink({ to, children }) {
     return (
@@ -70,7 +69,8 @@ export default function NavBar() {
                 </div>
                 <div>
                     <Login />
-                    <Register /> {/* Puedes cambiar el estilo o tamaño de este botón en pantallas pequeñas según tu diseño */}
+                    {/* <Register /> Puedes cambiar el estilo o tamaño de este botón en pantallas pequeñas según tu diseño */}
+                    <Link to="/register" className="btn btn-primary">Register</Link>
                 </div>
                 <Filtros />
             </div>

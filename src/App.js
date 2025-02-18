@@ -5,6 +5,7 @@ import {
   Routes
 } from "react-router-dom";
 import Login from "./components/Login";
+import Register from "./components/Register";
 import CrearEvento from "./vistas/CrearEvento";
 import Inicio from "./vistas/Inicio";
 import Evento from "./vistas/Evento";
@@ -34,6 +35,7 @@ function App() {
         <Route path="/" exact element={<Inicio />} />
         <Route path="/crearevento" element={<CrearEvento />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/evento/:nombre" element={<Evento />} />
         <Route path="/comprar" element={<Comprar />} />
         <Route path="/artistas" element={<Artistas />} />
