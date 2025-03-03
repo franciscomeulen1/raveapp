@@ -24,6 +24,7 @@ import ModifDatosPersonales from "./vistas/ModifDatosPersonales";
 import EventosAValidar from "./vistas/EventosAValidar";
 import EventoAValidar from "./vistas/EventoAValidar";
 import ModifDeEvento from "./vistas/ModifDeEvento";
+import ModificarEliminarNoticias from "./vistasadmin/ModificarEliminarNoticias";
 
 
 function App() {
@@ -52,6 +53,8 @@ function App() {
         <Route path="/modifdatospersonales" element={<ModifDatosPersonales />} />
         <Route path="/eventosavalidar" element={<EventosAValidar />} />
         <Route path="/eventoavalidar" element={<EventoAValidar />} />
+        {/* ----RutasAdministrador---- */}
+        <Route path="/modifeliminarnoticias" element={<ModificarEliminarNoticias />} />
 
       </Routes>
 
