@@ -8,7 +8,7 @@ const ModificarEliminarNoticias = () => {
         {
             id: 1,
             fecha: "23/02/2025",
-            titulo: "Lorem Ipsum is simply dummy text of the printing and typesetting aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            titulo: "Lorem Ipsum is simply dummy text of the printing and typesetting",
         },
         {
             id: 2,
