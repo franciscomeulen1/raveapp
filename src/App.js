@@ -26,7 +26,7 @@ import EventoAValidar from "./vistas/EventoAValidar";
 import ModifDeEvento from "./vistas/ModifDeEvento";
 import ModificarEliminarNoticias from "./vistasadmin/ModificarEliminarNoticias";
 import ModificarEliminarArtistas from "./vistasadmin/ModificarEliminarArtistas";
-
+import EditarArtista from "./vistasadmin/EditarArtista";
 
 function App() {
   return (
@@ -56,7 +56,8 @@ function App() {
         <Route path="/eventoavalidar" element={<EventoAValidar />} />
         {/* ----RutasAdministrador---- */}
         <Route path="/modifeliminarnoticias" element={<ModificarEliminarNoticias />} />
-        <Route path="/modifieliminarartistas" element={<ModificarEliminarArtistas />} />
+        <Route path="/modifeliminarartistas" element={<ModificarEliminarArtistas />} />
+        <Route path="/editarartista" element={<EditarArtista />} />
 
       </Routes>
 

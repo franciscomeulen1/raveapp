@@ -107,6 +107,7 @@ const ModificarEliminarArtistas = () => {
                                             alt="Artista"
                                             className="w-16 h-16 rounded-full object-cover border border-gray-300"
                                         />
+                                        imagenes redondas con object-cover
                                         <p className="font-semibold mt-2">{artista.nombre}</p>
                                         <p className="text-gray-600">{artista.fecha}</p>
                                         <div className="flex gap-2 mt-3">
