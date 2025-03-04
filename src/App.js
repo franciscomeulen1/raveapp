@@ -17,13 +17,13 @@ import Noticia from "./vistas/Noticia";
 import ComoLlegar from "./vistas/ComoLlegar";
 import EntradasAdquiridas from "./vistas/EntradasAdquiridas";
 import EventosFavoritos from "./vistas/EventosFavoritos";
-import MisEventos from "./vistas/MisEventos";
-import EntradasVendidas from "./vistas/EntradasVendidas";
-import CancelarEvento from "./vistas/CancelarEvento";
+import MisEventos from "./vistasduenioevento/MisEventos";
+import EntradasVendidas from "./vistasduenioevento/EntradasVendidas";
+import CancelarEvento from "./vistasduenioevento/CancelarEvento";
 import ModifDatosPersonales from "./vistas/ModifDatosPersonales";
-import EventosAValidar from "./vistas/EventosAValidar";
-import EventoAValidar from "./vistas/EventoAValidar";
-import ModifDeEvento from "./vistas/ModifDeEvento";
+import EventosAValidar from "./vistasadmin/EventosAValidar";
+import EventoAValidar from "./vistasadmin/EventoAValidar";
+import ModifDeEvento from "./vistasduenioevento/ModifDeEvento";
 import ModificarEliminarNoticias from "./vistasadmin/ModificarEliminarNoticias";
 import ModificarEliminarArtistas from "./vistasadmin/ModificarEliminarArtistas";
 import EditarArtista from "./vistasadmin/EditarArtista";
@@ -47,15 +47,18 @@ function App() {
         <Route path="/noticias/:noticia" element={<Noticia />} />
         <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
         <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
-        <Route path="/eventosfavoritos" element={<EventosFavoritos />} />
+        <Route path="/eventosfavoritos" element={<EventosFavoritos />} />  
+        <Route path="/modifdatospersonales" element={<ModifDatosPersonales />} />
+        
+        {/* ----RutasDuenioEvento---- */}
         <Route path="/miseventos" element={<MisEventos />} />
         <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
         <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
         <Route path="/modificar-evento/:id" element={<ModifDeEvento />} />
-        <Route path="/modifdatospersonales" element={<ModifDatosPersonales />} />
+        
+        {/* ----RutasAdministrador---- */}
         <Route path="/eventosavalidar" element={<EventosAValidar />} />
         <Route path="/eventoavalidar" element={<EventoAValidar />} />
-        {/* ----RutasAdministrador---- */}
         <Route path="/modifeliminarnoticias" element={<ModificarEliminarNoticias />} />
         <Route path="/modifeliminarartistas" element={<ModificarEliminarArtistas />} />
         <Route path="/editarartista" element={<EditarArtista />} />
