@@ -27,6 +27,7 @@ import ModifDeEvento from "./vistas/ModifDeEvento";
 import ModificarEliminarNoticias from "./vistasadmin/ModificarEliminarNoticias";
 import ModificarEliminarArtistas from "./vistasadmin/ModificarEliminarArtistas";
 import EditarArtista from "./vistasadmin/EditarArtista";
+import EditarNoticia from "./vistasadmin/EditarNoticia";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
         <Route path="/modifeliminarnoticias" element={<ModificarEliminarNoticias />} />
         <Route path="/modifeliminarartistas" element={<ModificarEliminarArtistas />} />
         <Route path="/editarartista" element={<EditarArtista />} />
+        <Route path="/editarnoticia" element={<EditarNoticia />} />
 
       </Routes>
 
