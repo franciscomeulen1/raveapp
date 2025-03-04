@@ -17,11 +17,17 @@ const EventoItem = ({ evento }) => {
         navigate(`/modificar-evento/${evento.id}`, { state: { evento } }); // Aquí pasas el evento completo
     };
 
+    const estadoColor = {
+        "vigente": "text-green-600",
+        "pendiente": "text-purple-600",
+        "finalizado": "text-red-600"
+    };
+
     return (
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div className="flex items-center">
                 <div>
-                <span className="font-semibold text-xl mr-6">{evento.estado}</span>
+                    <span className={`font-semibold text-xl mr-6 ${estadoColor[evento.estado]}`}>{evento.estado}</span>
                 </div> 
                 <div className="w-16 h-16 bg-gray-300 flex items-center justify-center">
                     <span>Img</span>
@@ -51,17 +57,6 @@ const EventoItem = ({ evento }) => {
                     <button className="btn btn-info w-full md:w-auto" onClick={handleEntradasVendidas}>Entradas vendidas</button>
                 )}
             </div>
-            {/* <div className="flex flex-col md:flex-row items-center md:space-x-4 space-y-2 md:space-y-0">
-                {evento.finalizado ? (
-                    <span className="text-red-600 font-semibold text-xl mr-6">Finalizado</span>
-                ) : (
-                    <>
-                        <button className="btn btn-info w-full md:w-auto" onClick={handleEntradasVendidas}>Entradas vendidas</button>
-                        <button className="btn btn-primary w-full md:w-auto" onClick={handleModificarEvento}>Modificar</button>
-                        <button className="btn btn-error w-full md:w-auto" onClick={handleCancelClick}>Cancelar evento</button>
-                    </>
-                )}
-            </div> */}
         </div>
     );
 };
