@@ -35,7 +35,7 @@ const CancelarEvento = () => {
                         <div className="mb-4 px-4">
                             <p className='font-semibold'>Si cancelas este evento, a continuación debes informar el motivo. La cancelación del evento se le avisará vía mail a las personas que hayan comprado una entrada, junto con el motivo que describas, y se procederá a realizar la devolución del dinero de las entradas.</p>
                             <p className="mt-4"><strong>Evento a cancelar:</strong> <span className="text-red-600 font-bold">{evento.nombre}</span></p>
-                            <p className="mt-2"><strong>Se reembolsarán:</strong></p>
+                            <p className="mt-2"><strong>Se reembolsarán un total de 'X' entradas:</strong></p>
                             <ul className="list-disc list-inside">
                                 {evento.reembolsos.map((reembolso, index) => (
                                     <li key={index} className='font-semibold'>{reembolso.cantidad} Entradas {reembolso.tipo} de ${reembolso.precio} c/u. -- Subtotal: ${reembolso.cantidad * reembolso.precio}</li>
