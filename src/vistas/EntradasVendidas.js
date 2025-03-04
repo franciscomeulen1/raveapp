@@ -11,14 +11,16 @@ const EntradasVendidas = () => {
     const formattedTime = currentDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
     const data = [
-        { tipo: 'General - Early Bird', precio: 2000, cantidad: 100 },
-        { tipo: 'General', precio: 4500, cantidad: 700 },
-        { tipo: 'General', precio: 5000, cantidad: 500 },
-        { tipo: 'Vip - Early Bird', precio: 5000, cantidad: 50 },
-        { tipo: 'Vip', precio: 7000, cantidad: 200 },
+        { tipo: 'General - Early Bird', precio: 2000, cantidad: 100, stock: 0 },
+        { tipo: 'General', precio: 4500, cantidad: 700, stock: 0 },
+        { tipo: 'General', precio: 5000, cantidad: 500, stock: 100 },
+        { tipo: 'Vip - Early Bird', precio: 5000, cantidad: 50, stock: 0 },
+        { tipo: 'Vip', precio: 7000, cantidad: 200, stock: 5 },
     ];
 
     const totalRecaudado = data.reduce((total, item) => total + item.precio * item.cantidad, 0);
+
+    const totalCantEntradasVendidas = data.reduce((total, item) => total + item.cantidad, 0);
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -35,6 +37,7 @@ const EntradasVendidas = () => {
                                     <th className="px-4 py-2">Precio</th>
                                     <th className="px-4 py-2">Cantidad</th>
                                     <th className="px-4 py-2">Total</th>
+                                    <th className="px-4 py-2">Aún en stock</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,10 +47,16 @@ const EntradasVendidas = () => {
                                         <td className="border px-4 py-2">${item.precio.toLocaleString()}</td>
                                         <td className="border px-4 py-2">{item.cantidad}</td>
                                         <td className="border px-4 py-2">${(item.precio * item.cantidad).toLocaleString()}</td>
+                                        <td className="border px-4 py-2">{item.stock}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+
+                        <div className="px-4 font-bold text-xl">
+                            <p>Total de entradas vendidas: <span className='text-purple-950 text-2xl'>{totalCantEntradasVendidas.toLocaleString()}</span></p>
+                        </div>
+
                         <div className="px-4 font-bold text-xl">
                             <p>Total recaudado al momento: <span className='text-green-800 text-2xl'>${totalRecaudado.toLocaleString()}</span></p>
                         </div>
