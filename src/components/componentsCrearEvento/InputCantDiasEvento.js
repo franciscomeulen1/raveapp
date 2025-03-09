@@ -11,7 +11,7 @@ const InputCantDiasEvento = ({ onDiasChange }) => {
 
     return (
         <div className='mb-4'>
-            <h3 className='font-bold text-lg'>Tipo de evento:</h3>
+            <h3 className='font-bold text-lg mb-2'>Tipo de evento:</h3>
             <label className='block'><input type='radio' name='tipoEvento' value={1} checked={diasEvento === 1} onChange={handleChange} className='mr-2' />Evento común de 1 día.</label>
             <label className='block'><input type='radio' name='tipoEvento' value={2} checked={diasEvento === 2} onChange={handleChange} className='mr-2' />Evento/festival de 2 días.</label>
             <label className='block'><input type='radio' name='tipoEvento' value={3} checked={diasEvento === 3} onChange={handleChange} className='mr-2' />Evento/festival de 3 días.</label>

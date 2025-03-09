@@ -28,6 +28,7 @@ import ModificarEliminarNoticias from "./vistasadmin/ModificarEliminarNoticias";
 import ModificarEliminarArtistas from "./vistasadmin/ModificarEliminarArtistas";
 import EditarArtista from "./vistasadmin/EditarArtista";
 import EditarNoticia from "./vistasadmin/EditarNoticia";
+import PreCrearEvento from "./vistas/PreCrearEvento";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
         <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
         <Route path="/eventosfavoritos" element={<EventosFavoritos />} />  
         <Route path="/modifdatospersonales" element={<ModifDatosPersonales />} />
+        <Route path="/precrearevento" element={<PreCrearEvento />} />
         
         {/* ----RutasDuenioEvento---- */}
         <Route path="/miseventos" element={<MisEventos />} />
