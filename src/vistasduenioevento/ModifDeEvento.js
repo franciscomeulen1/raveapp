@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import InputDeArtistas from '../components/InputDeArtistas';
-import InputFechaHora from '../components/InputFechaHora';
-import InputUbicacionEvento from '../components/InputUbicacionEvento';
+import InputDeArtistas from '../components/componentsCrearEvento/InputDeArtistas';
+import InputFechaHora from '../components/componentsCrearEvento/InputFechaHora';
+import InputUbicacionEvento from '../components/componentsCrearEvento/InputUbicacionEvento';
 
 const ModifDeEvento = ({ evento, onSave, onCancel }) => {
     // Inicializamos los estados con los valores del objeto evento completo
