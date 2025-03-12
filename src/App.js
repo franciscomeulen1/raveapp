@@ -29,6 +29,7 @@ import ModificarEliminarArtistas from "./vistasadmin/ModificarEliminarArtistas";
 import EditarArtista from "./vistasadmin/EditarArtista";
 import EditarNoticia from "./vistasadmin/EditarNoticia";
 import PreCrearEvento from "./vistas/PreCrearEvento";
+import MisFiestasRecurrentes from "./vistasduenioevento/MisFiestasRecurrentes";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
         <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
         <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
         <Route path="/modificar-evento/:id" element={<ModifDeEvento />} />
+        <Route path="/misfiestasrecurrentes" element={<MisFiestasRecurrentes />} />
         
         {/* ----RutasAdministrador---- */}
         <Route path="/eventosavalidar" element={<EventosAValidar />} />
