@@ -31,6 +31,7 @@ import EditarNoticia from "./vistasadmin/EditarNoticia";
 import PreCrearEvento from "./vistas/PreCrearEvento";
 import MisFiestasRecurrentes from "./vistasduenioevento/MisFiestasRecurrentes";
 import ReseniasDeLaFiesta from "./vistasduenioevento/ReseniasDeLaFiesta";
+import EntradaAdquirida from "./vistas/EntradaAdquirida";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         <Route path="/eventosfavoritos" element={<EventosFavoritos />} />  
         <Route path="/modifdatospersonales" element={<ModifDatosPersonales />} />
         <Route path="/precrearevento" element={<PreCrearEvento />} />
+        <Route path="/entrada-adquirida" element={<EntradaAdquirida />} />
         
         {/* ----RutasDuenioEvento---- */}
         <Route path="/miseventos" element={<MisEventos />} />
