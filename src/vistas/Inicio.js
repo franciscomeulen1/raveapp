@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import '../index.css';
 import NavBar from '../components/NavBar';
 import Cards from '../components/Cards';
@@ -31,6 +31,9 @@ function Inicio() {
       artistas: ["Dich Brothers", "La Cintia", "Luana"],
       lgbt: true,
       after: false,
+      provincia: "Buenos Aires",
+      municipio: "Tres de Febrero",
+      localidad: "Villa Bosch",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 1, dolor sit amet consectetur adipisicing elit. Similique ullam cumque..."
     },
@@ -55,6 +58,9 @@ function Inicio() {
       artistas: ["Nico Moreno", "T78"],
       lgbt: false,
       after: false,
+      provincia: "Ciudad Autónoma de Buenos Aires",
+      municipio: "",
+      localidad: "",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 2, dolor sit amet consectetur adipisicing elit. Similique ullam cumque..."
     },
@@ -90,6 +96,9 @@ function Inicio() {
       artistas: ["Juan Solis", "Kilah"],
       lgbt: false,
       after: true,
+      provincia: "Ciudad Autónoma de Buenos Aires",
+      municipio: "",
+      localidad: "",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 3, dolor sit amet consectetur adipisicing elit. Similique ullam cumque..."
     },
@@ -136,6 +145,9 @@ function Inicio() {
       artistas: ["Dich Brothers", "La Cintia", "Luana"],
       lgbt: false,
       after: false,
+      provincia: "Ciudad Autónoma de Buenos Aires",
+      municipio: "",
+      localidad: "",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 4, dolor sit amet consectetur adipisicing elit. Similique ullam cumque..."
     },
@@ -160,6 +172,9 @@ function Inicio() {
       artistas: ["Amelie Lens", "Regal", "Adam Beyer"],
       lgbt: false,
       after: false,
+      provincia: "Buenos Aires",
+      municipio: "San Isidro",
+      localidad: "San Isidro",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 5, dolor sit amet consectetur adipisicing elit. Similique ullam..."
     },
@@ -184,6 +199,9 @@ function Inicio() {
       artistas: ["Javier Busola"],
       lgbt: false,
       after: false,
+      provincia: "Buenos Aires",
+      municipio: "San Isidro",
+      localidad: "San Isidro",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 6, dolor sit amet consectetur adipisicing elit. Similique ullam..."
     },
@@ -219,6 +237,9 @@ function Inicio() {
       artistas: ["Jay de Lys", "Ghezz", "Cadelago"],
       lgbt: true,
       after: true,
+      provincia: "Buenos Aires",
+      municipio: "Tres de Febrero",
+      localidad: "Santos Lugares",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 7, dolor sit amet consectetur adipisicing elit. Similique ullam..."
     },
@@ -243,6 +264,9 @@ function Inicio() {
       artistas: ["Enrico Sangiuliano", "Josefina Munoz", "999999999"],
       lgbt: false,
       after: false,
+      provincia: "Mendoza",
+      municipio: "Las Heras",
+      localidad: "Las Heras",
       direccion: "Av. Cnel. Niceto Vega 6599, CABA",
       descripcion: "DESCRIPCION DEL EVENTO 8, dolor sit amet consectetur adipisicing elit. Similique ullam..."
     }
@@ -260,15 +284,81 @@ function Inicio() {
   // Filtrar los eventos que aún no finalizaron
   const eventosNoFinalizados = eventos.filter(evento => !esEventoFinalizado(evento));
 
+  // Estado para los eventos que se mostrarán luego del filtrado
+  const [filteredEventos, setFilteredEventos] = useState(eventosNoFinalizados);
+
+  // Función que aplica los filtros a la lista de eventos
+  const filterEventos = (eventos, filtros) => {
+    return eventos.filter(evento => {
+      // Filtro por género musical (si no es "Todos")
+      if (filtros.genero && filtros.genero !== 'Todos') {
+        if (!evento.generos.includes(filtros.genero)) return false;
+      }
+      // Filtro por "After"
+      if (filtros.after && !evento.after) return false;
+      // Filtro por "LGBT"
+      if (filtros.lgbt && !evento.lgbt) return false;
+      // Filtro por ubicación (comparando provincia, municipio y localidad)
+      if (filtros.ubicacion) {
+        const { provincia, municipio, localidad } = filtros.ubicacion;
+        if (provincia && evento.provincia !== provincia) return false;
+        if (municipio && evento.municipio !== municipio) return false;
+        if (localidad && evento.localidad !== localidad) return false;
+      }
+      // Filtro por fecha
+      if (filtros.fechaOption && filtros.fechaOption !== 'todos') {
+        // Se comprueba si al menos uno de los días del evento cumple la condición
+        const cumpleFecha = evento.dias.some(dia => {
+          const parts = dia.fecha.split('/');
+          // Convertimos "dd/mm/yyyy" a "yyyy-mm-dd"
+          const formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+          if (filtros.fechaOption === 'especifica' && filtros.fechaEspecifica) {
+            return formattedDate === filtros.fechaEspecifica;
+          }
+          if (filtros.fechaOption === 'estaSemana') {
+            const eventDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            const now = new Date();
+            // Suponiendo que la semana va de domingo a sábado
+            const startOfWeek = new Date(now);
+            startOfWeek.setDate(now.getDate() - now.getDay());
+            const endOfWeek = new Date(now);
+            endOfWeek.setDate(now.getDate() + (6 - now.getDay()));
+            return eventDate >= startOfWeek && eventDate <= endOfWeek;
+          }
+          if (filtros.fechaOption === 'proximoFinDeSemana') {
+            const now = new Date();
+            // Definimos el próximo sábado y domingo
+            const nextSaturday = new Date(now);
+            nextSaturday.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7));
+            const nextSunday = new Date(nextSaturday);
+            nextSunday.setDate(nextSaturday.getDate() + 1);
+            const eventDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            return eventDate.getTime() === nextSaturday.getTime() || eventDate.getTime() === nextSunday.getTime();
+          }
+          return false;
+        });
+        if (!cumpleFecha) return false;
+      }
+      return true;
+    });
+  };
+
+  // Callback que se pasará al componente Filtros (a través de NavBar)
+  const handleFilter = (filtros) => {
+    const resultados = filterEventos(eventosNoFinalizados, filtros);
+    setFilteredEventos(resultados);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className='flex-1'>
         <div className='sm:px-10'>
-          <NavBar />
+          <NavBar onFilter={handleFilter}/>
         </div>
         <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
           <Carousel />
-          <Cards eventos={eventosNoFinalizados} />
+          {/* <Cards eventos={eventosNoFinalizados} /> */}
+          <Cards eventos={filteredEventos}/>
         </div>
       </div>
       <Footer />
