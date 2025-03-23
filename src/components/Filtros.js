@@ -1,5 +1,5 @@
 // Filtros.js
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import FiltroUbicacion from './FiltroUbicacion';
 
 const Filtros = ({ onFilter }) => {
@@ -12,13 +12,12 @@ const Filtros = ({ onFilter }) => {
     provincia: '',
     municipio: '',
     localidad: '',
-    direccion: '',
   });
 
-  // Callback para recibir los datos de ubicación desde el componente InputUbicacionEvento
-  const handleUbicacionChange = (data) => {
+  // Callback para recibir los datos de ubicación desde el componente FiltroUbicacion
+  const handleUbicacionChange = useCallback((data) => {
     setUbicacion(data);
-  };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -46,7 +45,6 @@ const Filtros = ({ onFilter }) => {
       provincia: '',
       municipio: '',
       localidad: '',
-      direccion: '',
     });
     // También se puede notificar al padre para limpiar el filtrado
     onFilter({});

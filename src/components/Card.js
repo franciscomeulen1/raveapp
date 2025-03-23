@@ -1,5 +1,5 @@
 import '../estilos.css';
-import '../index.css';
+// import '../index.css';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as whiteHeart } from '@fortawesome/free-regular-svg-icons';
