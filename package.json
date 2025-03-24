@@ -2,7 +2,6 @@
   "name": "raveapp-comp",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://144.22.158.49:8080",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
