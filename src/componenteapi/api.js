@@ -14,8 +14,8 @@ api.interceptors.request.use(
     if (!token) {
       try {
         const response = await axios.post('http://144.22.158.49:8080/v1/Security/Login', {
-          usuario: 'raveapp',   // Credenciales internas
-          pass: 'RaveAppApi367..'
+          usuario: '',   // Credenciales internas
+          pass: ''
         });
         token = response.data.token;
         localStorage.setItem('token', token);
