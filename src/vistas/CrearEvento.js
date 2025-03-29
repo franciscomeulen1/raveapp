@@ -10,6 +10,8 @@ import InputConfigEntradas from '../components/componentsCrearEvento/InputConfig
 import InputGeneroMusical from '../components/componentsCrearEvento/InputGeneroMusical';
 import InputCantDiasEvento from '../components/componentsCrearEvento/InputCantDiasEvento';
 import InputEsEventoRecurrente from '../components/componentsCrearEvento/InputEsEventoRecurrente';
+import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
+import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
 
 function CrearEvento() {
 
@@ -63,6 +65,14 @@ function CrearEvento() {
 
           <h3 className='text-xl font-bold'>Ubicación del evento:</h3>
           <div className='mb-6'><InputUbicacionEvento /></div>
+
+          <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
+          <InputAfterOLbgt />
+
+          <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
+          <InputDescripcionEvento />
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
