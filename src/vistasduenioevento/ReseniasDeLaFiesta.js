@@ -78,7 +78,7 @@ export default function ReseniasDeLaFiesta() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen sm:px-10">
       <NavBar />
       
       <div className="flex-grow sm:px-10 mb-11">
