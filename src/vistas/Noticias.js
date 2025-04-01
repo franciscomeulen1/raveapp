@@ -73,7 +73,7 @@ export default function Noticias() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('http://144.22.158.49:8080/v1/noticia')
+    api.get('/noticia')
       .then(response => {
         const data = response.data;
         const noticiasMapeadas = data.noticias.map(item => ({
