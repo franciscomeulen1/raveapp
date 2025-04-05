@@ -3,14 +3,14 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { FaEdit } from 'react-icons/fa'; // Importa un ícono de edición
 
-export default function ModifDatosPersonales(props) {
+export default function DatosPersonales(props) {
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-1">
                 <div className="sm:px-10 mb-11">
                     <NavBar />
                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>
-                        Modificación de datos personales:
+                        Datos personales:
                     </h1>
 
                     <div className="space-y-4 pl-10">
@@ -165,67 +165,3 @@ const EditablePasswordField = ({ label }) => {
         </div>
     );
 };
-
-
-// import React from 'react';
-// import NavBar from '../components/NavBar';
-// import Footer from '../components/Footer';
-
-// export default function ModifDatosPersonales(props) {
-//     return (
-//         <div className="flex flex-col min-h-screen">
-//             <div className="flex-1">
-//                 <div className="sm:px-10 mb-11">
-//                     <NavBar />
-//                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>
-//                         Modificación de datos personales:
-//                     </h1>
-
-//                     <div className="space-y-4 pl-10">
-//                         <InputField label="Nombre" value="Juan" />
-//                         <InputField label="Apellido" value="Lopez" />
-//                         <InputField label="DNI" value="99889988" />
-//                         <InputField label="Celular" value="1165652121" />
-//                         <InputField label="Email" value="juanlopez@gmail.com" />
-//                         <InputField label="Contraseña" value="**********" type="password" />
-
-//                         <div className="border-t mt-4 pt-4">
-//                             <h3 className="text-xl font-semibold mb-4">Domicilio de facturación:</h3>
-//                             <InputField label="Provincia" value="Capital Federal" />
-//                             <InputField label="Municipio" value="Capital Federal" />
-//                             <InputField label="Localidad" value="Capital Federal" />
-//                             <InputField label="Calle" value="Malvinas Argentinas" />
-//                             <InputField label="Número" value="8890" />
-//                             <InputField label="Piso/Depto" value="5 B" />
-//                         </div>
-
-//                         <div className="flex justify-start space-x-4 mt-6"> {/* Ajuste de botones */}
-//                             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-//                                 Confirmar
-//                             </button>
-//                             <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-//                                 Cancelar
-//                             </button>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <Footer />
-//         </div>
-//     );
-// }
-
-// const InputField = ({ label, value, type = "text" }) => (
-//     <div className="max-w-xs"> {/* Limita el ancho máximo del campo */}
-//         <label className="block text-sm font-medium text-gray-700">
-//             {label}
-//         </label>
-//         <div className="mt-1 flex rounded-md shadow-sm">
-//             <input
-//                 type={type}
-//                 defaultValue={value}
-//                 className="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-//             />
-//         </div>
-//     </div>
-// );
