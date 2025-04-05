@@ -49,8 +49,8 @@ function App() {
         <Route path="/artistas" element={<Artistas />} />
         <Route path="/artistas/:nombre" element={<Artista />} />
         <Route path="/noticias" element={<Noticias />} />
-        <Route path="/noticias/:noticia" element={<Noticia />} />
-        {/* <Route path="/noticias/:id" element={<Noticia />} /> */}
+        {/* <Route path="/noticias/:noticia" element={<Noticia />} /> */}
+        <Route path="/noticias/:id" element={<Noticia />} />
         <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
         <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
         <Route path="/eventosfavoritos" element={<EventosFavoritos />} />  
