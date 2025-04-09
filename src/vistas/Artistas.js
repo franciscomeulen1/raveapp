@@ -1,89 +1,52 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
+import api from '../componenteapi/api';
 import AvatarArtista from '../components/AvatarArtista';
 import { useNavigate } from "react-router-dom";
 
 export default function Artistas() {
+    const [artistas, setArtistas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
-    window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+    useEffect(() => {
+        api.get('/Artista/GetArtista')
+            .then(response => {
+                const data = response.data.artistas;
 
-    const artistas = [
-        {
-            id: 1,
-            nombre: "Amelie Lens",
-            descripcion: "INFORMACION DEL ARTISTA AMELIE LENS - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-           likes: 98,
-        }, {
-            id: 2,
-            nombre: "Charlotte de Wite",
-            descripcion: "INFORMACION DEL ARTISTA CHARLOTTE DE WITE - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 99,
-        }, {
-            id: 3,
-            nombre: "99999999999",
-            descripcion: "INFORMACION DEL ARTISTA 99999999999 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 100,
-        }, {
-            id: 4,
-            nombre: "T78",
-            descripcion: "INFORMACION DEL ARTISTA T78 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 101,
-        }, {
-            id: 5,
-            nombre: "Adam Beyer",
-            descripcion: "INFORMACION DEL ARTISTA ADAM BEYER - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 102,
-        }, {
-            id: 6,
-            nombre: "Boris Brejcha",
-            descripcion: "INFORMACION DEL ARTISTA BORIS BREJCHA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 103,
-        }, {
-            id: 7,
-            nombre: "Regal",
-            descripcion: "INFORMACION DEL ARTISTA REGAL - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 104,
-        }, {
-            id: 8,
-            nombre: "Aly & Flia",
-            descripcion: "INFORMACION DEL ARTISTA ALY & FLIA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 105,
-        }, {
-            id: 9,
-            nombre: "Anetha",
-            descripcion: "INFORMACION DEL ARTISTA ANETHA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 106,
-        }, {
-            id: 10,
-            nombre: "Armin Van Buuren",
-            descripcion: "INFORMACION DEL ARTISTA ARMIN VAN BUUREN - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 107,
-        }, {
-            id: 11,
-            nombre: "Above & Beyond",
-            descripcion: "INFORMACION DEL ARTISTA ABOVE & BEYOND - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            likes: 108,
-        }
-    ]
+                const artistasConLikes = data.map((artista, index) => ({
+                    ...artista,
+                    likes: 100 + index
+                }));
+
+                setArtistas(artistasConLikes);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Error al obtener artistas:', err);
+                setError(err.message);
+                setLoading(false);
+            });
+
+        window.scrollTo(0, 0);
+    }, []);
+
+    if (loading) return <div>Cargando artistas...</div>;
+    if (error) return <div>Hubo un error: {error}</div>;
 
     const nombresAgrupados = artistas.reduce((result, artista) => {
         const primeraLetra = /^[a-zA-Z]/.test(artista.nombre) ? artista.nombre[0].toUpperCase() : '#';
-        if (!result[primeraLetra]) {
-            result[primeraLetra] = [];
-        }
-        result[primeraLetra].push({ nombre: artista.nombre, descripcion: artista.descripcion, likes: artista.likes });
+        if (!result[primeraLetra]) result[primeraLetra] = [];
+        result[primeraLetra].push(artista);
         return result;
     }, {});
-    
+
     const clavesOrdenadas = Object.keys(nombresAgrupados).sort((a, b) => (a === '#' ? -1 : a.localeCompare(b)));
 
-    // console.log(nombresAgrupados);
-    // console.log(clavesOrdenadas);
-
-    const navigate = useNavigate();
-    const handleCardClick = (nombre, descripcion, likes) => {
-        navigate(`/artistas/${nombre}`, { state: { descripcion, likes } });
+    const handleCardClick = (idArtista, artista) => {
+        navigate(`/artistas/${idArtista}`, { state: { artista } });
     };
 
     return (
@@ -92,24 +55,141 @@ export default function Artistas() {
                 <NavBar />
                 <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Artistas</h1>
                 <div className='mx-28'>
-
-                    {clavesOrdenadas.map(letra => {
-                        return <div key={letra}>
+                    {clavesOrdenadas.map(letra => (
+                        <div key={letra}>
                             <div><p className='font-bold text-3xl mb-4'>{letra}</p></div>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-28 gap-y-8 justify-items-center">
                                 {nombresAgrupados[letra].map(artista => (
-                                    <AvatarArtista key={artista.nombre} 
-                                    nombre={artista.nombre} 
-                                    descripcion={artista.descripcion}
-                                    onClick={() => handleCardClick(artista.nombre, artista.descripcion, artista.likes)}/>
+                                    <AvatarArtista
+                                        key={artista.idArtista}
+                                        nombre={artista.nombre}
+                                        onClick={() => handleCardClick(artista.idArtista, artista)}
+                                    />
                                 ))}
                             </div>
                             <div className="divider"></div>
                         </div>
-                    })}
+                    ))}
                 </div>
             </div>
             <Footer />
         </div>
-    )
+    );
 }
+
+
+// import React from 'react'
+// import NavBar from '../components/NavBar';
+// import Footer from '../components/Footer';
+// import AvatarArtista from '../components/AvatarArtista';
+// import { useNavigate } from "react-router-dom";
+
+// export default function Artistas() {
+
+//     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+
+//     const artistas = [
+//         {
+//             id: 1,
+//             nombre: "Amelie Lens",
+//             descripcion: "INFORMACION DEL ARTISTA AMELIE LENS - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//            likes: 98,
+//         }, {
+//             id: 2,
+//             nombre: "Charlotte de Wite",
+//             descripcion: "INFORMACION DEL ARTISTA CHARLOTTE DE WITE - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 99,
+//         }, {
+//             id: 3,
+//             nombre: "99999999999",
+//             descripcion: "INFORMACION DEL ARTISTA 99999999999 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 100,
+//         }, {
+//             id: 4,
+//             nombre: "T78",
+//             descripcion: "INFORMACION DEL ARTISTA T78 - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 101,
+//         }, {
+//             id: 5,
+//             nombre: "Adam Beyer",
+//             descripcion: "INFORMACION DEL ARTISTA ADAM BEYER - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 102,
+//         }, {
+//             id: 6,
+//             nombre: "Boris Brejcha",
+//             descripcion: "INFORMACION DEL ARTISTA BORIS BREJCHA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 103,
+//         }, {
+//             id: 7,
+//             nombre: "Regal",
+//             descripcion: "INFORMACION DEL ARTISTA REGAL - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 104,
+//         }, {
+//             id: 8,
+//             nombre: "Aly & Flia",
+//             descripcion: "INFORMACION DEL ARTISTA ALY & FLIA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 105,
+//         }, {
+//             id: 9,
+//             nombre: "Anetha",
+//             descripcion: "INFORMACION DEL ARTISTA ANETHA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 106,
+//         }, {
+//             id: 10,
+//             nombre: "Armin Van Buuren",
+//             descripcion: "INFORMACION DEL ARTISTA ARMIN VAN BUUREN - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 107,
+//         }, {
+//             id: 11,
+//             nombre: "Above & Beyond",
+//             descripcion: "INFORMACION DEL ARTISTA ABOVE & BEYOND - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//             likes: 108,
+//         }
+//     ]
+
+//     const nombresAgrupados = artistas.reduce((result, artista) => {
+//         const primeraLetra = /^[a-zA-Z]/.test(artista.nombre) ? artista.nombre[0].toUpperCase() : '#';
+//         if (!result[primeraLetra]) {
+//             result[primeraLetra] = [];
+//         }
+//         result[primeraLetra].push({ nombre: artista.nombre, descripcion: artista.descripcion, likes: artista.likes });
+//         return result;
+//     }, {});
+    
+//     const clavesOrdenadas = Object.keys(nombresAgrupados).sort((a, b) => (a === '#' ? -1 : a.localeCompare(b)));
+
+//     // console.log(nombresAgrupados);
+//     // console.log(clavesOrdenadas);
+
+//     const navigate = useNavigate();
+//     const handleCardClick = (nombre, descripcion, likes) => {
+//         navigate(`/artistas/${nombre}`, { state: { descripcion, likes } });
+//     };
+
+//     return (
+//         <div>
+//             <div className="sm:px-10 mb-11">
+//                 <NavBar />
+//                 <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Artistas</h1>
+//                 <div className='mx-28'>
+
+//                     {clavesOrdenadas.map(letra => {
+//                         return <div key={letra}>
+//                             <div><p className='font-bold text-3xl mb-4'>{letra}</p></div>
+//                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-28 gap-y-8 justify-items-center">
+//                                 {nombresAgrupados[letra].map(artista => (
+//                                     <AvatarArtista key={artista.nombre} 
+//                                     nombre={artista.nombre} 
+//                                     descripcion={artista.descripcion}
+//                                     onClick={() => handleCardClick(artista.nombre, artista.descripcion, artista.likes)}/>
+//                                 ))}
+//                             </div>
+//                             <div className="divider"></div>
+//                         </div>
+//                     })}
+//                 </div>
+//             </div>
+//             <Footer />
+//         </div>
+//     )
+// }

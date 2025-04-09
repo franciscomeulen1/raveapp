@@ -22,29 +22,40 @@ const Register = () => {
             <span>Tu nombre:</span>
             <input type="text" className="input input-bordered w-full" placeholder="Tu nombre" />
           </label>
+
           <label className="block">
             <span>Tu apellido:</span>
             <input type="text" className="input input-bordered w-full" placeholder="Tu apellido" />
           </label>
-          <label className="block">
-            <span>Tu fecha de nacimiento:</span>
-            <input type="date" className="input input-bordered w-full" />
-          </label>
-          <label className="block">
-            <span>Tu DNI/Pasaporte:</span>
-            <input type="text" className="input input-bordered w-full" placeholder="123456789" />
-          </label>
-          <label className="block">
-            <span>Tu correo electrónico:</span>
-            <input type="email" className="input input-bordered w-full" placeholder="Tu email" />
-          </label>
+
           <label className="block">
             <span>Crea un usuario:</span>
             <input type="text" className="input input-bordered w-full" placeholder="Ej: usuario1" />
           </label>
+
           <label className="block">
             <span>Crea una contraseña:</span>
             <input type="password" className="input input-bordered w-full" placeholder="Tu password" />
+          </label>
+
+          <label className="block">
+            <span>Tu fecha de nacimiento:</span>
+            <input type="date" className="input input-bordered w-full" />
+          </label>
+
+          <label className="block">
+            <span>Tu DNI/Pasaporte:</span>
+            <input type="text" className="input input-bordered w-full" placeholder="123456789" />
+          </label>
+
+          <label className="block">
+            <span>Tu correo electrónico:</span>
+            <input type="email" className="input input-bordered w-full" placeholder="Tu email" />
+          </label>
+
+          <label className="block">
+            <span>Tu teléfono: (sin 0 ni 15)</span>
+            <input type="email" className="input input-bordered w-full" placeholder="Tu número de celular" />
           </label>
 
           <button className="btn btn-primary w-full">Registrarme</button>

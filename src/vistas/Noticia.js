@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 import api from '../componenteapi/api';
 
 export default function Noticia() {
-  window.scrollTo(0, 0);
 
   const location = useLocation();
   const { id } = useParams(); // Se extrae el id de la URL
@@ -16,7 +15,7 @@ export default function Noticia() {
   useEffect(() => {
     if (!noticiaData) {
       // Consulta la API usando el id de la noticia
-      api.get(`http://144.22.158.49:8080/v1/noticia?idNoticia=${id}`)
+      api.get(`/noticia?idNoticia=${id}`)
         .then(response => {
           // Se asume que la respuesta retorna la noticia en response.data.noticias
           console.log(response.data.noticias);
@@ -32,6 +31,7 @@ export default function Noticia() {
           setLoading(false);
         });
     }
+    window.scrollTo(0, 0);
   }, [noticiaData, id]);
 
   if (loading) return <div>Cargando noticia...</div>;

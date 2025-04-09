@@ -48,7 +48,7 @@ function App() {
           <Route path="/evento/:nombre" element={<Evento />} />
           <Route path="/comprar" element={<Comprar />} />
           <Route path="/artistas" element={<Artistas />} />
-          <Route path="/artistas/:nombre" element={<Artista />} />
+          <Route path="/artistas/:id" element={<Artista />} />
           <Route path="/noticias" element={<Noticias />} />
           <Route path="/noticias/:id" element={<Noticia />} />
           <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
