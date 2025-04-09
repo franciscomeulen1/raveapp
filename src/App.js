@@ -67,10 +67,10 @@ function App() {
           {/* Rutas para administrador */}
           <Route path="/eventosavalidar" element={<EventosAValidar />} />
           <Route path="/eventoavalidar" element={<EventoAValidar />} />
-          <Route path="/modifeliminarnoticias" element={<ModificarEliminarNoticias />} />
+          <Route path="/modificar-eliminar-noticias" element={<ModificarEliminarNoticias />} />
           <Route path="/modifeliminarartistas" element={<ModificarEliminarArtistas />} />
           <Route path="/editarartista" element={<EditarArtista />} />
-          <Route path="/editarnoticia" element={<EditarNoticia />} />
+          <Route path="/editar-noticia/:id" element={<EditarNoticia />} />
         </Routes>
       </Router>
     </AuthProvider>
