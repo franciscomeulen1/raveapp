@@ -12,7 +12,7 @@ export default function Artistas() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        api.get('/Artista/GetArtista')
+        api.get('/Artista/GetArtista?isActivo=true')
             .then(response => {
                 const data = response.data.artistas;
 

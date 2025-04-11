@@ -69,8 +69,8 @@ function App() {
           <Route path="/eventosavalidar" element={<EventosAValidar />} />
           <Route path="/eventoavalidar" element={<EventoAValidar />} />
           <Route path="/modificar-eliminar-noticias" element={<ModificarEliminarNoticias />} />
-          <Route path="/modifeliminarartistas" element={<ModificarEliminarArtistas />} />
-          <Route path="/editarartista" element={<EditarArtista />} />
+          <Route path="/modificar-eliminar-artistas" element={<ModificarEliminarArtistas />} />
+          <Route path="/editar-artista/:id" element={<EditarArtista />} />
           <Route path="/editar-noticia/:id" element={<EditarNoticia />} />
           <Route path="/crear-noticia" element={<CrearNoticia />} />
         </Routes>
