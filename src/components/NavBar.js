@@ -49,13 +49,13 @@ export default function NavBar({ onFilter }) {
             <span>Administrador</span>
           </li>
           <li>
-            <Link to="/validar-eventos">Validar eventos</Link>
+            <Link to="/eventosavalidar">Validar eventos</Link>
           </li>
           <li>
-            <Link to="/editar-artistas">Editar artistas</Link>
+            <Link to="/modificar-eliminar-artistas">Editar artistas</Link>
           </li>
           <li>
-            <Link to="/editar-noticias">Editar noticias</Link>
+            <Link to="/modificar-eliminar-noticias">Editar noticias</Link>
           </li>
         </>
       );
