@@ -35,6 +35,7 @@ import PreCrearEvento from "./vistas/PreCrearEvento";
 import MisFiestasRecurrentes from "./vistasduenioevento/MisFiestasRecurrentes";
 import ReseniasDeLaFiesta from "./vistasduenioevento/ReseniasDeLaFiesta";
 import EntradaAdquirida from "./vistas/EntradaAdquirida";
+import CrearNoticia from "./vistasadmin/CrearNoticia";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
           <Route path="/modifeliminarartistas" element={<ModificarEliminarArtistas />} />
           <Route path="/editarartista" element={<EditarArtista />} />
           <Route path="/editar-noticia/:id" element={<EditarNoticia />} />
+          <Route path="/crear-noticia" element={<CrearNoticia />} />
         </Routes>
       </Router>
     </AuthProvider>
