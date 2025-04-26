@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../componenteapi/api';
@@ -8,6 +8,7 @@ const EditarArtista = () => {
   // Tomamos el 'id' del artista desde los parámetros de la URL:
   // /editar-artista/:id
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // Estados para manejar los campos del formulario:
   const [nombre, setNombre] = useState("");
@@ -84,11 +85,6 @@ const EditarArtista = () => {
         // Por ahora, solo cerramos el modal de confirmación.
         setIsConfirmModalOpen(false);
       });
-  };
-
-  // 6. Función para cerrar el modal de éxito
-  const handleCloseSuccessModal = () => {
-    setIsSuccessModalOpen(false);
   };
 
   return (
@@ -195,7 +191,7 @@ const EditarArtista = () => {
                 Confirmar
               </button>
               <button
-                className="bg-gray-400 text-white px-4 py-2 rounded"
+                className="bg-gray-600 text-white px-4 py-2 rounded"
                 onClick={handleCancelUpdate}
               >
                 Cancelar
@@ -215,7 +211,7 @@ const EditarArtista = () => {
             <div className="flex justify-end">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleCloseSuccessModal}
+                onClick={() => navigate('/modificar-eliminar-artistas')}
               >
                 Ok
               </button>
