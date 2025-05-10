@@ -1,11 +1,15 @@
 // components/Login.js
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
   
   // estado local para el modal de bloqueo
   const [blocked, setBlocked] = useState(false);
@@ -25,6 +29,13 @@ function Login() {
         setEmail('');
         setPassword('');
         document.getElementById('my-modal-login').checked = false;
+      
+        // Redirige si había un destino guardado
+        const redirectTo = localStorage.getItem('postLoginRedirect');
+        if (redirectTo) {
+          localStorage.removeItem('postLoginRedirect');
+          navigate(redirectTo);
+        }
       }
     } catch (err) {
       setError(err.message);

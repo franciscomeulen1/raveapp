@@ -9,9 +9,9 @@ export default function PreCrearEvento() {
 
     return (
         <div className="flex flex-col min-h-screen">
-        {/* Las class del div principal hacen que ocupe toda la altura de la pantalla y permite que el Footer se mantenga en su lugar. */}
+            {/* Las class del div principal hacen que ocupe toda la altura de la pantalla y permite que el Footer se mantenga en su lugar. */}
             <div className="flex-grow sm:px-10 mb-11">
-            {/* El flex-grow hace que el contenido principal crezca y ocupe todo el espacio disponible, empujando al Footer hacia abajo, para que no quede separado del borde inferior de la pantalla. */}
+                {/* El flex-grow hace que el contenido principal crezca y ocupe todo el espacio disponible, empujando al Footer hacia abajo, para que no quede separado del borde inferior de la pantalla. */}
                 <NavBar />
                 <div className="flex flex-col items-center justify-center bg-white p-4 mt-2">
                     <div className="w-full max-w-lg text-center">
@@ -22,9 +22,16 @@ export default function PreCrearEvento() {
                         </p>
 
                         <div className="space-y-4">
-                            <button className="w-full py-3 text-lg font-bold text-white bg-[#6FCFCE] rounded-md shadow-md hover:bg-[#5ABAB5]">
+                            {/* <button className="w-full py-3 text-lg font-bold text-white bg-[#6FCFCE] rounded-md shadow-md hover:bg-[#5ABAB5]">
                                 Iniciar sesión
-                            </button>
+                            </button> */}
+                            <label
+                                htmlFor="my-modal-login"
+                                className="block w-full py-3 text-lg font-bold text-white bg-[#6FCFCE] rounded-md shadow-md hover:bg-[#5ABAB5] text-center cursor-pointer"
+                            >
+                                Iniciar sesión
+                            </label>
+
                             <button className="w-full py-3 text-lg font-bold text-white bg-[#D96A99] rounded-md shadow-md hover:bg-[#C75988]">
                                 Registrarme
                             </button>

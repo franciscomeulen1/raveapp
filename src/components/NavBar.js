@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Filtros from './Filtros';
 import Login from './Login';
 import { AuthContext } from '../context/AuthContext';
+import ProtectedLink from './componentsCrearEvento/ProtectedLink';
 
 function NavLink({ to, children }) {
   return (
@@ -41,9 +42,13 @@ export default function NavBar({ onFilter }) {
   };
 
   // Helpers para chequear roles
-  const isAdmin = user?.roles.includes(1);
-  const isOrganizador = user?.roles.includes(2);
-  const isNormal = user?.roles.includes(0);
+  // const isAdmin = user?.roles.includes(1);
+  // const isOrganizador = user?.roles.includes(2);
+  // const isNormal = user?.roles.includes(0);
+  const roles = user?.roles ?? [];
+  const isAdmin       = roles.includes(1);
+  const isOrganizador = roles.includes(2);
+  const isNormal      = roles.includes(0);
 
   const renderUserMenu = () => {
     if (!user) return null;
@@ -128,7 +133,8 @@ export default function NavBar({ onFilter }) {
                 )}
                 <NavLink to="/artistas">Artistas</NavLink>
                 <NavLink to="/noticias">Noticias</NavLink>
-                <NavLink to="/crearevento">Crear Evento</NavLink>
+                {/* <NavLink to="/crearevento">Crear Evento</NavLink> */}
+                <ProtectedLink to="/crearevento">Crear Evento</ProtectedLink>
               </ul>
             )}
           </div>
@@ -153,7 +159,8 @@ export default function NavBar({ onFilter }) {
               )}
               <NavLink to="/artistas">Artistas</NavLink>
               <NavLink to="/noticias">Noticias</NavLink>
-              <NavLink to="/crearevento">Crear Evento</NavLink>
+              {/* <NavLink to="/crearevento">Crear Evento</NavLink> */}
+              <ProtectedLink to="/crearevento">Crear Evento</ProtectedLink>
             </ul>
           </div>
         </div>

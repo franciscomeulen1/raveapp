@@ -1,23 +1,27 @@
 // context/AuthContext.js
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import api from '../componenteapi/api';
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  // 1) Rehidratar user desde localStorage al arrancar
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const login = async ({ email, password, onBlocked }) => {
     try {
-      // 1) Compruebo credenciales (boolean)
+      // Comprueba credenciales
       const loginRes = await api.get('/Usuario/Login', {
         params: { Correo: email, Password: password }
       });
       if (loginRes.data !== true) {
         throw new Error('Credenciales inválidas');
       }
-  
-      // 2) TRAER EL USUARIO (array en .usuarios)
+
+      // Trae datos de usuario
       const userRes = await api.get('/Usuario/GetUsuario', {
         params: { Mail: email }
       });
@@ -26,21 +30,24 @@ export function AuthProvider({ children }) {
         throw new Error('No se encontró el usuario');
       }
       const userData = lista[0];
-  
-      // 3) Chequeo rol “Control de entrada”
+
+      // Chequea rol de “Control de entrada”
       const roles = userData.roles.map(r => r.cdRol);
       if (roles.includes(3)) {
         onBlocked();
         return;
       }
-  
-      // 4) Login OK
-      setUser({
+
+      // 2) Login OK: setState y persiste en localStorage
+      const logged = {
         id:    userData.idUsuario,
         name:  userData.nombre,
         email: userData.correo,
         roles,
-      });
+      };
+      setUser(logged);
+      localStorage.setItem('user', JSON.stringify(logged));
+
     } catch (err) {
       if (err.message === 'Credenciales inválidas') {
         throw err;
@@ -50,7 +57,21 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  // 3) Sincronizar user entre pestañas
+  useEffect(() => {
+    const onStorage = e => {
+      if (e.key === 'user') {
+        setUser(e.newValue ? JSON.parse(e.newValue) : null);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -58,6 +79,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
 
 
 
