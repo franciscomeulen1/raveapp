@@ -44,7 +44,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" exact element={<Inicio />} />
-          <Route path="/crearevento" element={<CrearEvento />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/evento/:nombre" element={<Evento />} />
@@ -54,12 +53,14 @@ function App() {
           <Route path="/noticias" element={<Noticias />} />
           <Route path="/noticias/:id" element={<Noticia />} />
           <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
+          <Route path="/precrearevento" element={<PreCrearEvento />} />
+          {/* Rutas para usuarios logueados */}
+          <Route path="/crearevento" element={<CrearEvento />} />
           <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
           <Route path="/eventosfavoritos" element={<EventosFavoritos />} />
           <Route path="/datospersonales" element={<DatosPersonales />} />
-          <Route path="/precrearevento" element={<PreCrearEvento />} />
           <Route path="/entrada-adquirida" element={<EntradaAdquirida />} />
-          {/* Rutas para duenioevento */}
+          {/* Rutas para organizadores */}
           <Route path="/miseventos" element={<MisEventos />} />
           <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
           <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
