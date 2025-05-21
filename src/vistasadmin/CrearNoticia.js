@@ -4,40 +4,58 @@ import Footer from '../components/Footer';
 import api from '../componenteapi/api';
 
 const CrearNoticia = () => {
-    
-    // Estados para almacenar la información de la nueva noticia
     const [titulo, setTitulo] = useState('');
     const [contenido, setContenido] = useState('');
-    // Se mantiene la propiedad imagen (se puede personalizar la lógica para subir archivos)
-    // eslint-disable-next-line
-    const [imagen, setImagen] = useState('');
-    
-    // Para controlar la apertura/cierre del modal de confirmación
+    const [urlEvento, setUrlEvento] = useState('');
+    const [errorTitulo, setErrorTitulo] = useState('');
+    const [errorContenido, setErrorContenido] = useState('');
+    const [errorUrl, setErrorUrl] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Función que se encarga de crear la noticia usando POST
-    const handleCrearNoticia = async () => {
-        try {
-            // Se genera la fecha y hora actual en formato ISO
-            const fechaActualISO = new Date().toISOString();
+    const esUrlValida = (url) => {
+        const pattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+        return pattern.test(url);
+    };
 
-            // console.log("Creando noticia con datos:", {
-            //     titulo,
-            //     contenido,
-            //     imagen,
-            //     dtpublicado: fechaActualISO,
-            // });
+    const handleCrearNoticia = async () => {
+        let esValido = true;
+
+        if (!titulo.trim()) {
+            setErrorTitulo('El título es obligatorio.');
+            esValido = false;
+        } else {
+            setErrorTitulo('');
+        }
+
+        if (!contenido.trim()) {
+            setErrorContenido('El cuerpo de la noticia es obligatorio.');
+            esValido = false;
+        } else {
+            setErrorContenido('');
+        }
+
+        if (urlEvento && !esUrlValida(urlEvento)) {
+            setErrorUrl('La URL ingresada no es válida. Asegúrate de que comience con http:// o https://');
+            esValido = false;
+        } else {
+            setErrorUrl('');
+        }
+
+        if (!esValido) return;
+
+        try {
+            const fechaActualISO = new Date().toISOString();
 
             await api.post('/noticia', {
                 titulo,
                 contenido,
-                imagen,
-                dtpublicado: fechaActualISO, // Se envía la propiedad con la fecha y hora actual en formato ISO
+                dtPublicado: fechaActualISO,
+                urlEvento,
             });
 
-            // console.log("Respuesta del POST:", response.data);
-
-            // Si la creación fue exitosa, se muestra el modal de confirmación
+            setTitulo('');
+            setContenido('');
+            setUrlEvento('');
             setIsModalOpen(true);
         } catch (error) {
             console.error('Error al crear la noticia:', error);
@@ -55,46 +73,42 @@ const CrearNoticia = () => {
                             Crear noticia:
                         </h1>
 
-                        {/* Campo para el título */}
+                        {/* Título */}
                         <label className="font-semibold">Título de la noticia:</label>
                         <input
                             type="text"
                             placeholder="Título de la noticia aquí"
-                            className="w-full p-2 border rounded-md mb-4"
+                            className="w-full p-2 border rounded-md mb-1"
                             value={titulo}
                             onChange={(e) => setTitulo(e.target.value)}
                         />
+                        {errorTitulo && <p className="text-red-600 text-sm mb-4">{errorTitulo}</p>}
 
-                        {/* Sección para la imagen */}
-                        <label className="font-semibold">Subir imagen:</label>
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-md">
-                                IMG
-                            </div>
-                            <button className="border px-4 py-2 rounded-md">
-                                Seleccionar imagen
-                            </button>
-                        </div>
-
-                        {/* Campo para el contenido de la noticia */}
+                        {/* Contenido */}
                         <label className="font-semibold">Cuerpo de la noticia:</label>
                         <textarea
-                            className="w-full p-2 border rounded-md mb-4"
+                            className="w-full p-2 border rounded-md mb-1"
                             placeholder="Espacio para escribir la noticia"
                             rows="4"
                             value={contenido}
                             onChange={(e) => setContenido(e.target.value)}
                         />
+                        {errorContenido && <p className="text-red-600 text-sm mb-4">{errorContenido}</p>}
 
-                        {/* Simulación de asociación a evento */}
-                        <p className="font-semibold">Noticia asociada a evento: XXXXXXXXXXXXXXXXX</p>
+                        {/* URL evento */}
+                        <label className="font-semibold">
+                            Ingresar URL del evento a asociar a esta noticia: <span className="font-normal italic">(opcional)</span>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="https://evento.com/ejemplo"
+                            className="w-full p-2 border rounded-md mb-1"
+                            value={urlEvento}
+                            onChange={(e) => setUrlEvento(e.target.value)}
+                        />
+                        {errorUrl && <p className="text-red-600 text-sm mb-4">{errorUrl}</p>}
 
-                        <label className="font-semibold">Asociar noticia a evento:</label>
-                        <button className="border px-4 py-2 rounded-md mb-4">
-                            Seleccionar evento
-                        </button>
-
-                        {/* Botón para enviar el POST y crear la noticia */}
+                        {/* Botón */}
                         <div>
                             <button
                                 className="bg-purple-600 text-white px-4 py-2 rounded-md"
@@ -109,7 +123,7 @@ const CrearNoticia = () => {
 
             <Footer />
 
-            {/* Modal de confirmación */}
+            {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg p-6 w-80">

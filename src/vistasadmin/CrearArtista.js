@@ -4,20 +4,63 @@ import Footer from "../components/Footer";
 import api from "../componenteapi/api";
 
 const CrearArtista = () => {
-    // Sólo necesitamos nombre y bio para el POST
     const [nombre, setNombre] = useState("");
     const [bio, setBio] = useState("");
+    const [instagram, setInstagram] = useState("");
+    const [spotify, setSpotify] = useState("");
+    const [soundcloud, setSoundcloud] = useState("");
 
+    const [errorInstagram, setErrorInstagram] = useState("");
+    const [errorSpotify, setErrorSpotify] = useState("");
+    const [errorSoundcloud, setErrorSoundcloud] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
+    const urlRegex = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+
     const handleCreateArtist = () => {
+        if (!nombre.trim() || !bio.trim()) {
+            alert("Los campos 'Nombre' e 'Información sobre el artista' son obligatorios.");
+            return;
+        }
+
+        let hasError = false;
+        if (instagram && !urlRegex.test(instagram)) {
+            setErrorInstagram("La URL de Instagram no es válida. Debe comenzar con http:// o https://");
+            hasError = true;
+        } else {
+            setErrorInstagram("");
+        }
+
+        if (spotify && !urlRegex.test(spotify)) {
+            setErrorSpotify("La URL de Spotify no es válida. Debe comenzar con http:// o https://");
+            hasError = true;
+        } else {
+            setErrorSpotify("");
+        }
+
+        if (soundcloud && !urlRegex.test(soundcloud)) {
+            setErrorSoundcloud("La URL de SoundCloud no es válida. Debe comenzar con http:// o https://");
+            hasError = true;
+        } else {
+            setErrorSoundcloud("");
+        }
+
+        if (hasError) return;
+
         setIsSubmitting(true);
 
         const payload = {
             nombre,
             bio,
+            socials: {
+                idSocial: "",
+                mdInstagram: instagram,
+                mdSpotify: spotify,
+                mdSoundcloud: soundcloud
+            },
+            isActivo: true
         };
 
         api
@@ -25,6 +68,14 @@ const CrearArtista = () => {
             .then(() => {
                 setIsSubmitting(false);
                 setIsSuccessModalOpen(true);
+                setNombre("");
+                setBio("");
+                setInstagram("");
+                setSpotify("");
+                setSoundcloud("");
+                setErrorInstagram("");
+                setErrorSpotify("");
+                setErrorSoundcloud("");
             })
             .catch((err) => {
                 console.error("Error al crear el artista:", err);
@@ -82,17 +133,19 @@ const CrearArtista = () => {
                             />
                         </div>
 
-                        {/* URLs (deshabilitadas hasta futura implementación) */}
+                        {/* Redes sociales */}
                         <div className="mb-4">
                             <label className="block font-semibold">
                                 URL del Instagram del artista:
                             </label>
                             <input
                                 type="text"
-                                className="w-full border rounded p-2 bg-gray-100 cursor-not-allowed"
+                                className="w-full border rounded p-2 mb-1"
                                 placeholder="URL de Instagram"
-                                disabled
+                                value={instagram}
+                                onChange={(e) => setInstagram(e.target.value)}
                             />
+                            {errorInstagram && <p className="text-red-600 text-sm">{errorInstagram}</p>}
                         </div>
 
                         <div className="mb-4">
@@ -101,10 +154,12 @@ const CrearArtista = () => {
                             </label>
                             <input
                                 type="text"
-                                className="w-full border rounded p-2 bg-gray-100 cursor-not-allowed"
+                                className="w-full border rounded p-2 mb-1"
                                 placeholder="URL de SoundCloud"
-                                disabled
+                                value={soundcloud}
+                                onChange={(e) => setSoundcloud(e.target.value)}
                             />
+                            {errorSoundcloud && <p className="text-red-600 text-sm">{errorSoundcloud}</p>}
                         </div>
 
                         <div className="mb-4">
@@ -113,16 +168,17 @@ const CrearArtista = () => {
                             </label>
                             <input
                                 type="text"
-                                className="w-full border rounded p-2 bg-gray-100 cursor-not-allowed"
+                                className="w-full border rounded p-2 mb-1"
                                 placeholder="URL de Spotify"
-                                disabled
+                                value={spotify}
+                                onChange={(e) => setSpotify(e.target.value)}
                             />
+                            {errorSpotify && <p className="text-red-600 text-sm">{errorSpotify}</p>}
                         </div>
 
                         {/* Botón Crear */}
                         <button
-                            className={`bg-green-500 text-white px-4 py-2 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
+                            className={`bg-green-500 text-white px-4 py-2 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
                             onClick={handleCreateArtist}
                             disabled={isSubmitting}
                         >
