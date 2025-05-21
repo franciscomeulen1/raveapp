@@ -48,8 +48,8 @@ export default function Artista() {
     if (error) return <div className="text-center mt-20 text-red-600">Hubo un error: {error}</div>;
 
     return (
-        <div style={{ minHeight: '100vh', position: 'relative' }}>
-            <div className="sm:px-10 mb-11" style={{ paddingBottom: '60px' }}>
+        <div className="flex flex-col min-h-screen">
+            <div className="flex-1 sm:px-10 mb-11">
                 <NavBar />
                 <div className='flex flex-wrap items-center gap-4'>
                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{artista.nombre}</h1>
@@ -79,7 +79,7 @@ export default function Artista() {
                     </div>
                 </div>
             </div>
-            <Footer style={{ position: 'absolute', bottom: 0, width: '100%' }} />
+            <Footer />
         </div>
     );
 }

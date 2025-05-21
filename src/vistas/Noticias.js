@@ -19,6 +19,7 @@ export default function Noticias() {
           id: item.idNoticia,
           titulo: item.titulo,
           contenido: item.contenido,
+          urlEvento: item.urlEvento,
         }));
         setNoticias(noticiasMapeadas);
         setLoading(false);
