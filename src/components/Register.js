@@ -1,145 +1,313 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
+import api from '../componenteapi/api';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    nombreFantasia: '', // username
+    password: '',
+    confirmPassword: '',
+    dni: '',
+    correo: '',
+    telefono: '',
+  });
+
+  const [error, setError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    const payload = {
+      domicilio: {
+        localidad: { nombre: '', codigo: '' },
+        municipio: { nombre: '', codigo: '' },
+        provincia: { nombre: '', codigo: '' },
+        direccion: '',
+        latitud: 0,
+        longitud: 0,
+      },
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      correo: formData.correo,
+      cbu: '',
+      dni: formData.dni,
+      telefono: formData.telefono,
+      nombreFantasia: formData.nombreFantasia,
+      bio: '',
+      password: formData.password,
+      socials: {
+        idSocial: '',
+        mdInstagram: '',
+        mdSpotify: '',
+        mdSoundcloud: '',
+      },
+      dtNacimiento: new Date().toISOString(), // fecha y hora actuales
+    };
+
+    try {
+      await api.post('/Usuario/CreateUsuario', payload);
+      setShowSuccessModal(true); // mostramos el modal de éxito
+    } catch (err) {
+      console.error(err);
+      setError('Error al registrarse, intenta más tarde');
+    }
+  };
+
+  const handleAccept = async () => {
+    try {
+      await login({
+        email: formData.correo,
+        password: formData.password,
+        onBlocked: () => {}, // aquí no bloqueamos nada en registro
+      });
+      navigate('/');
+    } catch (err) {
+      console.error('Error al iniciar sesión automáticamente:', err);
+      navigate('/'); // aún si falla, redirige al home
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
-     <div className="sm:px-10 mb-11">
-      <header>
-        <NavBar />
-      </header>
+      <div className="sm:px-10 mb-11">
+        <header>
+          <NavBar />
+        </header>
 
-      <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center">
+          <div className="max-w-md w-full p-6">
+            <h1 className="text-3xl font-bold mb-4">Registrarse</h1>
+            <p className="mb-4">Completa tus datos, o regístrate con Google:</p>
+            <button className="btn btn-outline w-full mb-4">Login with Google</button>
 
-      <div className="max-w-md w-full p-6">
-        <h1 className="text-3xl font-bold mb-4">Registrarse</h1>
-        <p className="mb-4">Completa tus datos, o registrate con Google:</p>
-        <button className="btn btn-outline w-full mb-4">Login with Google</button>
+            {error && <div className="text-red-500 mb-3">{error}</div>}
 
-        <form className="space-y-3">
-          <label className="block">
-            <span>Tu nombre:</span>
-            <input type="text" className="input input-bordered w-full" placeholder="Tu nombre" />
-          </label>
+            <form className="space-y-3" onSubmit={handleSubmit}>
+              <label className="block">
+                <span>Tu nombre:</span>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Tu nombre"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Tu apellido:</span>
-            <input type="text" className="input input-bordered w-full" placeholder="Tu apellido" />
-          </label>
+              <label className="block">
+                <span>Tu apellido:</span>
+                <input
+                  type="text"
+                  name="apellido"
+                  value={formData.apellido}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Tu apellido"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Crea un usuario:</span>
-            <input type="text" className="input input-bordered w-full" placeholder="Ej: usuario1" />
-          </label>
+              <label className="block">
+                <span>Crea un usuario:</span>
+                <input
+                  type="text"
+                  name="nombreFantasia"
+                  value={formData.nombreFantasia}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Ej: usuario1"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Crea una contraseña:</span>
-            <input type="password" className="input input-bordered w-full" placeholder="Tu password" />
-          </label>
+              <label className="block">
+                <span>Crea una contraseña:</span>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Tu password"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Tu fecha de nacimiento:</span>
-            <input type="date" className="input input-bordered w-full" />
-          </label>
+              <label className="block">
+                <span>Confirma tu contraseña:</span>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Repite tu password"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Tu DNI/Pasaporte:</span>
-            <input type="text" className="input input-bordered w-full" placeholder="123456789" />
-          </label>
+              <label className="block">
+                <span>Tu DNI/Pasaporte:</span>
+                <input
+                  type="text"
+                  name="dni"
+                  value={formData.dni}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="123456789"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Tu correo electrónico:</span>
-            <input type="email" className="input input-bordered w-full" placeholder="Tu email" />
-          </label>
+              <label className="block">
+                <span>Tu correo electrónico:</span>
+                <input
+                  type="email"
+                  name="correo"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Tu email"
+                  required
+                />
+              </label>
 
-          <label className="block">
-            <span>Tu teléfono: (sin 0 ni 15)</span>
-            <input type="email" className="input input-bordered w-full" placeholder="Tu número de celular" />
-          </label>
+              <label className="block">
+                <span>Tu teléfono (sin 0 ni 15):</span>
+                <input
+                  type="text"
+                  name="telefono"
+                  value={formData.telefono}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  placeholder="Tu número de celular"
+                  required
+                />
+              </label>
 
-          <button className="btn btn-primary w-full">Registrarme</button>
-        </form>
-      </div>
-      </div>
+              <button type="submit" className="btn btn-primary w-full">
+                Registrarme
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
       <Footer />
+
+      {/* Modal de éxito */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+            <h2 className="text-green-600 font-bold text-xl mb-4">¡Registro exitoso!</h2>
+            <button
+              className="btn btn-success w-full"
+              onClick={handleAccept}
+            >
+              Aceptar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Register;
 
-// function Register() {
-//     return (
-//         <div>
-//             <label htmlFor="my-modal-register" className="btn modal-button btn-info hover:bg-indigo-400 hover:text-cyan-200 mx-2 btn-sm md:btn-md">Registrarme</label>
 
 
-//             <input type="checkbox" id="my-modal-register" className="modal-toggle" />
-//             <label htmlFor="my-modal-register" className="modal modal-middle">
+// import React from 'react';
+// import NavBar from '../components/NavBar';
+// import Footer from '../components/Footer';
 
-//                 <form className="modal-box">
+// const Register = () => {
+//   return (
+//     <div className="min-h-screen bg-white flex flex-col">
+//      <div className="sm:px-10 mb-11">
+//       <header>
+//         <NavBar />
+//       </header>
 
-//                     <div className="flex justify-center mb-2">
-//                         <button className="btn">Registrate con Google</button>
-//                     </div>
+//       <div className="flex flex-col items-center">
 
-//                     <h2 className="font-bold text-3xl mt-3 mb-2">Registrarse</h2>
+//       <div className="max-w-md w-full p-6">
+//         <h1 className="text-3xl font-bold mb-4">Registrarse</h1>
+//         <p className="mb-4">Completa tus datos, o registrate con Google:</p>
+//         <button className="btn btn-outline w-full mb-4">Login with Google</button>
 
-//                     <div className='form-control w-full max-w-xs'>
-//                         <label className="label">
-//                             <span className="label-text">Tu nombre:</span>
-//                         </label>
-//                         <input type='email'
-//                             placeholder="Tu email"
-//                             className="input input-bordered w-full max-w-xs"
-//                             autoFocus
-//                         />
-//                     </div>
+//         <form className="space-y-3">
+//           <label className="block">
+//             <span>Tu nombre:</span>
+//             <input type="text" className="input input-bordered w-full" placeholder="Tu nombre" />
+//           </label>
 
-//                     <div className='form-control w-full max-w-xs'>
-//                         <label className="label">
-//                             <span className="label-text">Tu apellido:</span>
-//                         </label>
-//                         <input type='email'
-//                             placeholder="Tu email"
-//                             className="input input-bordered w-full max-w-xs"
-//                             autoFocus
-//                         />
-//                     </div>
+//           <label className="block">
+//             <span>Tu apellido:</span>
+//             <input type="text" className="input input-bordered w-full" placeholder="Tu apellido" />
+//           </label>
 
-//                     <div className='form-control w-full max-w-xs'>
-//                         <label className="label">
-//                             <span className="label-text">Tu email:</span>
-//                         </label>
-//                         <input type='email'
-//                             placeholder="Tu email"
-//                             className="input input-bordered w-full max-w-xs"
-//                             autoFocus
-//                         />
-//                     </div>
+//           <label className="block">
+//             <span>Crea un usuario:</span>
+//             <input type="text" className="input input-bordered w-full" placeholder="Ej: usuario1" />
+//           </label>
 
-//                     <div className='form-control w-full max-w-xs'>
-//                         <label className="label">
-//                             <span className="label-text">Tu constraseña:</span>
-//                         </label>
-//                         <input type='password'
-//                             placeholder="Tu constraseña"
-//                             className="input input-bordered w-full max-w-xs"
-//                             autoFocus
-//                         />
-//                     </div>
+//           <label className="block">
+//             <span>Crea una contraseña:</span>
+//             <input type="password" className="input input-bordered w-full" placeholder="Tu password" />
+//           </label>
 
-//                     <div className="modal-action justify-start">
-//                         <button type="submit" htmlFor="my-modal-2" className="btn">Registrarme</button>
-//                     </div>
+//           <label className="block">
+//             <span>Tu fecha de nacimiento:</span>
+//             <input type="date" className="input input-bordered w-full" />
+//           </label>
 
-//                 </form>
-//             </label>
+//           <label className="block">
+//             <span>Tu DNI/Pasaporte:</span>
+//             <input type="text" className="input input-bordered w-full" placeholder="123456789" />
+//           </label>
 
-//         </div>
-//     );
-// }
+//           <label className="block">
+//             <span>Tu correo electrónico:</span>
+//             <input type="email" className="input input-bordered w-full" placeholder="Tu email" />
+//           </label>
+
+//           <label className="block">
+//             <span>Tu teléfono: (sin 0 ni 15)</span>
+//             <input type="email" className="input input-bordered w-full" placeholder="Tu número de celular" />
+//           </label>
+
+//           <button className="btn btn-primary w-full">Registrarme</button>
+//         </form>
+//       </div>
+//       </div>
+//       </div>
+//       <Footer />
+//     </div>
+//   );
+// };
 
 // export default Register;

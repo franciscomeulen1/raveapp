@@ -56,8 +56,8 @@ function App() {
           <Route path="/precrearevento" element={<PreCrearEvento />} />
           {/* Rutas para usuarios logueados */}
           <Route path="/crearevento" element={<CrearEvento />} />
-          <Route path="/entradasadquiridas" element={<EntradasAdquiridas />} />
-          <Route path="/eventosfavoritos" element={<EventosFavoritos />} />
+          <Route path="/mis-entradas" element={<EntradasAdquiridas />} />
+          <Route path="/eventos-favoritos" element={<EventosFavoritos />} />
           <Route path="/datospersonales" element={<DatosPersonales />} />
           <Route path="/entrada-adquirida" element={<EntradaAdquirida />} />
           {/* Rutas para organizadores */}
