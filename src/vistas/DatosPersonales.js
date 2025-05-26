@@ -1,227 +1,217 @@
-import React, { useState } from 'react';
+// DatosPersonales.js con modal de éxito tras PUT exitoso
+import { useState, useEffect, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { FaEdit } from 'react-icons/fa'; // Importa un ícono de edición
+import api from '../componenteapi/api';
+import { AuthContext } from '../context/AuthContext';
+import InputUbicacionUsuario from '../components/InputUbicacionUsuario';
 
-export default function DatosPersonales(props) {
+export default function DatosPersonales() {
+    const { user } = useContext(AuthContext);
+    const [userData, setUserData] = useState(null);
+    const [formData, setFormData] = useState({});
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+    const [selectedProvincia, setSelectedProvincia] = useState(null);
+    const [selectedMunicipio, setSelectedMunicipio] = useState(null);
+    const [selectedLocalidad, setSelectedLocalidad] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const res = await api.get('/Usuario/GetUsuario', {
+                    params: { IdUsuario: user.id }
+                });
+                const data = res.data.usuarios[0];
+                setUserData(data);
+                setFormData({
+                    nombre: data.nombre || '',
+                    apellido: data.apellido || '',
+                    dni: data.dni || '',
+                    telefono: data.telefono || '',
+                    correo: data.correo || '',
+                    nombreFantasia: data.nombreFantasia || '',
+                    dtNacimiento: data.dtNacimiento ? data.dtNacimiento.split('T')[0] : '',
+                    direccion: data.domicilio?.direccion || '',
+                });
+                setSelectedProvincia({ nombre: data.domicilio?.provincia?.nombre || '', id: data.domicilio?.provincia?.codigo || '' });
+                setSelectedMunicipio({ nombre: data.domicilio?.municipio?.nombre || '', id: data.domicilio?.municipio?.codigo || '' });
+                setSelectedLocalidad({ nombre: data.domicilio?.localidad?.nombre || '', id: data.domicilio?.localidad?.codigo || '' });
+            } catch (err) {
+                console.error('Error al traer los datos:', err);
+            }
+        };
+
+        fetchUserData();
+    }, [user.id]);
+
+    const handleChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleSubmit = async () => {
+        if (!userData) return;
+
+        const socialsSafe = {
+            idSocial: userData.socials?.idSocial ?? 'string',
+            mdInstagram: userData.socials?.mdInstagram ?? 'string',
+            mdSpotify: userData.socials?.mdSpotify ?? 'string',
+            mdSoundcloud: userData.socials?.mdSoundcloud ?? 'string',
+        };
+
+        const payload = {
+            idUsuario: user.id,
+            nombre: formData.nombre,
+            apellido: formData.apellido,
+            correo: formData.correo,
+            cbu: userData.cbu || '',
+            dni: formData.dni,
+            telefono: formData.telefono,
+            nombreFantasia: formData.nombreFantasia,
+            dtNacimiento: formData.dtNacimiento ? new Date(formData.dtNacimiento).toISOString() : null,
+            bio: userData.bio || '',
+            cdRoles: userData.roles ? userData.roles.map(r => r.cdRol) : [],
+            socials: socialsSafe,
+            domicilio: {
+                provincia: { nombre: selectedProvincia?.nombre || '', codigo: selectedProvincia?.id || '' },
+                municipio: { nombre: selectedMunicipio?.nombre || '', codigo: selectedMunicipio?.id || '' },
+                localidad: { nombre: selectedLocalidad?.nombre || '', codigo: selectedLocalidad?.id || '' },
+                direccion: formData.direccion,
+                latitud: 0,
+                longitud: 0,
+            },
+        };
+
+        console.log('Payload que se enviará al PUT:', payload);
+
+        try {
+            await api.put('/Usuario/UpdateUsuario', payload);
+            setShowSuccessModal(true);
+        } catch (err) {
+            console.error('Error al actualizar datos:', err);
+            alert('Error al actualizar los datos. Intenta más tarde.');
+        }
+    };
+
+    if (!userData) return <p className="p-10 animate-pulse text-center text-lg">Cargando datos...</p>;
+
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-1">
-                <div className="sm:px-10 mb-11">
-                    <NavBar />
-                    <h1 className="px-10 mb-4 mt-2 text-3xl font-bold underline underline-offset-8">
-                        Datos personales:
-                    </h1>
-                    
-                    <div className="pl-10 mb-8">
-                        <EditableProfilePicture />
+        <div className="flex flex-col min-h-screen bg-gray-50">
+            <div className="flex-1 sm:px-10 mb-11">
+                <NavBar />
+                <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-8 mt-6">
+                    <h1 className="text-3xl font-bold mb-6 text-center">Mis Datos Personales</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {['nombre', 'apellido', 'dni', 'telefono', 'correo', 'nombreFantasia'].map(field => (
+                            <EditableField
+                                key={field}
+                                label={field.charAt(0).toUpperCase() + field.slice(1)}
+                                value={formData[field] || ''}
+                                onChange={value => handleChange(field, value)}
+                            />
+                        ))}
+                        <EditableField
+                            label="Fecha de Nacimiento"
+                            value={formData.dtNacimiento || ''}
+                            onChange={value => handleChange('dtNacimiento', value)}
+                            type="date"
+                        />
                     </div>
 
-                    <div className="space-y-4 pl-10">
-                        <EditableField label="Nombre" initialValue="Juan" />
-                        <EditableField label="Apellido" initialValue="Lopez" />
-                        <EditableField label="DNI" initialValue="99889988" />
-                        <EditableField label="Celular" initialValue="1165652121" />
-                        <EditableField label="Email" initialValue="juanlopez@gmail.com" />
-                        <EditablePasswordField label="Contraseña" />
-
-                        <div className="border-t mt-4 pt-4">
-                            <h3 className="text-xl font-semibold mb-4">Domicilio de facturación:</h3>
-                            <EditableField label="Provincia" initialValue="Capital Federal" />
-                            <EditableField label="Municipio" initialValue="Capital Federal" />
-                            <EditableField label="Localidad" initialValue="Capital Federal" />
-                            <EditableField label="Calle" initialValue="Malvinas Argentinas" />
-                            <EditableField label="Número" initialValue="8890" />
-                            <EditableField label="Piso/Depto" initialValue="5 B" />
+                    <div className="mt-8">
+                        <h2 className="text-xl font-semibold mb-2">Tu domicilio:</h2>
+                        <InputUbicacionUsuario
+                            initialProvincia={userData.domicilio?.provincia?.nombre || ''}
+                            initialMunicipio={userData.domicilio?.municipio?.nombre || ''}
+                            initialLocalidad={userData.domicilio?.localidad?.nombre || ''}
+                            onUbicacionChange={({ provincia, municipio, localidad }) => {
+                                setSelectedProvincia(provincia);
+                                setSelectedMunicipio(municipio);
+                                setSelectedLocalidad(localidad);
+                            }}
+                        />
+                        <div className="mt-4">
+                            <EditableField
+                                label="Dirección"
+                                value={formData.direccion || ''}
+                                onChange={value => handleChange('direccion', value)}
+                            />
                         </div>
+                    </div>
 
-                        <div className="flex justify-start space-x-4 mt-6">
-                            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                                Confirmar
-                            </button>
-                            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-                                Cancelar
-                            </button>
-                        </div>
+                    <div className="flex justify-center mt-8">
+                        <button
+                            onClick={handleSubmit}
+                            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition shadow-lg"
+                        >
+                            Confirmar cambios
+                        </button>
                     </div>
                 </div>
             </div>
             <Footer />
+
+            {showSuccessModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
+                        <h2 className="text-green-600 text-2xl font-bold mb-4">¡Cambios guardados!</h2>
+                        <p className="mb-4">Tus datos fueron actualizados exitosamente.</p>
+                        <button
+                            onClick={() => setShowSuccessModal(false)}
+                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+                        >
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-// Componente para foto de perfil editable
-const EditableProfilePicture = () => {
+const EditableField = ({ label, value, onChange, type = 'text' }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [profilePic, setProfilePic] = useState("https://i.pravatar.cc/300");
+    const [tempValue, setTempValue] = useState(value);
 
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
-
-    const handleFileChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            const imageUrl = URL.createObjectURL(file);
-            setProfilePic(imageUrl);
-            setIsEditing(false);
-        }
-    };
-
-    return (
-        <div className="flex flex-col items-start">
-            {/* Título de la sección de foto */}
-            <p className="font-semibold mb-2">Foto de perfil:</p>
-            
-            {/* Contenedor relativo para superponer el botón de edición sobre la imagen */}
-            <div className="relative inline-block">
-                <img 
-                    src={profilePic} 
-                    alt="Foto de perfil" 
-                    className="w-32 h-32 rounded-full object-cover border border-gray-300"
-                />
-                
-                {/* Botón circular con el ícono de edición */}
-                <button
-                    onClick={handleEditClick}
-                    className="absolute bottom-2 right-2 w-10 h-10 bg-white hover:bg-gray-100 text-gray-700 flex items-center justify-center rounded-full border border-gray-300 shadow"
-                >
-                    <FaEdit className="text-xl" />
-                </button>
-            </div>
-            
-            {/* Input para seleccionar la imagen, se muestra solo si isEditing es true */}
-            {isEditing && (
-                <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleFileChange} 
-                    className="mt-2"
-                />
-            )}
-        </div>
-    );
-};
-
-// Componente para campos editables
-const EditableField = ({ label, initialValue, type = "text" }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [value, setValue] = useState(initialValue);
-
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
-
-    const handleInputChange = (e) => {
-        setValue(e.target.value);
-    };
+    useEffect(() => {
+        setTempValue(value);
+    }, [value]);
 
     const handleBlur = () => {
         setIsEditing(false);
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            setIsEditing(false);  // Confirma la edición cuando se presiona Enter
-        }
+        onChange(tempValue);
     };
 
     return (
-        <div className="max-w-xs">
-            <label className="block text-sm font-medium text-gray-700">
-                {label}
-            </label>
-            <div className="mt-1 flex items-center space-x-2">
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            <div className="flex items-center space-x-2">
                 {isEditing ? (
                     <input
                         type={type}
-                        value={value}
-                        onChange={handleInputChange}
+                        value={tempValue}
+                        onChange={e => setTempValue(e.target.value)}
                         onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
                         autoFocus
-                        className="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                     />
                 ) : (
-                    <span>{value}</span>
+                    <span className="text-gray-800 text-sm">{value}</span>
                 )}
-                {!isEditing && (
-                    <FaEdit
-                        className="text-gray-500 hover:text-gray-700 cursor-pointer"
-                        onClick={handleEditClick}
-                    />
-                )}
+                <span
+                    className="text-indigo-500 hover:text-indigo-700 cursor-pointer"
+                    onClick={() => setIsEditing(true)}
+                >✏️</span>
             </div>
         </div>
     );
 };
 
-// Componente para el campo de contraseña editable con funcionalidad adicional
-const EditablePasswordField = ({ label }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
 
-    const handleChangePasswordClick = () => {
-        // Lógica para cambiar la contraseña (e.g., validaciones)
-        setIsEditing(false);
-    };
 
-    return (
-        <div className="max-w-xs">
-            <label className="block text-sm font-medium text-gray-700">
-                {label}
-            </label>
-            <div className="mt-1 flex items-center space-x-2">
-                {!isEditing ? (
-                    <>
-                        <span>**********</span>
-                        <FaEdit
-                            className="text-gray-500 hover:text-gray-700 cursor-pointer"
-                            onClick={handleEditClick}
-                        />
-                    </>
-                ) : (
-                    <div className="space-y-4">
-                        <input
-                            type="password"
-                            placeholder="Contraseña actual"
-                            value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Nueva contraseña"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                        <input
-                            type="password"
-                            placeholder="Repetir nueva contraseña"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                        <button
-                            onClick={handleChangePasswordClick}
-                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition w-full"
-                        >
-                            Cambiar contraseña
-                        </button>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
+
+
 
 
 

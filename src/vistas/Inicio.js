@@ -1,3 +1,132 @@
+// import { useState, useEffect } from 'react';
+// import NavBar from '../components/NavBar';
+// import Cards from '../components/Cards';
+// import Footer from '../components/Footer';
+// import Carousel from '../components/Carousel';
+// import api from '../componenteapi/api';
+
+// function Inicio() {
+//   const [eventos, setEventos] = useState([]);
+//   const [generosMap, setGenerosMap] = useState({});
+//   const [filteredEventos, setFilteredEventos] = useState([]);
+//   const [loading, setLoading] = useState(true);  // <-- Nuevo estado loading
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         setLoading(true);  // <-- Activar loading
+//         const generosResponse = await api.get('/Evento/GetGeneros');
+//         const generosArray = generosResponse.data;
+//         const generosDict = {};
+//         generosArray.forEach(gen => {
+//           generosDict[gen.cdGenero] = gen.dsGenero;
+//         });
+//         setGenerosMap(generosDict);
+
+//         const eventosResponse = await api.get('/Evento/GetEventos?Estado=2');
+//         const eventosApi = eventosResponse.data.eventos;
+
+//         const eventosProcesados = eventosApi.map(evento => ({
+//           id: evento.idEvento,
+//           nombreEvento: evento.nombre,
+//           dias: evento.fechas.map(fecha => ({
+//             fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
+//             horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+//             horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+//             entradas: fecha.entradas || []
+//           })),
+//           generos: evento.genero.map(genId => generosDict[genId] || 'Desconocido'),
+//           artistas: evento.artistas || [],
+//           lgbt: evento.isLgbt,
+//           after: evento.isAfter,
+//           provincia: evento.domicilio.provincia.nombre,
+//           municipio: evento.domicilio.municipio.nombre,
+//           localidad: evento.domicilio.localidad.nombre,
+//           direccion: evento.domicilio.direccion,
+//           descripcion: evento.descripcion,
+//           imagen: evento.media && evento.media.length > 0 ? evento.media[0].imagen : null
+//         }));
+
+//         setEventos(eventosProcesados);
+//         setFilteredEventos(eventosProcesados);
+//       } catch (error) {
+//         console.error('Error al cargar eventos:', error);
+//       } finally {
+//         setLoading(false);  // <-- Desactivar loading
+//       }
+//     };
+
+//     fetchData();
+//     window.scrollTo(0, 0);
+//   }, []);
+
+//   const filterEventos = (eventos, filtros) => {
+//     return eventos.filter(evento => {
+//       if (filtros.genero && filtros.genero !== 'Todos') {
+//         if (!evento.generos.includes(filtros.genero)) return false;
+//       }
+//       if (filtros.after && !evento.after) return false;
+//       if (filtros.lgbt && !evento.lgbt) return false;
+//       if (filtros.ubicacion) {
+//         const { provincia, municipio, localidad } = filtros.ubicacion;
+//         if (provincia && evento.provincia !== provincia) return false;
+//         if (municipio && evento.municipio !== municipio) return false;
+//         if (localidad && evento.localidad !== localidad) return false;
+//       }
+//       return true;
+//     });
+//   };
+
+//   const handleFilter = (filtros) => {
+//     const resultados = filterEventos(eventos, filtros);
+//     setFilteredEventos(resultados);
+//   };
+
+//   return (
+//     <div className="flex flex-col min-h-screen">
+//       <div className='flex-1'>
+//         <div className='sm:px-10'>
+//           <NavBar onFilter={handleFilter} />
+//         </div>
+//         <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
+//           <Carousel />
+
+//           {loading ? (
+//             <div className="flex justify-center items-center my-10">
+//               <span className="loading loading-spinner loading-lg text-primary"></span>
+//               <span className="ml-3 text-lg">Cargando eventos...</span>
+//             </div>
+//           ) : filteredEventos.length === 0 ? (
+//             <div className="text-center my-10">
+//               <p className="text-xl font-semibold">No hay eventos en venta en este momento.</p>
+//               <p className="text-gray-500">¡Vuelve pronto para descubrir nuevas fiestas!</p>
+//             </div>
+//           ) : (
+//             <Cards eventos={filteredEventos} />
+//           )}
+//         </div>
+//       </div>
+//       <Footer />
+//     </div>
+//   );
+// }
+
+// export default Inicio;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, {useState} from 'react'
 import NavBar from '../components/NavBar';
 import Cards from '../components/Cards';
@@ -366,287 +495,3 @@ function Inicio() {
 }
 
 export default Inicio;
-
-
-// import React from 'react'
-// import '../index.css';
-// import NavBar from '../components/NavBar';
-// import Cards from '../components/Cards';
-// import Footer from '../components/Footer';
-// import Carousel from '../components/Carousel';
-
-// function Inicio() {
-//   window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
-
-//   const eventos = [
-//     {
-//       id: 1,
-//       nombreEvento: "Nombre de evento 1",
-//       fecha: "10/05/2025",
-//       generos: ["Tech-House", "Techno"],
-//       artistas: ["Dich Brothers", "La Cintia", "Luana"],
-//       lgbt: true,
-//       after: false,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 1, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }, {
-//       id: 2,
-//       nombreEvento: "Nombre de evento 2",
-//       fecha: "15/05/2025",
-//       generos: "Tech-House",
-//       artistas: ["Nico Moreno", "T78"],
-//       lgbt: false,
-//       after: false,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 2, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }, {
-//       id: 3,
-//       nombreEvento: "Nombre de evento 3",
-//       fecha: "16/10/2025",
-//       generos: ["Tech-House", "Techno"],
-//       artistas: ["Juan Solis", "Kilah"],
-//       lgbt: false,
-//       after: true,
-//       horario: "07:00hs a 12:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 3, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     },
-//     {
-//       id: 4,
-//       nombreEvento: "Nombre de evento 4",
-//       fecha: "20/05/2025",
-//       generos: "Tech-House",
-//       artistas: ["Dich Brothers", "La Cintia", "Luana"],
-//       lgbt: false,
-//       after: false,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 4, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/10/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "10/10/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }, {
-//       id: 5,
-//       nombreEvento: "Nombre de evento 5",
-//       fecha: "22/10/2025",
-//       generos: "Techno",
-//       artistas: ["Amelie Lens", "Regal", "Adam Beyer"],
-//       lgbt: false,
-//       after: false,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 5, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "5/10/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }, {
-//       id: 6,
-//       nombreEvento: "Nombre de evento 6",
-//       fecha: "22/10/2025",
-//       generos: "PsyTrance",
-//       artistas: ["Javier Busola"],
-//       lgbt: false,
-//       after: false,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 6, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "10/10/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }, {
-//       id: 7,
-//       nombreEvento: "Nombre de evento 7",
-//       fecha: "25/10/2025",
-//       generos: "Tech-House",
-//       artistas: ["Jay de Lys", "Ghezz", "Cadelago"],
-//       lgbt: true,
-//       after: true,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 7, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "15/10/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }, {
-//       id: 8,
-//       nombreEvento: "Nombre de evento 8",
-//       fecha: "30/10/2025",
-//       generos: "Techno",
-//       artistas: ["Enrico Sangiuliano", "Josefina Munoz", "999999999"],
-//       lgbt: false,
-//       after: false,
-//       horario: "23:50hs a 07:00hs",
-//       direccion: " Av. Cnel. Niceto Vega 6599, CABA",
-//       descripcion: "DESCRIPCION DEL EVENTO 8, dolor sit amet consectetur adipisicing elit. Similique ullam cumque, necessitatibus delectus id rerum voluptates doloremque quidem debitis blanditiis. Itaque laudantium dolores laboriosam quas. Voluptatum adipisci culpa itaque ab. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed laudantium culpa excepturi, qui vitae officia dolorem inventore voluptatem deserunt beatae? Incidunt corrupti fugiat ab vel eum voluptas odio quas voluptates",
-//       entradas: [{ // entradas: tipo precio cantidad.
-//         tipo: "Early Bird - Entrada general",
-//         precio: 3000,
-//         cantidad: 100,
-//         fechaLimite: "10/04/2025"
-//       }, {
-//         tipo: "Entrada general",
-//         precio: 5000,
-//         cantidad: 900
-//       }, {
-//         tipo: "Early Bird - Entrada VIP",
-//         precio: 5000,
-//         cantidad: 100,
-//         fechaLimite: "30/10/2025"
-//       }, {
-//         tipo: "Entrada VIP",
-//         precio: 7000,
-//         cantidad: 400
-//       }]
-//     }
-//   ]
-
-//   // Función para verificar si el evento está finalizado
-//   const esEventoFinalizado = (fecha) => {
-//     const fechaEvento = new Date(fecha.split('/').reverse().join('-'));
-//     const fechaActual = new Date();
-//     return fechaEvento < fechaActual;
-//   };
-
-//   // Filtrar los eventos que no están finalizados
-//   const eventosNoFinalizados = eventos.filter(evento => !esEventoFinalizado(evento.fecha));
-
-//   return (
-//     <div className="flex flex-col min-h-screen">
-//       <div className='flex-1'>
-//         <div className='sm:px-10'>
-//           <NavBar />
-//         </div>
-//         <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
-//           <Carousel />
-//           <Cards eventos={eventosNoFinalizados} />
-//         </div>
-//       </div>
-//       <Footer />
-//     </div>
-//   );
-// }
-
-// export default Inicio

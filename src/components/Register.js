@@ -15,6 +15,7 @@ const Register = () => {
     dni: '',
     correo: '',
     telefono: '',
+    fechaNacimiento: '', // nuevo campo
   });
 
   const [error, setError] = useState('');
@@ -36,6 +37,11 @@ const Register = () => {
 
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    if (!formData.fechaNacimiento) {
+      setError('Debes ingresar tu fecha de nacimiento');
       return;
     }
 
@@ -63,7 +69,7 @@ const Register = () => {
         mdSpotify: '',
         mdSoundcloud: '',
       },
-      dtNacimiento: new Date().toISOString(), // fecha y hora actuales
+      dtNacimiento: new Date(formData.fechaNacimiento).toISOString(), // fecha de nacimiento del usuario
     };
 
     try {
@@ -80,12 +86,12 @@ const Register = () => {
       await login({
         email: formData.correo,
         password: formData.password,
-        onBlocked: () => {}, // aquí no bloqueamos nada en registro
+        onBlocked: () => {},
       });
       navigate('/');
     } catch (err) {
       console.error('Error al iniciar sesión automáticamente:', err);
-      navigate('/'); // aún si falla, redirige al home
+      navigate('/');
     }
   };
 
@@ -184,6 +190,18 @@ const Register = () => {
               </label>
 
               <label className="block">
+                <span>Tu fecha de nacimiento:</span>
+                <input
+                  type="date"
+                  name="fechaNacimiento"
+                  value={formData.fechaNacimiento}
+                  onChange={handleChange}
+                  className="input input-bordered w-full"
+                  required
+                />
+              </label>
+
+              <label className="block">
                 <span>Tu correo electrónico:</span>
                 <input
                   type="email"
@@ -237,6 +255,7 @@ const Register = () => {
 };
 
 export default Register;
+
 
 
 
