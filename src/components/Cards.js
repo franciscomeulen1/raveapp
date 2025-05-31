@@ -5,15 +5,6 @@ import { useNavigate } from "react-router-dom";
 export default function Cards({ eventos }) {
     const navigate = useNavigate();
 
-    // Se verifica si el evento está finalizado usando la fecha del último día
-    const esEventoFinalizado = (evento) => {
-        const dias = evento.dias;
-        const ultimaFechaStr = dias[dias.length - 1].fecha;
-        const fechaEvento = new Date(ultimaFechaStr.split('/').reverse().join('-'));
-        const fechaActual = new Date();
-        return fechaEvento < fechaActual;
-    };
-
     // Obtiene una representación de la fecha:
     // Si es un día, muestra ese día; si es múltiple, muestra el rango.
     const obtenerFechaDisplay = (evento) => {
@@ -27,13 +18,12 @@ export default function Cards({ eventos }) {
     };
 
     const handleCardClick = (evento) => {
-        navigate(`/evento/${evento.nombreEvento}`, { state: { evento } });
+        navigate(`/evento/${evento.id}`, { state: { evento } });
     };
 
     return (
         <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
             {eventos.map(evento => {
-                const eventoFinalizado = esEventoFinalizado(evento);
                 const fechaDisplay = obtenerFechaDisplay(evento);
                 return (
                     <Card key={evento.id}
@@ -43,7 +33,6 @@ export default function Cards({ eventos }) {
                         lgbt={evento.lgbt}
                         after={evento.after}
                         onClick={() => handleCardClick(evento)}
-                        eventoFinalizado={eventoFinalizado}
                     />
                 );
             })}

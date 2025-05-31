@@ -1,5 +1,4 @@
 import '../estilos.css';
-// import '../index.css';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as whiteHeart } from '@fortawesome/free-regular-svg-icons';
@@ -16,7 +15,7 @@ export default function Card(props) {
     return (
         <div className="p-5 inline-flex relative cursor-pointer">
             <div className="card w-96 bg-base-100 shadow-xl" onClick={props.onClick}>
-                <div className={`image-container ${props.eventoFinalizado ? 'evento-finalizado' : ''}`}>
+                <div className="image-container">
                     <figure>
                         <img src="https://t3.ftcdn.net/jpg/02/87/35/70/240_F_287357045_Ib0oYOxhotdjOEHi0vkggpZTQCsz0r19.jpg" alt="Evento" />
                     </figure>
@@ -24,9 +23,6 @@ export default function Card(props) {
                 <div className="card-body">
                     <h2 className="card-title">{props.nombre}</h2>
                     <p>{props.fecha}</p>
-                    {props.eventoFinalizado && (
-                        <p className="text-red-500 font-bold">Evento finalizado</p>
-                    )}
                     <div className="card-actions justify-end">
                         <button onClick={handleLikeClick}>
                             <FontAwesomeIcon icon={isLiked ? redHeart : whiteHeart} size="lg" className={`heart ${isLiked ? 'liked' : ''}`} />
@@ -50,6 +46,7 @@ export default function Card(props) {
         </div>
     );
 }
+
 
 
 // import '../estilos.css';

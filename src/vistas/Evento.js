@@ -1,33 +1,83 @@
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import api from '../componenteapi/api';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import TablaDeEntradas from '../components/TablaDeEntradas';
 import Resenias from '../components/Resenias';
 import { BsGeoAltFill } from "react-icons/bs";
-import { useLocation, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
 import RainbowIcon from "../iconos/rainbow.png";
 import AfterIcon from "../iconos/confetti.png";
 
 export default function Evento() {
-  window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
-
+  window.scrollTo(0, 0); // Siempre arranca arriba
+  const { id } = useParams();
   const location = useLocation();
-  const evento = location.state.evento;
   const navigate = useNavigate();
+
+  const [evento, setEvento] = useState(location.state?.evento || null);
+  const [loading, setLoading] = useState(!evento);
+
+  useEffect(() => {
+    const fetchEvento = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/Evento/GetEventos?IdEvento=${id}`);
+        const eventosApi = response.data.eventos;
+
+        if (eventosApi && eventosApi.length > 0) {
+          const eventoData = eventosApi[0];
+
+          const procesado = {
+            id: eventoData.idEvento,
+            nombreEvento: eventoData.nombre,
+            dias: eventoData.fechas.map(fecha => ({
+              fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
+              horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+              horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+              entradas: fecha.entradas || []
+            })),
+            generos: eventoData.genero || [],
+            artistas: eventoData.artistas || [],
+            lgbt: eventoData.isLgbt,
+            after: eventoData.isAfter,
+            provincia: eventoData.domicilio.provincia.nombre,
+            municipio: eventoData.domicilio.municipio.nombre,
+            localidad: eventoData.domicilio.localidad.nombre,
+            direccion: eventoData.domicilio.direccion,
+            descripcion: eventoData.descripcion,
+            imagen: eventoData.media && eventoData.media.length > 0 ? eventoData.media[0].imagen : null
+          };
+
+          setEvento(procesado);
+        } else {
+          setEvento(null);
+        }
+      } catch (error) {
+        console.error('Error al cargar evento:', error);
+        setEvento(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!evento) {
+      fetchEvento();
+    }
+  }, [id, evento]);
 
   const handleComoLlegarClick = (nombreEvento, direccion) => {
     navigate(`/comollegar/${nombreEvento}`, { state: { nombreEvento, direccion } });
   };
 
-  // Handler para el submit del formulario único de compra
   const handleComprarSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const purchaseItems = [];
     let subtotal = 0;
 
-    // Recorremos cada día y cada entrada para extraer la cantidad seleccionada
     evento.dias.forEach((dia, diaIndex) => {
       dia.entradas.forEach((entrada, ticketIndex) => {
         const fieldName = `dia-${diaIndex}-entrada-${ticketIndex}`;
@@ -46,13 +96,28 @@ export default function Evento() {
       });
     });
 
-    // Ejemplo: se agrega un cargo por servicio fijo (puedes calcularlo como necesites)
     const serviceFee = 1000;
     const total = subtotal + serviceFee;
 
-    // Se redirige a la página de Comprar con los datos de la compra
     navigate('/comprar', { state: { evento, purchaseItems, subtotal, serviceFee, total } });
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <span className="ml-3 text-lg">Cargando evento...</span>
+      </div>
+    );
+  }
+
+  if (!evento) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl font-semibold">No se encontró el evento.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -68,7 +133,7 @@ export default function Evento() {
           <div className='order-2 lg:order-1 row-span-2'>
             <div className='mb-6 flex justify-center'>
               <img
-                src="https://www.dondeir.com/wp-content/uploads/2018/09/fiesta-1.jpg"
+                src={evento.imagen || "https://www.dondeir.com/wp-content/uploads/2018/09/fiesta-1.jpg"}
                 width="450"
                 height="auto"
                 alt="imagen de evento"
@@ -84,7 +149,6 @@ export default function Evento() {
               </p>
             </div>
 
-            {/* Se muestran los días del evento con fecha y horario */}
             {evento.dias.map((dia, index) => (
               <div key={index} className='flex flex-col mb-4'>
                 <div className='flex items-center gap-x-2'>
@@ -124,7 +188,6 @@ export default function Evento() {
               )}
             </div>
 
-            {/* Sección de compra: se agrupan las tablas de entradas en un único formulario */}
             <form onSubmit={handleComprarSubmit} className='mt-5'>
               {evento.dias.map((dia, index) => (
                 <div key={index} className="mb-6">
@@ -140,14 +203,12 @@ export default function Evento() {
             </form>
           </div>
 
-          {/* Sección de Descripción */}
           <div className='order-3 lg:order-2'>
             <div className='mb-6'>
               <p>{evento.descripcion}</p>
             </div>
           </div>
 
-          {/* iframe SoundCloud */}
           <div className='order-4 lg:order-3'>
             <iframe
               title="musicaSoundCloud"
@@ -161,7 +222,6 @@ export default function Evento() {
             ></iframe>
           </div>
 
-          {/* iframe YouTube */}
           <div className='order-5 lg:order-4'>
             <iframe
               height="315"
@@ -174,7 +234,6 @@ export default function Evento() {
             ></iframe>
           </div>
 
-          {/* Sección de Reviews */}
           <div className='order-6 lg:order-5'>
             <Resenias />
           </div>
