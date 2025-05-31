@@ -26,7 +26,7 @@ const InputUbicacionUsuario = ({ initialProvincia, initialMunicipio, initialLoca
   useEffect(() => {
     if (selectedProvincia) {
       if (selectedProvincia.nombre === 'Ciudad Autónoma de Buenos Aires') {
-        const caba = { nombre: 'Ciudad Autónoma de Buenos Aires', id: '020' };
+        const caba = { nombre: 'Ciudad Autónoma de Buenos Aires', id: '02' };
         setMunicipios([caba]);
         setSelectedMunicipio(caba);
         setLocalidades([caba]);
@@ -70,7 +70,7 @@ const InputUbicacionUsuario = ({ initialProvincia, initialMunicipio, initialLoca
         })
         .catch(err => console.error('Error fetching localidades:', err));
     } else if (selectedProvincia?.nombre === 'Ciudad Autónoma de Buenos Aires') {
-      const caba = { nombre: 'Ciudad Autónoma de Buenos Aires', id: '020' };
+      const caba = { nombre: 'Ciudad Autónoma de Buenos Aires', id: '02' };
       setLocalidades([caba]);
       setSelectedLocalidad(caba);
     } else {

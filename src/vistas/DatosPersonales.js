@@ -59,6 +59,35 @@ export default function DatosPersonales() {
             mdSoundcloud: userData.socials?.mdSoundcloud ?? 'string',
         };
 
+        let provinciaPayload = {
+            nombre: selectedProvincia?.nombre || '',
+            codigo: selectedProvincia?.id || ''
+        };
+        let municipioPayload = {
+            nombre: selectedMunicipio?.nombre || '',
+            codigo: selectedMunicipio?.id || ''
+        };
+        let localidadPayload = {
+            nombre: selectedLocalidad?.nombre || '',
+            codigo: selectedLocalidad?.id || ''
+        };
+
+        // 🚨 Si la provincia es CABA, forzamos que todo tenga ese valor
+        if (selectedProvincia?.nombre === 'Ciudad Autónoma de Buenos Aires') {
+            provinciaPayload = {
+                nombre: 'Ciudad Autónoma de Buenos Aires',
+                codigo: '02'
+            };
+            municipioPayload = {
+                nombre: 'Ciudad Autónoma de Buenos Aires',
+                codigo: '02'
+            };
+            localidadPayload = {
+                nombre: 'Ciudad Autónoma de Buenos Aires',
+                codigo: '02'
+            };
+        }
+
         const payload = {
             idUsuario: user.id,
             nombre: formData.nombre,
@@ -73,9 +102,9 @@ export default function DatosPersonales() {
             cdRoles: userData.roles ? userData.roles.map(r => r.cdRol) : [],
             socials: socialsSafe,
             domicilio: {
-                provincia: { nombre: selectedProvincia?.nombre || '', codigo: selectedProvincia?.id || '' },
-                municipio: { nombre: selectedMunicipio?.nombre || '', codigo: selectedMunicipio?.id || '' },
-                localidad: { nombre: selectedLocalidad?.nombre || '', codigo: selectedLocalidad?.id || '' },
+                provincia: provinciaPayload,
+                municipio: municipioPayload,
+                localidad: localidadPayload,
                 direccion: formData.direccion,
                 latitud: 0,
                 longitud: 0,
@@ -92,6 +121,7 @@ export default function DatosPersonales() {
             alert('Error al actualizar los datos. Intenta más tarde.');
         }
     };
+
 
     if (!userData) return <p className="p-10 animate-pulse text-center text-lg">Cargando datos...</p>;
 
