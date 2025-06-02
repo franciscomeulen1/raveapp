@@ -10,7 +10,7 @@ function Login() {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  
+
   // estado local para el modal de bloqueo
   const [blocked, setBlocked] = useState(false);
   const [error, setError] = useState('');
@@ -29,7 +29,7 @@ function Login() {
         setEmail('');
         setPassword('');
         document.getElementById('my-modal-login').checked = false;
-      
+
         // Redirige si había un destino guardado
         const redirectTo = localStorage.getItem('postLoginRedirect');
         if (redirectTo) {
@@ -44,8 +44,18 @@ function Login() {
 
   return (
     <>
-      {/* Botón que abre el modal */}
-      <label htmlFor="my-modal-login" className="btn modal-button btn-primary">Ingresar</label>
+      {/* Botón que abre el modal. Si estamos parados en la pagina de register, redirecciona al inicio */}
+      <label
+        htmlFor="my-modal-login"
+        className="btn modal-button btn-primary"
+        onClick={() => {
+          if (window.location.pathname === '/register') {
+            localStorage.setItem('postLoginRedirect', '/');
+          }
+        }}
+      >
+        Ingresar
+      </label>
 
       {/* Modal */}
       <input type="checkbox" id="my-modal-login" className="modal-toggle" />

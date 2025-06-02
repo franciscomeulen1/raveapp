@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../componenteapi/api';
@@ -6,6 +6,16 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  if (user) {
+    navigate('/');
+  }
+}, [user, navigate]);
+
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -21,8 +31,8 @@ const Register = () => {
   const [error, setError] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
