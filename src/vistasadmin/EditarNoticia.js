@@ -14,6 +14,8 @@ const EditarNoticia = () => {
     // Se inicializa la imagen como cadena vacía para evitar conflictos con null
     // eslint-disable-next-line
     const [imagen, setImagen] = useState('');
+    const [urlEvento, setUrlEvento] = useState('');
+    const [errorUrl, setErrorUrl] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -26,6 +28,7 @@ const EditarNoticia = () => {
                     setTitulo(noticiaEncontrada.titulo || '');
                     setContenido(noticiaEncontrada.contenido || '');
                     setDtPublicado(noticiaEncontrada.dtPublicado || '');
+                    setUrlEvento(noticiaEncontrada.urlEvento || '');
                 }
             } catch (error) {
                 console.error('Error al obtener la noticia:', error);
@@ -35,7 +38,20 @@ const EditarNoticia = () => {
         obtenerNoticia();
     }, [id]);
 
+    const esUrlValida = (url) => {
+        const pattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+        return pattern.test(url);
+    };
+
     const handleEditarNoticia = async () => {
+        // Validar URL solo si se ingresó algo
+        if (urlEvento && !esUrlValida(urlEvento)) {
+            setErrorUrl('La URL ingresada no es válida. Asegúrate de que comience con http:// o https://');
+            return;
+        } else {
+            setErrorUrl('');
+        }
+
         try {
             console.log('Actualizando noticia con datos:', {
                 idNoticia: id,
@@ -43,6 +59,7 @@ const EditarNoticia = () => {
                 contenido,
                 imagen,
                 dtPublicado,
+                urlEvento,
             });
 
             const response = await api.put('/noticia', {
@@ -51,6 +68,7 @@ const EditarNoticia = () => {
                 contenido,
                 imagen,
                 dtPublicado,
+                urlEvento,
             });
 
             console.log('Respuesta del PUT:', response.data);
@@ -72,6 +90,7 @@ const EditarNoticia = () => {
                             Editar noticia:
                         </h1>
 
+                        {/* Título */}
                         <label className="font-semibold">Título de la noticia:</label>
                         <input
                             type="text"
@@ -81,6 +100,7 @@ const EditarNoticia = () => {
                             onChange={(e) => setTitulo(e.target.value)}
                         />
 
+                        {/* Imagen */}
                         <label className="font-semibold">Editar imagen:</label>
                         <div className="flex items-center gap-4 mb-4">
                             <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-md">
@@ -89,6 +109,7 @@ const EditarNoticia = () => {
                             <button className="border px-4 py-2 rounded-md">Seleccionar imagen</button>
                         </div>
 
+                        {/* Contenido */}
                         <label className="font-semibold">Cuerpo de la noticia:</label>
                         <textarea
                             className="w-full p-2 border rounded-md mb-4"
@@ -98,14 +119,18 @@ const EditarNoticia = () => {
                             onChange={(e) => setContenido(e.target.value)}
                         />
 
-                        <p className="font-semibold">
-                            Noticia asociada a evento: XXXXXXXXXXXXXXXXX
-                        </p>
-
-                        <label className="font-semibold">Asociar noticia a evento:</label>
-                        <button className="border px-4 py-2 rounded-md mb-4">
-                            Seleccionar evento
-                        </button>
+                        {/* URL evento */}
+                        <label className="font-semibold">
+                            Editar URL del evento asociado: <span className="font-normal italic">(opcional)</span>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="https://evento.com/ejemplo"
+                            className="w-full p-2 border rounded-md mb-6"
+                            value={urlEvento}
+                            onChange={(e) => setUrlEvento(e.target.value)}
+                        />
+                        {errorUrl && <p className="text-red-600 text-sm mb-4">{errorUrl}</p>}
 
                         <div>
                             <button
@@ -142,6 +167,8 @@ const EditarNoticia = () => {
 };
 
 export default EditarNoticia;
+
+
 
 
 
