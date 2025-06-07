@@ -28,7 +28,8 @@ const InputDeArtistas = ({ onSeleccionarArtistas }) => {
 
     const filteredOptions = artistas
         .filter(artist => !selectedArtists.find(a => a.id === artist.idArtista))
-        .filter(artist => artist.nombre.toLowerCase().startsWith(inputValue.toLowerCase()));
+        .filter(artist => artist.nombre.toLowerCase().startsWith(inputValue.toLowerCase()))
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
