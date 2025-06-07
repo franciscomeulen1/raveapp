@@ -38,6 +38,7 @@ function CrearEvento() {
     nombreFiestaNueva: null,
     valido: true
   });
+  const [ubicacionEvento, setUbicacionEvento] = useState(null);
 
   const handleFechaHoraEventoChange = (nuevasFechas) => {
     setFechaHoraEvento(nuevasFechas);
@@ -98,6 +99,7 @@ function CrearEvento() {
         artistas: idsArtistas,
         generos: generosSeleccionados, // array de cdGenero
         idFiesta: idFiestaFinal, // puede ser null si no es recurrente
+        domicilio: ubicacionEvento,
       };
 
       await api.post('/Evento/CrearEvento', nuevoEvento);
@@ -141,7 +143,7 @@ function CrearEvento() {
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
           <h3 className='text-xl font-bold'>Ubicación del evento:</h3>
-          <div className='mb-6'><InputUbicacionEvento /></div>
+          <div className='mb-6'><InputUbicacionEvento onUbicacionChange={setUbicacionEvento} /></div>
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
