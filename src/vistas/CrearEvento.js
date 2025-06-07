@@ -13,12 +13,16 @@ import InputEsEventoRecurrente from '../components/componentsCrearEvento/InputEs
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
 import api from '../componenteapi/api';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 function CrearEvento() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { user } = useContext(AuthContext);
 
   // eslint-disable-next-line no-unused-vars
   const [diasEvento, setDiasEvento] = useState(1);
@@ -27,6 +31,13 @@ function CrearEvento() {
   const [fechaHoraEvento, setFechaHoraEvento] = useState({ inicio: '', fin: '' });
   // eslint-disable-next-line no-unused-vars
   const [artistasSeleccionados, setArtistasSeleccionados] = useState([]);
+  const [generosSeleccionados, setGenerosSeleccionados] = useState([]);
+  const [recurrenteInfo, setRecurrenteInfo] = useState({
+    esRecurrente: false,
+    idFiesta: null,
+    nombreFiestaNueva: null,
+    valido: true
+  });
 
   const handleFechaHoraEventoChange = (nuevasFechas) => {
     setFechaHoraEvento(nuevasFechas);
@@ -61,10 +72,32 @@ function CrearEvento() {
         ...idsNuevos
       ];
 
+      let idFiestaFinal = null;
+
+      if (recurrenteInfo.esRecurrente) {
+        if (recurrenteInfo.idFiesta) {
+          idFiestaFinal = recurrenteInfo.idFiesta;
+        } else if (recurrenteInfo.nombreFiestaNueva && user?.id) {
+          const response = await api.post('/Fiesta/CrearFiesta', {
+            idUsuario: user.id,
+            nombre: recurrenteInfo.nombreFiestaNueva,
+            isActivo: true,
+          });
+          idFiestaFinal = response.data.idFiesta;
+        }
+      }
+
+      if (recurrenteInfo.esRecurrente && !recurrenteInfo.valido) {
+        alert('Debes seleccionar o ingresar un nombre de fiesta recurrente.');
+        return;
+      }
+
       // 4. Crear el evento
       const nuevoEvento = {
         // otros campos del formulario
         artistas: idsArtistas,
+        generos: generosSeleccionados, // array de cdGenero
+        idFiesta: idFiestaFinal, // puede ser null si no es recurrente
       };
 
       await api.post('/Evento/CrearEvento', nuevoEvento);
@@ -91,7 +124,7 @@ function CrearEvento() {
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
-          <InputEsEventoRecurrente />
+          <InputEsEventoRecurrente onSeleccionRecurrente={setRecurrenteInfo} />
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
@@ -99,7 +132,7 @@ function CrearEvento() {
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
-          <InputGeneroMusical />
+          <InputGeneroMusical onSeleccionGeneros={setGenerosSeleccionados} />
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
