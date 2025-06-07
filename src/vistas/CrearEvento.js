@@ -24,6 +24,7 @@ function CrearEvento() {
 
   const { user } = useContext(AuthContext);
 
+  const [nombreEvento, setNombreEvento] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [diasEvento, setDiasEvento] = useState(1);
   // Para fecha y hora de inicio y fin del evento.
@@ -39,6 +40,8 @@ function CrearEvento() {
     valido: true
   });
   const [ubicacionEvento, setUbicacionEvento] = useState(null);
+  const [afterOLgbt, setAfterOLgbt] = useState({ isAfter: false, isLgbt: false });
+  const [descripcionEvento, setDescripcionEvento] = useState('');
 
   const handleFechaHoraEventoChange = (nuevasFechas) => {
     setFechaHoraEvento(nuevasFechas);
@@ -88,20 +91,76 @@ function CrearEvento() {
         }
       }
 
+      if (!nombreEvento.trim()) {
+        alert('Debes ingresar un nombre para el evento.');
+        return;
+      }
+
+      if (!ubicacionEvento) {
+        alert('Debes seleccionar la ubicación del evento.');
+        return;
+      }
+
+      if (!generosSeleccionados.length) {
+        alert('Debes seleccionar al menos un género musical.');
+        return;
+      }
+
+      if (!artistasSeleccionados.length) {
+        alert('Debes seleccionar al menos un artista.');
+        return;
+      }
+
+      if (!descripcionEvento.trim()) {
+        alert('Debes ingresar una descripción para el evento.');
+        return;
+      }
+
+      if (!fechaHoraEvento || fechaHoraEvento.length < diasEvento) {
+        alert('Debes ingresar fecha y hora para todos los días del evento.');
+        return;
+      }
+
       if (recurrenteInfo.esRecurrente && !recurrenteInfo.valido) {
         alert('Debes seleccionar o ingresar un nombre de fiesta recurrente.');
         return;
       }
 
+      // Obtener inicio y fin del evento (primer y último día)
+      const inicioEvento = fechaHoraEvento[0]?.inicio || '';
+      const finEvento = fechaHoraEvento[diasEvento - 1]?.fin || '';
+
+      // Construir el array de fechas
+      const fechas = fechaHoraEvento.map((dia, index) => ({
+        fechaInicio: dia.inicio,
+        fechaFin: dia.fin,
+        fechaIncioVenta: '', // pendiente
+        fechaFinVentaGeneral: '', // pendiente
+        fechaFinVentaEB: '', // pendiente
+        estado: 1 // Estado de la fecha: Activa
+      }));
+
       // 4. Crear el evento
       const nuevoEvento = {
         // otros campos del formulario
-        artistas: idsArtistas,
-        generos: generosSeleccionados, // array de cdGenero
-        idFiesta: idFiestaFinal, // puede ser null si no es recurrente
+        idUsuario: user.id,
+        idArtistas: idsArtistas,
         domicilio: ubicacionEvento,
+        nombre: nombreEvento, // se completará luego
+        descripcion: descripcionEvento,
+        genero: generosSeleccionados, // array de cdGenero
+        isAfter: afterOLgbt.isAfter,
+        isLgbt: afterOLgbt.isLgbt,
+        idFiesta: idFiestaFinal, // puede ser null si no es recurrente
+        inicioEvento,
+        finEvento,
+        fechas,
+        estado: 0, // Estado general del evento: Por aprobar
+        inicioVenta: '', // pendiente
+        finVenta: ''    // pendiente
       };
 
+      console.log('Payload que se enviará:', nuevoEvento);
       await api.post('/Evento/CrearEvento', nuevoEvento);
       alert('Evento creado correctamente');
     } catch (error) {
@@ -121,7 +180,13 @@ function CrearEvento() {
             <label className="label">
               <span className="label-text font-semibold text-lg">Nombre del evento:</span>
             </label>
-            <input type='text' placeholder="Nombre del evento" className="input input-bordered w-full max-w-lg" />
+            <input
+              type='text'
+              placeholder="Nombre del evento"
+              className="input input-bordered w-full max-w-lg"
+              value={nombreEvento}
+              onChange={(e) => setNombreEvento(e.target.value)}
+            />
           </div>
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
@@ -147,11 +212,11 @@ function CrearEvento() {
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
-          <InputAfterOLbgt />
+          <InputAfterOLbgt onSeleccion={setAfterOLgbt} />
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
-          <InputDescripcionEvento />
+          <InputDescripcionEvento onDescripcionChange={setDescripcionEvento} />
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
