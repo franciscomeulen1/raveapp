@@ -1,22 +1,41 @@
 import React, { useState, useEffect } from 'react';
 
-const InputEntradasCantPrecio = ({ diasEvento }) => {
+const InputEntradasCantPrecio = ({ diasEvento, onEntradasPorDiaChange, onEntradasChange }) => {
   const [entradas, setEntradas] = useState([]);
 
   useEffect(() => {
-    setEntradas(
-      Array.from({ length: diasEvento }, () => ({
-        generales: 0,
-        generalesEarly: 0,
-        vip: 0,
-        vipEarly: 0,
-        generalesPrice: "",
-        generalesEarlyPrice: "",
-        vipPrice: "",
-        vipEarlyPrice: "",
-      }))
-    );
-  }, [diasEvento]);
+    const nuevasEntradas = Array.from({ length: diasEvento }, () => ({
+      generales: 0,
+      generalesEarly: 0,
+      vip: 0,
+      vipEarly: 0,
+      generalesPrice: "",
+      generalesEarlyPrice: "",
+      vipPrice: "",
+      vipEarlyPrice: "",
+    }));
+    setEntradas(nuevasEntradas);
+
+    if (typeof onEntradasPorDiaChange === 'function') {
+      onEntradasPorDiaChange(Array.from({ length: diasEvento }, () => false));
+    }
+  }, [diasEvento, onEntradasPorDiaChange]);
+
+  useEffect(() => {
+    if (typeof onEntradasPorDiaChange === 'function') {
+      const hayEarlyBirdsPorDia = entradas.map(e =>
+        (e.generalesEarly > 0 && e.generalesEarlyPrice !== "") ||
+        (e.vipEarly > 0 && e.vipEarlyPrice !== "")
+      );
+      onEntradasPorDiaChange(hayEarlyBirdsPorDia);
+    }
+  }, [entradas, onEntradasPorDiaChange]);
+
+  useEffect(() => {
+    if (typeof onEntradasChange === 'function') {
+      onEntradasChange(entradas);
+    }
+  }, [entradas, onEntradasChange]);
 
   const handleEntradaChange = (diaIndex, campo, value) => {
     const newValue = parseInt(value, 10) || 0;
@@ -262,15 +281,15 @@ export default InputEntradasCantPrecio;
 //                         <div className='col-span-1'>
 //                             <h4 className='font-semibold'>Entradas generales:</h4>
 //                             <div className='flex space-x-2'>
-//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20' 
-//                                     value={diaEntradas.generales} 
+//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20'
+//                                     value={diaEntradas.generales}
 //                                     onChange={e => handleEntradaChange(index, 'generales', e.target.value)} />
 //                                 <input type='text' placeholder='Precio' className='input input-bordered w-20' />
 //                             </div>
 //                             <h4 className='font-semibold mt-3'>Entradas generales - Early Birds:</h4>
 //                             <div className='flex space-x-2'>
-//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20' 
-//                                     value={diaEntradas.generalesEarly} 
+//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20'
+//                                     value={diaEntradas.generalesEarly}
 //                                     onChange={e => handleEntradaChange(index, 'generalesEarly', e.target.value)} />
 //                                 <input type='text' placeholder='Precio' className='input input-bordered w-20' />
 //                             </div>
@@ -280,15 +299,15 @@ export default InputEntradasCantPrecio;
 //                         <div className='col-span-1'>
 //                             <h4 className='font-semibold'>Entradas VIP:</h4>
 //                             <div className='flex space-x-2'>
-//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20' 
-//                                     value={diaEntradas.vip} 
+//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20'
+//                                     value={diaEntradas.vip}
 //                                     onChange={e => handleEntradaChange(index, 'vip', e.target.value)} />
 //                                 <input type='text' placeholder='Precio' className='input input-bordered w-20' />
 //                             </div>
 //                             <h4 className='font-semibold mt-3'>Entradas VIP - Early Birds:</h4>
 //                             <div className='flex space-x-2'>
-//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20' 
-//                                     value={diaEntradas.vipEarly} 
+//                                 <input type='number' placeholder='Cantidad' className='input input-bordered w-20'
+//                                     value={diaEntradas.vipEarly}
 //                                     onChange={e => handleEntradaChange(index, 'vipEarly', e.target.value)} />
 //                                 <input type='text' placeholder='Precio' className='input input-bordered w-20' />
 //                             </div>
