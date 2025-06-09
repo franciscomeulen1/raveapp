@@ -42,13 +42,14 @@ export default function NavBar({ onFilter }) {
   };
 
   // Helpers para chequear roles
-  // const isAdmin = user?.roles.includes(1);
-  // const isOrganizador = user?.roles.includes(2);
-  // const isNormal = user?.roles.includes(0);
   const roles = user?.roles ?? [];
-  const isAdmin       = roles.includes(1);
-  const isOrganizador = roles.includes(2);
-  const isNormal      = roles.includes(0);
+  // const isAdmin       = roles.includes(1);
+  // const isOrganizador = roles.includes(2);
+  // const isNormal      = roles.includes(0);
+  const isAdmin       = roles.some(r => r.cdRol === 1);
+  const isOrganizador = roles.some(r => r.cdRol === 2);
+  const isNormal      = roles.some(r => r.cdRol === 0);
+
 
   const renderUserMenu = () => {
     if (!user) return null;

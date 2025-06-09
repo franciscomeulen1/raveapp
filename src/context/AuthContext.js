@@ -32,8 +32,10 @@ export function AuthProvider({ children }) {
       const userData = lista[0];
 
       // Chequea rol de “Control de entrada”
-      const roles = userData.roles.map(r => r.cdRol);
-      if (roles.includes(3)) {
+      // const roles = userData.roles.map(r => r.cdRol);
+      const roles = userData.roles; // ahora guardamos los objetos completos
+
+      if (roles.some(r => r.cdRol === 3)) {
         onBlocked();
         return;
       }
@@ -43,7 +45,7 @@ export function AuthProvider({ children }) {
         id:    userData.idUsuario,
         name:  userData.nombre,
         email: userData.correo,
-        roles,
+        roles, // ahora es un array de objetos con cdRol y dsRol
       };
       setUser(logged);
       localStorage.setItem('user', JSON.stringify(logged));
@@ -74,8 +76,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, logout, setUser }}>
+     {children}
     </AuthContext.Provider>
   );
 }
