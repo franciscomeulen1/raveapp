@@ -65,7 +65,7 @@ function App() {
           <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
           <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
           <Route path="/modificar-evento/:id" element={<ModifDeEvento />} />
-          <Route path="/misfiestasrecurrentes" element={<MisFiestasRecurrentes />} />
+          <Route path="/mis-fiestas-recurrentes" element={<MisFiestasRecurrentes />} />
           <Route path="/resenias-de-la-fiesta" element={<ReseniasDeLaFiesta />} />
           {/* Rutas para administrador */}
           <Route path="/eventosavalidar" element={<EventosAValidar />} />
