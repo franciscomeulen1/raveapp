@@ -52,8 +52,14 @@ function CrearEvento() {
       alert('Debes ingresar un nombre para el evento.');
       return false;
     }
-    if (!ubicacionEvento) {
-      alert('Debes seleccionar la ubicación del evento.');
+    if (
+      !ubicacionEvento ||
+      !ubicacionEvento.provincia ||
+      !ubicacionEvento.municipio ||
+      !ubicacionEvento.localidad ||
+      !ubicacionEvento.direccion.trim()
+    ) {
+      alert('Debes seleccionar provincia, municipio, localidad y completar la dirección del evento.');
       return false;
     }
     if (!generosSeleccionados.length) {
@@ -202,11 +208,12 @@ function CrearEvento() {
   };
 
   const actualizarRolAOrganizadorSiEsNecesario = async () => {
-    // if (!user?.id || !user.roles.includes(0) || user.roles.includes(2)) return;
+    // Este if evalúa si debemos evitar actualizar el rol del usuario
+    // "Si el usuario no existe, o no es 'Usuario', o ya es 'Organizador', entonces no hagas nada".
     if (
-      !user?.id ||
-      !user.roles.some(r => r.cdRol === 0) ||
-      user.roles.some(r => r.cdRol === 2)
+      !user?.id || // “Si no hay usuario logueado, o no tiene ID”
+      !user.roles.some(r => r.cdRol === 0) ||  // “Si el usuario no tiene el rol Usuario (código 0)”
+      user.roles.some(r => r.cdRol === 2) // “Si el usuario ya tiene el rol Organizador (código 2)”
     ) return;
 
     // 1. Obtener datos completos del usuario

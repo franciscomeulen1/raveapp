@@ -26,6 +26,7 @@ const InputDeArtistas = ({ onSeleccionarArtistas }) => {
         onSeleccionarArtistas(selectedArtists);
     }, [selectedArtists, onSeleccionarArtistas]);
 
+    // Filtrar artistas disponibles: no repetir seleccionados y matchear por el input
     const filteredOptions = artistas
         .filter(artist => !selectedArtists.find(a => a.id === artist.idArtista))
         .filter(artist => artist.nombre.toLowerCase().startsWith(inputValue.toLowerCase()))
@@ -36,13 +37,40 @@ const InputDeArtistas = ({ onSeleccionarArtistas }) => {
         setShowMenu(event.target.value.length > 0);
     };
 
+    // Capitaliza las primeras letras de cada palabra del string
+    const toTitleCase = (str) =>
+        str
+            .toLowerCase()
+            .split(' ')
+            .filter(Boolean)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+
     const handleKeyDown = (event) => {
         if (event.key === 'Enter' && inputValue.trim() !== '') {
+            event.preventDefault(); // evitar que se envíe un form
+
             const textoIngresado = inputValue.trim();
+
+            // Buscar si ya existe en la base
             const artistExistente = artistas.find(
-                a => a.nombre.toLowerCase() === textoIngresado.toLowerCase()
+                a => a.nombre.trim().toLowerCase() === textoIngresado.toLowerCase()
             );
-            if (artistExistente && !selectedArtists.find(a => a.id === artistExistente.idArtista)) {
+
+            // Buscar si ya está seleccionado, sea nuevo o existente
+            const yaSeleccionado = selectedArtists.find(
+                a => a.nombre.trim().toLowerCase() === textoIngresado.toLowerCase()
+            );
+
+            if (yaSeleccionado) {
+                // Ya está en la lista seleccionada, no se agrega de nuevo
+                setInputValue('');
+                setShowMenu(false);
+                return;
+            }
+
+            if (artistExistente) {
+                // Si existe, lo agregamos con su ID y marcamos como no nuevo
                 setSelectedArtists([
                     ...selectedArtists,
                     {
@@ -51,17 +79,19 @@ const InputDeArtistas = ({ onSeleccionarArtistas }) => {
                         esNuevo: false
                     }
                 ]);
-            } else if (!selectedArtists.find(a => a.nombre.toLowerCase() === textoIngresado.toLowerCase())) {
-                // Artista nuevo
+            } else {
+                // Artista nuevo: capitalizamos su nombre y lo marcamos como nuevo
+                const nombreNormalizado = toTitleCase(textoIngresado);
                 setSelectedArtists([
                     ...selectedArtists,
                     {
                         id: null,
-                        nombre: textoIngresado,
+                        nombre: nombreNormalizado,
                         esNuevo: true
                     }
                 ]);
             }
+
             setInputValue('');
             setShowMenu(false);
         }
@@ -96,7 +126,7 @@ const InputDeArtistas = ({ onSeleccionarArtistas }) => {
                 className="input input-bordered w-full max-w-xs mb-2"
             />
             {showMenu && (
-                <div className="bg-white border rounded shadow w-full max-w-xs max-h-60 overflow-y-auto">
+                <div className="bg-white border rounded shadow w-full max-w-xs max-h-60 overflow-y-auto z-10">
                     {filteredOptions.map((option, index) => (
                         <div
                             key={index}
@@ -126,6 +156,8 @@ const InputDeArtistas = ({ onSeleccionarArtistas }) => {
 };
 
 export default InputDeArtistas;
+
+
 
 
 
