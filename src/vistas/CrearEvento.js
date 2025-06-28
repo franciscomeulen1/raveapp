@@ -133,8 +133,7 @@ function CrearEvento() {
       fechaInicio: dia.inicio,
       fechaFin: dia.fin,
       fechaIncioVenta: configFechasVenta[index]?.inicioVenta || '',
-      fechaFinVentaGeneral: configFechasVenta[index]?.finVentaGeneralVip || '',
-      fechaFinVentaEB: configFechasVenta[index]?.finVentaEarlyBirds || '',
+      fechaFinVenta: configFechasVenta[index]?.finVentaGeneralVip || '',
       estado: 1
     }));
 
@@ -148,7 +147,7 @@ function CrearEvento() {
       isAfter: afterOLgbt.isAfter,
       isLgbt: afterOLgbt.isLgbt,
       inicioVenta: fechas[0]?.fechaIncioVenta || '',
-      finVenta: fechas[fechas.length - 1]?.fechaFinVentaGeneral || '',
+      finVenta: fechas[fechas.length - 1]?.fechaFinVenta || '',
       inicioEvento,
       finEvento,
       estado: 0,

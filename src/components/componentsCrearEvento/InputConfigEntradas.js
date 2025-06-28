@@ -7,7 +7,6 @@ const InputConfigEntradas = ({ diasEvento, entradasPorDia, onConfigEntradasChang
   useEffect(() => {
     const nuevasConfigs = Array.from({ length: diasEvento }, () => ({
       inicioVenta: '',
-      finVentaEarlyBirds: '',
       finVentaGeneralVip: ''
     }));
     setConfigEntradas(nuevasConfigs);
@@ -47,23 +46,6 @@ const InputConfigEntradas = ({ diasEvento, entradasPorDia, onConfigEntradasChang
               className='input input-bordered w-full max-w-md'
             />
           </div>
-
-          {entradasPorDia?.[index] && (
-            <>
-              <h4 className="font-semibold mt-4">Vender Early Birds hasta:</h4>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-semibold text-base">Fecha y hora:</span>
-                </label>
-                <input
-                  type="datetime-local"
-                  value={config.finVentaEarlyBirds}
-                  onChange={e => handleConfigChange(index, 'finVentaEarlyBirds', e.target.value)}
-                  className="input input-bordered w-full max-w-md"
-                />
-              </div>
-            </>
-          )}
 
           <h4 className='font-semibold mt-4'>Vender Generales/Vip hasta:</h4>
           <div className='form-control'>
