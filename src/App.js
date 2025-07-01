@@ -61,7 +61,7 @@ function App() {
           <Route path="/datospersonales" element={<DatosPersonales />} />
           <Route path="/entrada-adquirida" element={<EntradaAdquirida />} />
           {/* Rutas para organizadores */}
-          <Route path="/miseventos" element={<MisEventos />} />
+          <Route path="/mis-eventos-creados" element={<MisEventos />} />
           <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
           <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
           <Route path="/modificar-evento/:id" element={<ModifDeEvento />} />
