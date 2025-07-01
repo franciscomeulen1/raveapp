@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-const InputFechaHoraEvento = ({ diasEvento, onFechaHoraChange }) => {
+const InputFechaHoraEvento = ({ diasEvento, onFechaHoraChange, fechasIniciales = [] }) => {
     const [fechas, setFechas] = useState([]);
 
     useEffect(() => {
-        // Inicializa las fechas según la cantidad de días seleccionados
-        setFechas(Array.from({ length: diasEvento }, () => ({ inicio: '', fin: '' })));
-    }, [diasEvento]);
+        if (fechasIniciales.length) {
+            setFechas(fechasIniciales);
+            onFechaHoraChange(fechasIniciales);
+        } else {
+            const nuevas = Array.from({ length: diasEvento }, () => ({ inicio: '', fin: '' }));
+            setFechas(nuevas);
+            onFechaHoraChange(nuevas);
+        }
+    }, [diasEvento, fechasIniciales, onFechaHoraChange]);
 
     const handleChange = (index, tipo, value) => {
         const nuevasFechas = [...fechas];
@@ -52,53 +58,53 @@ const InputFechaHoraEvento = ({ diasEvento, onFechaHoraChange }) => {
 export default InputFechaHoraEvento;
 
 
-// import React, { useState } from 'react';
+// import React, { useState, useEffect } from 'react';
 
-// const InputFechaHoraEvento = ({ onFechaHoraChange }) => {
+// const InputFechaHoraEvento = ({ diasEvento, onFechaHoraChange }) => {
+//     const [fechas, setFechas] = useState([]);
 
-//     const [inicioEvento, setInicioEvento] = useState('');
-//     const [finEvento, setFinEvento] = useState('');
+//     useEffect(() => {
+//         // Inicializa las fechas según la cantidad de días seleccionados
+//         setFechas(Array.from({ length: diasEvento }, () => ({ inicio: '', fin: '' })));
+//     }, [diasEvento]);
 
-//     // Función para actualizar fechas y notificarlas al padre (CrearEvento.js)
-//     const handleChange = (tipo, value) => {
-//         if (tipo === 'inicio') {
-//             setInicioEvento(value);
-//             onFechaHoraChange({ inicio: value, fin: finEvento });
-//         } else {
-//             setFinEvento(value);
-//             onFechaHoraChange({ inicio: inicioEvento, fin: value });
-//         }
+//     const handleChange = (index, tipo, value) => {
+//         const nuevasFechas = [...fechas];
+//         nuevasFechas[index][tipo] = value;
+//         setFechas(nuevasFechas);
+//         onFechaHoraChange(nuevasFechas);
 //     };
 
 //     return (
 //         <div>
 //             <h3 className='font-bold text-lg'>Fecha y hora del evento:</h3>
-
-//             {/* FECHA Y HORA DE INICIO */}
-//             <div className='form-control'>
-//                 <label className='label'>
-//                     <span className='label-text font-semibold text-lg'>Fecha y hora de inicio del evento:</span>
-//                 </label>
-//                 <input
-//                     type='datetime-local'
-//                     value={inicioEvento}
-//                     onChange={e => handleChange('inicio', e.target.value)}
-//                     className='input input-bordered w-full max-w-md'
-//                 />
-//             </div>
-
-//             {/* FECHA Y HORA DE FIN */}
-//             <div className='form-control mt-4'>
-//                 <label className='label'>
-//                     <span className='label-text font-semibold text-lg'>Fecha y hora de finalización del evento:</span>
-//                 </label>
-//                 <input
-//                     type='datetime-local'
-//                     value={finEvento}
-//                     onChange={e => handleChange('fin', e.target.value)}
-//                     className='input input-bordered w-full max-w-md'
-//                 />
-//             </div>
+//             {fechas.map((fecha, index) => (
+//                 <div key={index} className='mb-4'>
+//                     {diasEvento > 1 && <h4 className='font-semibold'>Día {index + 1}:</h4>}
+//                     <div className='form-control'>
+//                         <label className='label'>
+//                             <span className='label-text font-semibold text-lg'>Inicio:</span>
+//                         </label>
+//                         <input
+//                             type='datetime-local'
+//                             value={fecha.inicio}
+//                             onChange={e => handleChange(index, 'inicio', e.target.value)}
+//                             className='input input-bordered w-full max-w-md'
+//                         />
+//                     </div>
+//                     <div className='form-control mt-2'>
+//                         <label className='label'>
+//                             <span className='label-text font-semibold text-lg'>Finalización:</span>
+//                         </label>
+//                         <input
+//                             type='datetime-local'
+//                             value={fecha.fin}
+//                             onChange={e => handleChange(index, 'fin', e.target.value)}
+//                             className='input input-bordered w-full max-w-md'
+//                         />
+//                     </div>
+//                 </div>
+//             ))}
 //         </div>
 //     );
 // };
