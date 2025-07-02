@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import InputDeArtistas from '../components/componentsCrearEvento/InputDeArtistas';
@@ -13,7 +13,6 @@ import InputEsEventoRecurrente from '../components/componentsCrearEvento/InputEs
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
 import api from '../componenteapi/api';
-import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 function CrearEvento() {
@@ -43,9 +42,25 @@ function CrearEvento() {
   const [configFechasVenta, setConfigFechasVenta] = useState([]);
   const [entradasPorDia, setEntradasPorDia] = useState([]);
 
+  const fechaAnteriorRef = useRef();
+
   const handleFechaHoraEventoChange = (nuevasFechas) => {
-    setFechaHoraEvento(nuevasFechas);
+    const actualStr = JSON.stringify(nuevasFechas);
+    const anteriorStr = JSON.stringify(fechaAnteriorRef.current);
+
+    if (actualStr !== anteriorStr) {
+      fechaAnteriorRef.current = nuevasFechas;
+      setFechaHoraEvento(nuevasFechas);
+    }
   };
+
+  const handleEntradasPorDiaChange = useCallback((datos) => {
+    setHayEarlyBirdsPorDia(datos);
+  }, []);
+
+  const handleEntradasChange = useCallback((datos) => {
+    setEntradasPorDia(datos);
+  }, []);
 
   const validarFormulario = () => {
     if (!nombreEvento.trim()) {
@@ -357,8 +372,8 @@ function CrearEvento() {
 
           <InputEntradasCantPrecio
             diasEvento={diasEvento}
-            onEntradasPorDiaChange={setHayEarlyBirdsPorDia}
-            onEntradasChange={setEntradasPorDia}
+            onEntradasPorDiaChange={handleEntradasPorDiaChange}
+            onEntradasChange={handleEntradasChange}
           />
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />

@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const InputEntradasCantPrecio = ({ diasEvento, onEntradasPorDiaChange, onEntradasChange, entradasIniciales = [] }) => {
   const [entradas, setEntradas] = useState([]);
 
-  // Inicialización (una sola vez)
+  // Referencias para evitar loops infinitos
+  const prevEntradasRef = useRef();
+  const prevHayEBRef = useRef();
+
+  // Inicialización
   useEffect(() => {
+    if (entradas.length > 0) return;
+
     if (entradasIniciales.length > 0) {
       setEntradas(entradasIniciales);
+      prevEntradasRef.current = entradasIniciales;
     } else {
       const nuevasEntradas = Array.from({ length: diasEvento }, () => ({
         generales: 0,
@@ -19,25 +26,40 @@ const InputEntradasCantPrecio = ({ diasEvento, onEntradasPorDiaChange, onEntrada
         vipEarlyPrice: '',
       }));
       setEntradas(nuevasEntradas);
-      if (typeof onEntradasPorDiaChange === 'function') {
-        onEntradasPorDiaChange(Array.from({ length: diasEvento }, () => false));
-      }
-    }
-  }, [diasEvento, entradasIniciales, onEntradasPorDiaChange]);
 
+      const inicial = nuevasEntradas.map(() => false);
+      if (typeof onEntradasPorDiaChange === 'function') {
+        onEntradasPorDiaChange(inicial);
+      }
+      prevHayEBRef.current = inicial;
+      prevEntradasRef.current = nuevasEntradas;
+    }
+  }, [diasEvento, entradasIniciales, onEntradasPorDiaChange, entradas.length]);
+
+
+  // Notificar cambios en early birds por día
   useEffect(() => {
     if (typeof onEntradasPorDiaChange === 'function') {
-      const hayEarlyBirdsPorDia = entradas.map(e =>
+      const nuevo = entradas.map(e =>
         (e.generalesEarly > 0 && e.generalesEarlyPrice !== '') ||
         (e.vipEarly > 0 && e.vipEarlyPrice !== '')
       );
-      onEntradasPorDiaChange(hayEarlyBirdsPorDia);
+      const anterior = prevHayEBRef.current;
+      if (JSON.stringify(nuevo) !== JSON.stringify(anterior)) {
+        onEntradasPorDiaChange(nuevo);
+        prevHayEBRef.current = nuevo;
+      }
     }
   }, [entradas, onEntradasPorDiaChange]);
 
+  // Notificar cambios en las entradas completas
   useEffect(() => {
     if (typeof onEntradasChange === 'function') {
-      onEntradasChange(entradas);
+      const anterior = prevEntradasRef.current;
+      if (JSON.stringify(entradas) !== JSON.stringify(anterior)) {
+        onEntradasChange(entradas);
+        prevEntradasRef.current = entradas;
+      }
     }
   }, [entradas, onEntradasChange]);
 
@@ -163,6 +185,7 @@ const InputEntradasCantPrecio = ({ diasEvento, onEntradasPorDiaChange, onEntrada
 };
 
 export default InputEntradasCantPrecio;
+
 
 
 // import React, { useState, useEffect } from 'react';
