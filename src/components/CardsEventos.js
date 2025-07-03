@@ -1,7 +1,7 @@
 import React from 'react';
-import Card from './Card';
+import CardEvento from './CardEvento';
 
-export default function Cards({ eventos }) {
+export default function CardsEventos({ eventos }) {
     return (
         <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
             {eventos.map(evento => {
@@ -10,7 +10,7 @@ export default function Cards({ eventos }) {
                     : `${evento.dias[0].fecha} - ${evento.dias[evento.dias.length - 1].fecha}`;
 
                 return (
-                    <Card
+                    <CardEvento
                         key={evento.id}
                         id={evento.id}
                         nombre={evento.nombreEvento}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
-import Cards from '../components/Cards';
+import CardsEventos from '../components/CardsEventos';
 import Footer from '../components/Footer';
 import Carousel from '../components/Carousel';
 import api from '../componenteapi/api';
@@ -101,7 +101,7 @@ function Inicio() {
               <p className="text-gray-500">¡Vuelve pronto para descubrir nuevas fiestas!</p>
             </div>
           ) : (
-            <Cards eventos={filteredEventos} />
+            <CardsEventos eventos={filteredEventos} />
           )}
         </div>
       </div>

@@ -47,7 +47,7 @@ const CancelarEvento = () => {
                             <p className="mt-2 text-red-600">* Esta operación no puede ser reversada.</p>
 
                             <button className="btn btn-error mt-6 mr-4" onClick={handleCancel}>Cancelar Evento</button>
-                            <button className="btn btn-info mt-6" onClick={() => navigate('/miseventos')}>Volver</button>
+                            <button className="btn btn-info mt-6" onClick={() => navigate('/mis-eventos-creados')}>Volver</button>
 
                         </div>
                     </div>

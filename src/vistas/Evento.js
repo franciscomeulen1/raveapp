@@ -143,9 +143,15 @@ export default function Evento() {
 
             <div className='flex items-center gap-x-1 mb-4'>
               <AiFillSound style={{ color: "#080808" }} className='inline size-6' />
-              <p className='font-bold'>
+              {/* <p className='font-bold'>
                 <span className="underline underline-offset-4">Artistas:</span>
                 <span className='text-lg'> {evento.artistas.join(' - ')} </span>
+              </p> */}
+              <p className='font-bold'>
+                <span className="underline underline-offset-4">Artistas:</span><span> </span>
+                <span className='text-lg'>
+                  {evento.artistas.map(a => a.nombre).join(' - ')}
+                </span>
               </p>
             </div>
 

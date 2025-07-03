@@ -5,7 +5,7 @@ import { faHeart as whiteHeart } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as redHeart } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
-export default function Card(props) {
+export default function CardEvento(props) {
     const [isLiked, setIsLiked] = useState(false);
 
     const handleLikeClick = (event) => {

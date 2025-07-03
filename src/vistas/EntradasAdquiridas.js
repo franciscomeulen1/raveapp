@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import Cards from '../components/Cards';
+import Cards from '../components/CardsEventos';
 
 export default function EntradasAdquiridas() {
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
