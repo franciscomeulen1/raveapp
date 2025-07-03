@@ -38,19 +38,16 @@ const ModifDeEvento = () => {
 
   // Cargar artistas desde API
   useEffect(() => {
-    const cargarArtistas = async () => {
-      if (!evento?.artistas || !Array.isArray(evento.artistas)) return;
-      const promesas = evento.artistas.map(async id => {
-        const res = await api.get(`/Artista/GetArtista?idArtista=${id}`);
-        return res.data;
-      });
+  if (!evento?.artistas || !Array.isArray(evento.artistas)) return;
 
-      const artistasCompletos = await Promise.all(promesas);
-      setArtistasSeleccionados(artistasCompletos);
-    };
+  const artistasCompletos = evento.artistas.map(a => ({
+    id: a.idArtista,
+    nombre: a.nombre,
+    esNuevo: false
+  }));
 
-    cargarArtistas();
-  }, [evento]);
+  setArtistasSeleccionados(artistasCompletos);
+}, [evento]);
 
   // Cargar fechas
   useEffect(() => {

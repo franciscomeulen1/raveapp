@@ -20,24 +20,25 @@ const InputEsEventoRecurrente = ({ onSeleccionRecurrente }) => {
       .join(' ');
 
   useEffect(() => {
-    const cargarFiestas = async () => {
-      try {
-        const response = await api.get(`/Fiesta/GetFiestas?IdUsuario=${user.id}`);
-        setFiestas(response.data.fiestas || []);
-        setErrorFiestas(false);
-      } catch (err) {
-        if (err.response?.status === 404) {
-          setErrorFiestas(true); // Usuario sin fiestas cargadas
-        } else {
-          console.error('Error al obtener fiestas:', err);
-        }
+  const cargarFiestas = async () => {
+    try {
+      const response = await api.get(`/Fiesta/GetFiestas?IdUsuario=${user.id}`);
+      const fiestasActivas = (response.data.fiestas || []).filter(f => f.isActivo);
+      setFiestas(fiestasActivas);
+      setErrorFiestas(fiestasActivas.length === 0);
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setErrorFiestas(true); // Usuario sin fiestas cargadas
+      } else {
+        console.error('Error al obtener fiestas:', err);
       }
-    };
-
-    if (user?.id && esRecurrente) {
-      cargarFiestas();
     }
-  }, [user, esRecurrente]);
+  };
+
+  if (user?.id && esRecurrente) {
+    cargarFiestas();
+  }
+}, [user, esRecurrente]);
 
   useEffect(() => {
     if (esRecurrente) {

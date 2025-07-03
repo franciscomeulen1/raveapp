@@ -20,10 +20,10 @@ export default function MisFiestasRecurrentes() {
     const fetchFiestas = useCallback(async () => {
         try {
             const response = await api.get(`/Fiesta/GetFiestas?IdUsuario=${idUsuario}`);
-            const fiestasOrdenadas = (response.data.fiestas || []).sort((a, b) =>
-                a.dsNombre.localeCompare(b.dsNombre)
-            );
-            setFiestas(fiestasOrdenadas);
+            const fiestasActivas = (response.data.fiestas || [])
+                .filter(f => f.isActivo)
+                .sort((a, b) => a.dsNombre.localeCompare(b.dsNombre));
+            setFiestas(fiestasActivas);
         } catch (error) {
             console.error('Error al obtener las fiestas:', error);
         }
@@ -106,22 +106,22 @@ export default function MisFiestasRecurrentes() {
                         </h1>
 
                         <p className="mb-4">
-                             Las fiestas recurrentes, como su nombre indica, son aquellas que organizas de manera regular.
-                             Pueden ser semanales, mensuales o con la frecuencia que tú elijas.
+                            Las fiestas recurrentes, como su nombre indica, son aquellas que organizas de manera regular.
+                            Pueden ser semanales, mensuales o con la frecuencia que tú elijas.
                         </p>
-                         <p className="mb-4">
-                             Si una fiesta se va a hacer una sola vez, o si es una fiesta única que se hace porque viene
-                             determinado DJ a la Argentina, NO es una fiesta recurrente.
-                         </p>
-                         <p className="mb-4">
-                             En esta sección podrás agregar, editar o eliminar los nombres de las fiestas que realices
-                             de manera continua para mantener un registro actualizado.
-                         </p>
-                         <p className="mb-4">
-                             Además, las fiestas recurrentes podrán ser calificadas por aquellos usuarios que hayan
-                             adquirido una entrada para dicho evento. Van a poder puntuar la fiesta e incluso dejar un
-                             comentario si así lo desean.
-                         </p>
+                        <p className="mb-4">
+                            Si una fiesta se va a hacer una sola vez, o si es una fiesta única que se hace porque viene
+                            determinado DJ a la Argentina, NO es una fiesta recurrente.
+                        </p>
+                        <p className="mb-4">
+                            En esta sección podrás agregar, editar o eliminar los nombres de las fiestas que realices
+                            de manera continua para mantener un registro actualizado.
+                        </p>
+                        <p className="mb-4">
+                            Además, las fiestas recurrentes podrán ser calificadas por aquellos usuarios que hayan
+                            adquirido una entrada para dicho evento. Van a poder puntuar la fiesta e incluso dejar un
+                            comentario si así lo desean.
+                        </p>
 
                         <hr className="mt-7 mb-4" />
 

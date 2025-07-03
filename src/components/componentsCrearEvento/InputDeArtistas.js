@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import api from '../../componenteapi/api';
@@ -8,6 +8,7 @@ const InputDeArtistas = ({ onSeleccionarArtistas, artistasIniciales = [] }) => {
     const [selectedArtists, setSelectedArtists] = useState([]);
     const [showMenu, setShowMenu] = useState(false);
     const [artistas, setArtistas] = useState([]);
+    const inicializado = useRef(false); // este flag evita la recarga infinita
 
     // Cargar artistas desde la API
     useEffect(() => {
@@ -23,14 +24,16 @@ const InputDeArtistas = ({ onSeleccionarArtistas, artistasIniciales = [] }) => {
     }, []);
 
     // Pre-cargar artistas seleccionados si vienen desde ModifDeEvento
+    // Solo cargar artistas iniciales una vez
     useEffect(() => {
-        if (artistasIniciales && artistasIniciales.length) {
+        if (!inicializado.current && artistasIniciales && artistasIniciales.length) {
             const normalizados = artistasIniciales.map(a => ({
                 id: a.id,
                 nombre: a.nombre,
                 esNuevo: false,
             }));
             setSelectedArtists(normalizados);
+            inicializado.current = true; // 👈 ya se inicializó, no volver a hacer setState
         }
     }, [artistasIniciales]);
 
