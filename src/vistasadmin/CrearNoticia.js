@@ -60,30 +60,16 @@ const CrearNoticia = () => {
 
             const idNoticia = res.data.idNoticia;
 
-            // Paso 2: Si hay imagen, registrar media y subirla
+            // Paso 2: Si hay imagen, subirla con FormData
             if (imagen) {
-                const nombreImagen = imagen.name;
+                const formData = new FormData();
+                formData.append('IdEntidadMedia', idNoticia); // O asegúrate que sea string
+                formData.append('File', imagen);
 
-                // POST /Media
-                const resMedia = await api.post('/Media', {
-                    imagen: nombreImagen,
-                    video: '',
-                    idEntidadMedia: idNoticia,
-                });
-
-                const idMedia = resMedia.data.idMedia;
-
-                // GET /Media/GetMediaPutUrl
-                const resUrl = await api.get(`/Media/GetMediaPutUrl?fileName=${idMedia}`);
-                const putUrl = resUrl.data;
-
-                // PUT directo a la URL con el archivo binario
-                await fetch(putUrl, {
-                    method: 'PUT',
+                await api.post('/Media', formData, {
                     headers: {
-                        'Content-Type': imagen.type, // e.g. image/jpeg
+                        'Content-Type': 'multipart/form-data',
                     },
-                    body: imagen,
                 });
             }
 
@@ -101,6 +87,88 @@ const CrearNoticia = () => {
             setMensajeError('En estos momentos no es posible crear la noticia. Intenta nuevamente más tarde.');
         }
     };
+
+
+    // const handleCrearNoticia = async () => {
+    //     let esValido = true;
+
+    //     if (!titulo.trim()) {
+    //         setErrorTitulo('El título es obligatorio.');
+    //         esValido = false;
+    //     } else {
+    //         setErrorTitulo('');
+    //     }
+
+    //     if (!contenido.trim()) {
+    //         setErrorContenido('El cuerpo de la noticia es obligatorio.');
+    //         esValido = false;
+    //     } else {
+    //         setErrorContenido('');
+    //     }
+
+    //     if (urlEvento && !esUrlValida(urlEvento)) {
+    //         setErrorUrl('La URL ingresada no es válida. Asegúrate de que comience con http:// o https://');
+    //         esValido = false;
+    //     } else {
+    //         setErrorUrl('');
+    //     }
+
+    //     if (!esValido) return;
+
+    //     try {
+    //         const fechaActualISO = new Date().toISOString();
+
+    //         // Paso 1: Crear la noticia
+    //         const res = await api.post('/noticia', {
+    //             titulo,
+    //             contenido,
+    //             dtPublicado: fechaActualISO,
+    //             urlEvento,
+    //         });
+
+    //         const idNoticia = res.data.idNoticia;
+
+    //         // Paso 2: Si hay imagen, registrar media y subirla
+    //         if (imagen) {
+    //             const nombreImagen = imagen.name;
+
+    //             // POST /Media
+    //             const resMedia = await api.post('/Media', {
+    //                 imagen: nombreImagen,
+    //                 video: '',
+    //                 idEntidadMedia: idNoticia,
+    //             });
+
+    //             const idMedia = resMedia.data.idMedia;
+
+    //             // GET /Media/GetMediaPutUrl
+    //             const resUrl = await api.get(`/Media/GetMediaPutUrl?fileName=${idMedia}`);
+    //             const putUrl = resUrl.data;
+
+    //             // PUT directo a la URL con el archivo binario
+    //             await fetch(putUrl, {
+    //                 method: 'PUT',
+    //                 headers: {
+    //                     'Content-Type': imagen.type, // e.g. image/jpeg
+    //                 },
+    //                 body: imagen,
+    //             });
+    //         }
+
+    //         // Resetear formulario
+    //         setTitulo('');
+    //         setContenido('');
+    //         setUrlEvento('');
+    //         setImagen(null);
+    //         setPreview(null);
+    //         setIsModalOpen(true);
+    //         setMensajeError('');
+
+    //     } catch (error) {
+    //         console.error('Error al crear la noticia o subir la imagen:', error);
+    //         setMensajeError('En estos momentos no es posible crear la noticia. Intenta nuevamente más tarde.');
+    //     }
+    // };
 
 
     return (

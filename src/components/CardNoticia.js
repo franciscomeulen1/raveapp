@@ -1,16 +1,28 @@
-export default function CardNoticia(props) {
-    return (
-        <div className="max-w-sm bg-white shadow-lg rounded-lg overflow-hidden transform transition-transform hover:scale-105 mx-auto">
-            <button onClick={props.onClick} className="w-full">
-                <img 
-                    src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp" 
-                    alt="noticia" 
-                    className="w-full object-cover aspect-[1.2]"
-                />
-                <div className="p-4">
-                    <h2 className="text-xl font-semibold text-gray-800">{props.titulo}</h2>
-                </div>
-            </button>
+import { Link } from 'react-router-dom';
+
+export default function CardNoticia({ id, titulo, imagen, contenido, urlEvento }) {
+  const imagenFallback = 'https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp';
+
+  return (
+    <div className="max-w-sm bg-white shadow-lg rounded-lg overflow-hidden transform transition-transform hover:scale-105 mx-auto">
+      <Link
+        to={`/noticias/${id}`}
+        state={{ noticia: { id, titulo, contenido, urlEvento, imagen } }}
+        className="w-full block"
+      >
+        <img
+          src={imagen || imagenFallback}
+          alt="noticia"
+          className="w-full object-cover aspect-[1.2]"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = imagenFallback;
+          }}
+        />
+        <div className="p-4">
+          <h2 className="text-xl font-semibold text-gray-800">{titulo}</h2>
         </div>
-    );
+      </Link>
+    </div>
+  );
 }
