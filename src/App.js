@@ -36,7 +36,8 @@ import MisFiestasRecurrentes from "./vistasduenioevento/MisFiestasRecurrentes";
 import ReseniasDeLaFiesta from "./vistasduenioevento/ReseniasDeLaFiesta";
 import EntradaAdquirida from "./vistas/EntradaAdquirida";
 import CrearNoticia from "./vistasadmin/CrearNoticia";
-import CrearArtista from "./vistasadmin/CrearArtista"
+import CrearArtista from "./vistasadmin/CrearArtista";
+import EditarCarousel from "./vistasadmin/EditarCarousel";
 
 function App() {
   return (
@@ -76,6 +77,8 @@ function App() {
           <Route path="/editar-noticia/:id" element={<EditarNoticia />} />
           <Route path="/crear-noticia" element={<CrearNoticia />} />
           <Route path="/crear-artista" element={<CrearArtista />} />
+          <Route path="/editar-carrusel" element={<EditarCarousel />} />
+          
         </Routes>
       </Router>
     </AuthProvider>

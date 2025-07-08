@@ -43,9 +43,6 @@ export default function NavBar({ onFilter }) {
 
   // Helpers para chequear roles
   const roles = user?.roles ?? [];
-  // const isAdmin       = roles.includes(1);
-  // const isOrganizador = roles.includes(2);
-  // const isNormal      = roles.includes(0);
   const isAdmin       = roles.some(r => r.cdRol === 1);
   const isOrganizador = roles.some(r => r.cdRol === 2);
   const isNormal      = roles.some(r => r.cdRol === 0);
@@ -166,29 +163,6 @@ export default function NavBar({ onFilter }) {
           </div>
         </div>
 
-        {/* Search (solo desktop) */}
-        <div className="hidden md:flex items-center">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered w-full max-w-md mt-1 lg:mt-0"
-          />
-          <button className="mr-2 btn btn-ghost btn-circle mt-1">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 className="h-5 w-5"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-        </div>
-
         {/* Avatar / Login */}
         <div>
           {user ? (
@@ -222,30 +196,6 @@ export default function NavBar({ onFilter }) {
       {/* Filtros (solo cuando estás en “/”) */}
       {location.pathname === '/' && <Filtros onFilter={onFilter} />}
 
-      {/* Search en mobile */}
-      <div className="block md:hidden px-4 mt-2">
-        <div className="flex justify-end items-center">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered max-w-xs h-8"
-          />
-          <button className="ml-2 btn btn-ghost btn-circle">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 className="h-5 w-5"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
