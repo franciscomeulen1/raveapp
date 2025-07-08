@@ -15,6 +15,7 @@ const CrearNoticia = () => {
     const [imagen, setImagen] = useState(null);
     const [preview, setPreview] = useState(null);
     const [mensajeError, setMensajeError] = useState('');
+    const [errorImagen, setErrorImagen] = useState('');
 
     const esUrlValida = (url) => {
         const pattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
@@ -22,6 +23,7 @@ const CrearNoticia = () => {
     };
 
     const handleCrearNoticia = async () => {
+        setErrorImagen('');
         let esValido = true;
 
         if (!titulo.trim()) {
@@ -46,6 +48,21 @@ const CrearNoticia = () => {
         }
 
         if (!esValido) return;
+
+        if (!imagen) {
+            setMensajeError('La imagen es obligatoria para crear la noticia.');
+            return;
+        } else {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(imagen.type)) {
+                setMensajeError('No se pudo crear la noticia. El archivo debe ser una imagen JPG, JPEG o PNG.');
+                return;
+            }
+            if (imagen.size > 2 * 1024 * 1024) {
+                setMensajeError('No se pudo crear la noticia. La imagen excede los 2MB.');
+                return;
+            }
+        }
 
         try {
             const fechaActualISO = new Date().toISOString();
@@ -88,89 +105,6 @@ const CrearNoticia = () => {
         }
     };
 
-
-    // const handleCrearNoticia = async () => {
-    //     let esValido = true;
-
-    //     if (!titulo.trim()) {
-    //         setErrorTitulo('El título es obligatorio.');
-    //         esValido = false;
-    //     } else {
-    //         setErrorTitulo('');
-    //     }
-
-    //     if (!contenido.trim()) {
-    //         setErrorContenido('El cuerpo de la noticia es obligatorio.');
-    //         esValido = false;
-    //     } else {
-    //         setErrorContenido('');
-    //     }
-
-    //     if (urlEvento && !esUrlValida(urlEvento)) {
-    //         setErrorUrl('La URL ingresada no es válida. Asegúrate de que comience con http:// o https://');
-    //         esValido = false;
-    //     } else {
-    //         setErrorUrl('');
-    //     }
-
-    //     if (!esValido) return;
-
-    //     try {
-    //         const fechaActualISO = new Date().toISOString();
-
-    //         // Paso 1: Crear la noticia
-    //         const res = await api.post('/noticia', {
-    //             titulo,
-    //             contenido,
-    //             dtPublicado: fechaActualISO,
-    //             urlEvento,
-    //         });
-
-    //         const idNoticia = res.data.idNoticia;
-
-    //         // Paso 2: Si hay imagen, registrar media y subirla
-    //         if (imagen) {
-    //             const nombreImagen = imagen.name;
-
-    //             // POST /Media
-    //             const resMedia = await api.post('/Media', {
-    //                 imagen: nombreImagen,
-    //                 video: '',
-    //                 idEntidadMedia: idNoticia,
-    //             });
-
-    //             const idMedia = resMedia.data.idMedia;
-
-    //             // GET /Media/GetMediaPutUrl
-    //             const resUrl = await api.get(`/Media/GetMediaPutUrl?fileName=${idMedia}`);
-    //             const putUrl = resUrl.data;
-
-    //             // PUT directo a la URL con el archivo binario
-    //             await fetch(putUrl, {
-    //                 method: 'PUT',
-    //                 headers: {
-    //                     'Content-Type': imagen.type, // e.g. image/jpeg
-    //                 },
-    //                 body: imagen,
-    //             });
-    //         }
-
-    //         // Resetear formulario
-    //         setTitulo('');
-    //         setContenido('');
-    //         setUrlEvento('');
-    //         setImagen(null);
-    //         setPreview(null);
-    //         setIsModalOpen(true);
-    //         setMensajeError('');
-
-    //     } catch (error) {
-    //         console.error('Error al crear la noticia o subir la imagen:', error);
-    //         setMensajeError('En estos momentos no es posible crear la noticia. Intenta nuevamente más tarde.');
-    //     }
-    // };
-
-
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-1">
@@ -203,11 +137,34 @@ const CrearNoticia = () => {
                                 onChange={(e) => {
                                     const file = e.target.files[0];
                                     if (file) {
+                                        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+                                        if (!validTypes.includes(file.type)) {
+                                            setErrorImagen('Solo se permiten imágenes en formato JPG, JPEG o PNG.');
+                                            setImagen(null);
+                                            setPreview(null);
+                                            return;
+                                        }
+
+                                        if (file.size > 2 * 1024 * 1024) {
+                                            setErrorImagen('La imagen debe pesar 2MB o menos.');
+                                            setImagen(null);
+                                            setPreview(null);
+                                            return;
+                                        }
+
                                         setImagen(file);
                                         setPreview(URL.createObjectURL(file));
+                                        setErrorImagen('');
                                     }
                                 }}
+
                             />
+                            <p className="text-sm text-gray-600 mt-1">
+                                La imagen debe pesar menos de 2MB y se recomienda que tenga dimensiones cuadradas (alto = ancho).
+                            </p>
+                            {errorImagen && <p className="text-red-600 text-sm mt-1">{errorImagen}</p>}
+
                             {preview && (
                                 <div className="mt-3">
                                     <p className="text-sm text-gray-600">Vista previa:</p>
@@ -215,6 +172,7 @@ const CrearNoticia = () => {
                                 </div>
                             )}
                         </div>
+
 
                         {/* Contenido */}
                         <label className="font-semibold">Cuerpo de la noticia:</label>
