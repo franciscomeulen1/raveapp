@@ -11,10 +11,10 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-  if (user) {
-    navigate('/');
-  }
-}, [user, navigate]);
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -31,7 +31,7 @@ const Register = () => {
   const [error, setError] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  
+
   const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
@@ -41,12 +41,25 @@ const Register = () => {
     });
   };
 
+  const esPasswordSegura = (password) => {
+    const tieneLongitud = password.length >= 8;
+    const tieneLetra = /[A-Za-z]/.test(password);
+    const tieneNumero = /[0-9]/.test(password);
+    return tieneLongitud && tieneLetra && tieneNumero;
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    if (!esPasswordSegura(formData.password)) {
+      setError('La contraseña debe tener al menos 8 caracteres, una letra y un número.');
       return;
     }
 
@@ -96,7 +109,7 @@ const Register = () => {
       await login({
         email: formData.correo,
         password: formData.password,
-        onBlocked: () => {},
+        onBlocked: () => { },
       });
       navigate('/');
     } catch (err) {
@@ -171,6 +184,9 @@ const Register = () => {
                   placeholder="Tu password"
                   required
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  La contraseña debe tener al menos 8 caracteres, incluir una letra y un número.
+                </p>
               </label>
 
               <label className="block">
