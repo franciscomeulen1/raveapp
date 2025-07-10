@@ -41,6 +41,8 @@ function CrearEvento() {
   const [hayEarlyBirdsPorDia, setHayEarlyBirdsPorDia] = useState([]);
   const [configFechasVenta, setConfigFechasVenta] = useState([]);
   const [entradasPorDia, setEntradasPorDia] = useState([]);
+  const [multimedia, setMultimedia] = useState({ soundCloud: '', videoUrl: '' });
+  const [errorMultimedia, setErrorMultimedia] = useState(false);
 
   const fechaAnteriorRef = useRef();
 
@@ -95,6 +97,10 @@ function CrearEvento() {
     }
     if (recurrenteInfo.esRecurrente && !recurrenteInfo.valido) {
       alert('Debes seleccionar o ingresar un nombre de fiesta recurrente.');
+      return false;
+    }
+    if (errorMultimedia) {
+      alert('El link de música ingresado debe ser un enlace válido de SoundCloud.');
       return false;
     }
     return true;
@@ -167,7 +173,8 @@ function CrearEvento() {
       finEvento,
       estado: 0,
       fechas,
-      idFiesta: idFiestaFinal
+      idFiesta: idFiestaFinal,
+      soundCloud: multimedia.soundCloud?.trim() || null
     };
   };
 
@@ -386,7 +393,10 @@ function CrearEvento() {
 
           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
-          <InputMultimedia />
+          <InputMultimedia
+            onMultimediaChange={setMultimedia}
+            onErrorChange={setErrorMultimedia}
+          />
 
           <div className='form-control mb-4'>
             <label className='cursor-pointer label justify-start'>

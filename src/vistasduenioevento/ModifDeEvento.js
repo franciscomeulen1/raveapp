@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -10,6 +10,7 @@ import InputConfigEntradas from '../components/componentsCrearEvento/InputConfig
 import InputGeneroMusical from '../components/componentsCrearEvento/InputGeneroMusical'; // ok
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento'; // ok
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt'; // ok
+import InputMultimedia from '../components/componentsCrearEvento/InputMultimedia';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -30,11 +31,22 @@ const ModifDeEvento = () => {
     isLgbt: evento?.isLgbt || false
   });
   const [fechaHoraEvento, setFechaHoraEvento] = useState([]);
+
+  const setFechaHoraEventoCallback = useCallback((nuevasFechas) => {
+   setFechaHoraEvento(nuevasFechas);
+  }, []);
+
   const [entradasPorDia, setEntradasPorDia] = useState([]); 
   // eslint-disable-next-line
   const [hayEarlyBirdsPorDia, setHayEarlyBirdsPorDia] = useState([]);
   const [configFechasVenta, setConfigFechasVenta] = useState([]);
   const [configEntradas, setConfigEntradas] = useState([]);
+  
+  const [multimedia, setMultimedia] = useState({
+  soundCloud: evento?.soundCloud || '',
+  videoUrl: ''
+  });
+  const [errorMultimedia, setErrorMultimedia] = useState(false);
 
   // Cargar artistas desde API
   useEffect(() => {
@@ -51,6 +63,8 @@ const ModifDeEvento = () => {
 
   // Cargar fechas
   useEffect(() => {
+
+      console.log('Evento recibido:', evento);
     if (!evento?.fechas) return;
 
     setFechaHoraEvento(
@@ -72,6 +86,10 @@ const ModifDeEvento = () => {
     if (!artistasSeleccionados.length) return alert('Seleccioná al menos un artista.');
     if (!descripcionEvento.trim()) return alert('Ingresá una descripción.');
     if (!fechaHoraEvento.length) return alert('Completá las fechas y horarios.');
+    if (errorMultimedia) {
+      alert('El link de SoundCloud no es válido. Solo se aceptan enlaces de soundcloud.com.');
+       return false;
+    }
     return true;
   };
 
@@ -105,7 +123,8 @@ const ModifDeEvento = () => {
           finVenta: configFechasVenta[i]?.finVentaGeneralVip || '2025-01-02T00:00:00',
           estado: 0
         })),
-        idFiesta: idFiestaFinal
+        idFiesta: idFiestaFinal,
+        soundCloud: multimedia.soundCloud?.trim() || null
       };
 
       await api.put('/Evento/UpdateEvento', payload);
@@ -119,6 +138,7 @@ const ModifDeEvento = () => {
   };
 
   return (
+    <div className="flex flex-col min-h-screen">
     <div className="sm:px-10 mb-11">
       <NavBar />
       <h1 className="px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8">Modificar Evento</h1>
@@ -134,36 +154,57 @@ const ModifDeEvento = () => {
           />
         </div>
 
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
         <InputGeneroMusical
           onSeleccionGeneros={setGenerosSeleccionados}
           valorInicial={generosSeleccionados}
         />
+
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
         <InputDeArtistas
           onSeleccionarArtistas={setArtistasSeleccionados}
           artistasIniciales={artistasSeleccionados}
         />
 
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
         <InputUbicacionEvento
           onUbicacionChange={setUbicacionEvento}
           ubicacionInicial={ubicacionEvento}
         />
+
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
         <InputAfterOLbgt
           onSeleccion={setAfterOLgbt}
           valoresIniciales={afterOLgbt}
         />
 
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
         <InputDescripcionEvento
           onDescripcionChange={setDescripcionEvento}
           valorInicial={descripcionEvento}
         />
 
-        <InputFechaHoraEvento
-          diasEvento={fechaHoraEvento.length}
-          onFechaHoraChange={setFechaHoraEvento}
-          fechasIniciales={fechaHoraEvento}
-        />
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
+        {/* <InputFechaHoraEvento
+         diasEvento={fechaHoraEvento.length}
+         onFechaHoraChange={setFechaHoraEventoCallback}
+         fechasIniciales={fechaHoraEvento}
+        /> */}
+        {fechaHoraEvento.length > 0 && (
+  <InputFechaHoraEvento
+    diasEvento={fechaHoraEvento.length}
+    onFechaHoraChange={setFechaHoraEventoCallback}
+    fechasIniciales={fechaHoraEvento}
+  />
+)}
+
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
         <InputEntradasCantPrecio
           diasEvento={fechaHoraEvento.length}
@@ -172,12 +213,22 @@ const ModifDeEvento = () => {
           entradasIniciales={entradasPorDia}
         />
 
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
         <InputConfigEntradas
          diasEvento={fechaHoraEvento.length}
         entradasPorDia={entradasPorDia}
         onConfigEntradasChange={setConfigEntradas}
         configInicial={configEntradas}
         />
+
+        <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+
+          <InputMultimedia
+          onMultimediaChange={setMultimedia}
+           onErrorChange={setErrorMultimedia}
+           />
+
 
         <div className="form-control mb-4 mt-6">
           <label className="cursor-pointer label justify-start">
@@ -194,7 +245,9 @@ const ModifDeEvento = () => {
           Guardar cambios
         </button>
       </form>
-      <Footer />
+      
+    </div>
+    <Footer />
     </div>
   );
 };
