@@ -55,20 +55,25 @@ function EditarCarousel() {
 
         setCargando(true);
         try {
-            // Eliminar anterior
-            const resExistente = await api.get(`/Media?idEntidadMedia=${id}`);
-            const mediaActual = resExistente.data?.media?.[0];
-            if (mediaActual?.idMedia) {
-                await api.delete(`/Media/${mediaActual.idMedia}`);
+            // Intentar eliminar la imagen anterior, solo si existe
+            try {
+                const resExistente = await api.get(`/Media?idEntidadMedia=${id}`);
+                const mediaActual = resExistente.data?.media?.[0];
+                if (mediaActual?.idMedia) {
+                    await api.delete(`/Media/${mediaActual.idMedia}`);
+                }
+            } catch (error) {
+                // Si no existe imagen previa, no hay problema, continuamos
+                console.warn(`No se encontró imagen previa para ${id}, se subirá como nueva.`);
             }
 
-            // Subir nueva
+            // Subir nueva imagen
             const formData = new FormData();
             formData.append('idEntidadMedia', id);
             formData.append('File', file);
             await api.post('/Media', formData);
 
-            // Obtener nueva desde el GET
+            // Obtener nueva URL
             const nuevaRes = await api.get(`/Media?idEntidadMedia=${id}`);
             const nuevaUrl = nuevaRes.data?.media?.[0]?.url || null;
 
@@ -83,7 +88,6 @@ function EditarCarousel() {
             setCargando(false);
         }
     };
-
 
     const handleEliminar = async (id) => {
         if (!imagenes[id]) return;
@@ -109,6 +113,13 @@ function EditarCarousel() {
         }
     };
 
+    const handleCancelarSeleccion = (id) => {
+        setPreviews(prev => ({ ...prev, [id]: null }));
+        setArchivos(prev => ({ ...prev, [id]: null }));
+        setMensajes(prev => ({ ...prev, [id]: null }));
+    };
+
+
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -116,7 +127,8 @@ function EditarCarousel() {
                 <div className="sm:px-10">
                     <NavBar />
                 </div>
-                <div className="p-6 max-w-4xl mx-auto">
+                <div className="p-4 sm:p-6 max-w-full sm:max-w-4xl mx-auto w-full">
+
                     <h2 className="text-2xl font-bold mb-6 text-center">Editar Carrusel</h2>
 
                     {idsCarousel.map((id, index) => (
@@ -129,8 +141,9 @@ function EditarCarousel() {
                                     <img
                                         src={imagenes[id]}
                                         alt={`carousel-${index + 1}`}
-                                        className="w-full h-48 object-cover rounded shadow"
+                                        className="w-full max-h-48 object-cover rounded shadow"
                                     />
+
                                 </div>
                             )}
 
@@ -140,8 +153,9 @@ function EditarCarousel() {
                                     <img
                                         src={previews[id]}
                                         alt={`preview-${id}`}
-                                        className="w-full h-48 object-cover rounded border"
+                                        className="w-full max-h-48 object-cover rounded border"
                                     />
+
                                 </div>
                             )}
 
@@ -149,28 +163,41 @@ function EditarCarousel() {
                                 <p className="text-green-600 font-semibold mb-2">{mensajes[id]}</p>
                             )}
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-2">
                                 <input
                                     type="file"
                                     accept="image/*"
                                     onChange={(e) => handleSeleccion(e, id)}
-                                    className="file-input file-input-bordered file-input-sm"
+                                    className="file-input file-input-bordered file-input-sm w-full sm:w-auto"
                                 />
+
                                 <button
-                                    className="btn btn-primary btn-sm"
+                                    className="btn btn-primary btn-sm w-full sm:w-auto"
                                     onClick={() => handleConfirmar(id)}
                                     disabled={!archivos[id] || cargando}
                                 >
                                     Confirmar
                                 </button>
+
                                 <button
-                                    className="btn btn-error btn-sm"
+                                    className="btn btn-secondary btn-sm w-full sm:w-auto"
+                                    onClick={() => handleCancelarSeleccion(id)}
+                                    disabled={!previews[id] || cargando}
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    className="btn btn-error btn-sm w-full sm:w-auto"
                                     onClick={() => handleEliminar(id)}
                                     disabled={!imagenes[id] || cargando}
                                 >
-                                    Eliminar imagen
+                                    Eliminar imagen actual
                                 </button>
                             </div>
+
+
+
                         </div>
                     ))}
 
