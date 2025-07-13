@@ -41,7 +41,7 @@ function CrearEvento() {
   const [hayEarlyBirdsPorDia, setHayEarlyBirdsPorDia] = useState([]);
   const [configFechasVenta, setConfigFechasVenta] = useState([]);
   const [entradasPorDia, setEntradasPorDia] = useState([]);
-  const [multimedia, setMultimedia] = useState({ soundCloud: '', videoUrl: '' });
+  const [multimedia, setMultimedia] = useState({ soundCloud: '', videoUrl: '', file: '' });
   const [errorMultimedia, setErrorMultimedia] = useState(false);
 
   const fechaAnteriorRef = useRef();
@@ -101,6 +101,10 @@ function CrearEvento() {
     }
     if (errorMultimedia) {
       alert('El link de música ingresado debe ser un enlace válido de SoundCloud.');
+      return false;
+    }
+    if (!multimedia.file) {
+      alert('Debes subir una imagen válida (jpg, jpeg o png menor a 2MB).');
       return false;
     }
     return true;
@@ -315,10 +319,45 @@ function CrearEvento() {
       await actualizarRolAOrganizadorSiEsNecesario();
 
       alert('Evento y entradas creados correctamente.');
+
+      try {
+        if (multimedia.videoUrl) {
+          const formDataVideo = new FormData();
+          formDataVideo.append('IdEntidadMedia', idEventoCreado);
+          formDataVideo.append('File', null);
+          formDataVideo.append('Video', multimedia.videoUrl);
+
+          await api.post('/Media', formDataVideo, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+        }
+
+      } catch (error) {
+        console.error('Error al subir video:', error);
+      }
+
+      try {
+        if (multimedia.file) {
+          const formData = new FormData();
+          formData.append('IdEntidadMedia', idEventoCreado);
+          formData.append('File', multimedia.file);
+          // formData.append('Video', null);
+
+          await api.post('/Media', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+        }
+      } catch (error) {
+        console.error('Error al subir imagen:', error);
+      }
+
     } catch (error) {
       console.error('Error al crear evento:', error);
       alert('Ocurrió un error al crear el evento. Revisa la consola para más detalles.');
     }
+
   };
 
   return (

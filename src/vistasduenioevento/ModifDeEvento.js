@@ -17,6 +17,8 @@ import { AuthContext } from '../context/AuthContext';
 const ModifDeEvento = () => {
   const { state } = useLocation();
   const evento = state?.evento;
+//   console.log('evento:', evento);
+// console.log('evento.id:', evento?.idEvento);
   const navigate = useNavigate();
   // eslint-disable-next-line
   const { user } = useContext(AuthContext);
@@ -47,6 +49,9 @@ const ModifDeEvento = () => {
   videoUrl: ''
   });
   const [errorMultimedia, setErrorMultimedia] = useState(false);
+
+  const [mediaImagenUrl, setMediaImagenUrl] = useState(null);
+  const [mediaVideoUrl, setMediaVideoUrl] = useState('');
 
   // Cargar artistas desde API
   useEffect(() => {
@@ -79,6 +84,33 @@ const ModifDeEvento = () => {
     setConfigFechasVenta([]);
   }, [evento]);
 
+
+  const eventoId = evento?.idEvento;
+
+useEffect(() => {
+  if (!eventoId) return;
+
+  const fetchMedia = async () => {
+    try {
+      const resp = await api.get(`/Media?idEntidadMedia=${eventoId}`);
+      const medias = resp.data.media || [];
+
+      const imagen = medias.find(m => m.url);
+      const video = medias.find(m => m.mdVideo);
+
+      setMediaImagenUrl(imagen?.url || null);
+      setMediaVideoUrl(video?.mdVideo || '');
+    } catch (err) {
+      console.error('Error al cargar multimedia:', err);
+    }
+  };
+
+  fetchMedia();
+}, [eventoId]);
+
+
+
+
   const validarFormulario = () => {
     if (!nombreEvento.trim()) return alert('Ingresá el nombre del evento.');
     if (!ubicacionEvento?.provincia || !ubicacionEvento?.direccion) return alert('Completá los datos de ubicación.');
@@ -104,7 +136,7 @@ const ModifDeEvento = () => {
       const idFiestaFinal = await resolverIdFiesta();
 
       const payload = {
-        idEvento: evento.id,
+        idEvento: evento.idEvento,
         idArtistas: artistasSeleccionados.map(a => a.id),
         domicilio: ubicacionEvento,
         nombre: nombreEvento,
@@ -127,15 +159,69 @@ const ModifDeEvento = () => {
         soundCloud: multimedia.soundCloud?.trim() || null
       };
 
-      await api.put('/Evento/UpdateEvento', payload);
+      console.log(payload);
 
+      await api.put('/Evento/UpdateEvento', payload);
+      await actualizarMultimedia();
       alert('Evento actualizado correctamente.');
-      navigate('/mis-eventos');
+      navigate('/mis-eventos-creados');
     } catch (err) {
       console.error('Error al actualizar evento:', err);
       alert('Ocurrió un error al actualizar el evento.');
     }
   };
+
+  const actualizarMultimedia = async () => {
+  try {
+    const mediaResp = await api.get(`/Media?idEntidadMedia=${evento.idEvento}`);
+    const medias = mediaResp.data.media || [];
+
+    const imagenExistente = medias.find(m => m.url);
+    const videoExistente = medias.find(m => m.mdVideo);
+
+    // 📸 Reemplazo de imagen
+    if (multimedia.file) {
+      if (imagenExistente?.idMedia) {
+        await api.delete(`/Media/${imagenExistente.idMedia}`);
+      }
+
+      const formData = new FormData();
+      formData.append('IdEntidadMedia', evento.idEvento);
+      formData.append('File', multimedia.file);
+      // formData.append('Video', null);
+
+      await api.post('/Media', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
+
+    // 🎬 Reemplazo de video
+    if (multimedia.videoUrl) {
+      if (videoExistente?.idMedia) {
+        await api.delete(`/Media/${videoExistente.idMedia}`);
+      }
+
+      const formDataVideo = new FormData();
+      formDataVideo.append('IdEntidadMedia', evento.idEvento);
+      formDataVideo.append('File', null);
+      formDataVideo.append('Video', multimedia.videoUrl);
+
+      await api.post('/Media', formDataVideo, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
+
+  } catch (err) {
+    console.error('Error al actualizar multimedia:', err);
+    alert('Error al actualizar la imagen o video del evento.');
+  }
+};
+
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -225,10 +311,12 @@ const ModifDeEvento = () => {
         <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
           <InputMultimedia
-          onMultimediaChange={setMultimedia}
+           onMultimediaChange={setMultimedia}
            onErrorChange={setErrorMultimedia}
+           imagenInicial={mediaImagenUrl}
+           videoInicial={mediaVideoUrl}
+           soundCloudInicial={evento?.soundCloud}
            />
-
 
         <div className="form-control mb-4 mt-6">
           <label className="cursor-pointer label justify-start">
