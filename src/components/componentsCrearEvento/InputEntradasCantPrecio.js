@@ -8,33 +8,49 @@ const InputEntradasCantPrecio = ({ diasEvento, onEntradasPorDiaChange, onEntrada
   const prevHayEBRef = useRef();
 
   // Inicialización
-  useEffect(() => {
-    if (entradas.length > 0) return;
+  // useEffect(() => {
+  //   if (entradas.length > 0) return;
 
+  //   if (entradasIniciales.length > 0) {
+  //     setEntradas(entradasIniciales);
+  //     prevEntradasRef.current = entradasIniciales;
+  //   } else {
+  //     const nuevasEntradas = Array.from({ length: diasEvento }, () => ({
+  //       generales: 0,
+  //       generalesEarly: 0,
+  //       vip: 0,
+  //       vipEarly: 0,
+  //       generalesPrice: '',
+  //       generalesEarlyPrice: '',
+  //       vipPrice: '',
+  //       vipEarlyPrice: '',
+  //     }));
+  //     setEntradas(nuevasEntradas);
+
+  //     const inicial = nuevasEntradas.map(() => false);
+  //     if (typeof onEntradasPorDiaChange === 'function') {
+  //       onEntradasPorDiaChange(inicial);
+  //     }
+  //     prevHayEBRef.current = inicial;
+  //     prevEntradasRef.current = nuevasEntradas;
+  //   }
+  // }, [diasEvento, entradasIniciales, onEntradasPorDiaChange, entradas.length]);
+  useEffect(() => {
     if (entradasIniciales.length > 0) {
       setEntradas(entradasIniciales);
       prevEntradasRef.current = entradasIniciales;
-    } else {
-      const nuevasEntradas = Array.from({ length: diasEvento }, () => ({
-        generales: 0,
-        generalesEarly: 0,
-        vip: 0,
-        vipEarly: 0,
-        generalesPrice: '',
-        generalesEarlyPrice: '',
-        vipPrice: '',
-        vipEarlyPrice: '',
-      }));
-      setEntradas(nuevasEntradas);
 
-      const inicial = nuevasEntradas.map(() => false);
+      const earlyBirdsPorDia = entradasIniciales.map(e =>
+        (e.generalesEarly > 0 && e.generalesEarlyPrice !== '') ||
+        (e.vipEarly > 0 && e.vipEarlyPrice !== '')
+      );
       if (typeof onEntradasPorDiaChange === 'function') {
-        onEntradasPorDiaChange(inicial);
+        onEntradasPorDiaChange(earlyBirdsPorDia);
+        prevHayEBRef.current = earlyBirdsPorDia;
       }
-      prevHayEBRef.current = inicial;
-      prevEntradasRef.current = nuevasEntradas;
     }
-  }, [diasEvento, entradasIniciales, onEntradasPorDiaChange, entradas.length]);
+  }, [entradasIniciales, onEntradasPorDiaChange]);
+
 
 
   // Notificar cambios en early birds por día

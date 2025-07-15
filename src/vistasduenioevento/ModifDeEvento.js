@@ -17,8 +17,7 @@ import { AuthContext } from '../context/AuthContext';
 const ModifDeEvento = () => {
   const { state } = useLocation();
   const evento = state?.evento;
-//   console.log('evento:', evento);
-// console.log('evento.id:', evento?.idEvento);
+
   const navigate = useNavigate();
   // eslint-disable-next-line
   const { user } = useContext(AuthContext);
@@ -42,6 +41,7 @@ const ModifDeEvento = () => {
   // eslint-disable-next-line
   const [hayEarlyBirdsPorDia, setHayEarlyBirdsPorDia] = useState([]);
   const [configFechasVenta, setConfigFechasVenta] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [configEntradas, setConfigEntradas] = useState([]);
   
   const [multimedia, setMultimedia] = useState({
@@ -107,6 +107,77 @@ useEffect(() => {
 
   fetchMedia();
 }, [eventoId]);
+
+useEffect(() => {
+  const fetchEntradasYFechasVenta = async () => {
+    if (!evento?.fechas || evento.fechas.length === 0) return;
+
+    try {
+      const entradasPorFecha = [];
+      const fechasVentaConfig = [];
+
+      for (const fecha of evento.fechas) {
+        const { idFecha } = fecha;
+
+        // GET Entradas por fecha
+        const resEntradas = await api.get(`/Entrada/GetEntradasFecha?IdFecha=${idFecha}`);
+        const entradas = resEntradas.data;
+
+        // Inicializar objeto vacío para ese día
+        const entradaDia = {
+          generales: 0,
+          generalesEarly: 0,
+          vip: 0,
+          vipEarly: 0,
+          generalesPrice: '',
+          generalesEarlyPrice: '',
+          vipPrice: '',
+          vipEarlyPrice: '',
+        };
+
+        for (const entrada of entradas) {
+          const { tipo, cantidad, precio } = entrada;
+          const cdTipo = tipo.cdTipo;
+          switch (cdTipo) {
+            case 0:
+              entradaDia.generales = cantidad;
+              entradaDia.generalesPrice = precio.toString();
+              break;
+            case 1:
+              entradaDia.generalesEarly = cantidad;
+              entradaDia.generalesEarlyPrice = precio.toString();
+              break;
+            case 2:
+              entradaDia.vip = cantidad;
+              entradaDia.vipPrice = precio.toString();
+              break;
+            case 3:
+              entradaDia.vipEarly = cantidad;
+              entradaDia.vipEarlyPrice = precio.toString();
+              break;
+            default:
+              break;
+          }
+        }
+
+        entradasPorFecha.push(entradaDia);
+
+        fechasVentaConfig.push({
+          inicioVenta: fecha.inicioVenta ? fecha.inicioVenta.slice(0, 16) : '',
+          finVentaGeneralVip: fecha.finVenta ? fecha.finVenta.slice(0, 16) : '',
+        });
+      }
+
+      setEntradasPorDia(entradasPorFecha);
+      setConfigFechasVenta(fechasVentaConfig);
+    } catch (error) {
+      console.error('Error al cargar entradas y configuración de fechas:', error);
+    }
+  };
+
+  fetchEntradasYFechasVenta();
+}, [evento?.fechas]);
+
 
 
 
@@ -304,8 +375,10 @@ useEffect(() => {
         <InputConfigEntradas
          diasEvento={fechaHoraEvento.length}
         entradasPorDia={entradasPorDia}
-        onConfigEntradasChange={setConfigEntradas}
-        configInicial={configEntradas}
+        // onConfigEntradasChange={setConfigEntradas}
+        onConfigEntradasChange={setConfigFechasVenta}
+        // configInicial={configEntradas}
+        configInicial={configFechasVenta}
         />
 
         <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />

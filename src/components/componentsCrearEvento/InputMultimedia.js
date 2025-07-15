@@ -33,20 +33,22 @@ const InputMultimedia = ({ onMultimediaChange, onErrorChange, imagenInicial, vid
         setPreviewUrl(imagenInicial || null);
     }, [soundCloudInicial, videoInicial, imagenInicial]);
 
+
     useEffect(() => {
-        const soundCloudValido = validarSoundCloud(soundCloud);
-        const videoValido = validarYouTube(videoUrl);
-        const imagenValida = validarImagen(file);
+    const soundCloudValido = validarSoundCloud(soundCloud);
+    const videoValido = validarYouTube(videoUrl);
+    const imagenValida = file ? validarImagen(file) : true; // ✅ sólo si hay nueva imagen
 
-        onMultimediaChange({
-            soundCloud: soundCloudValido ? soundCloud : null,
-            videoUrl: videoValido ? videoUrl : null,
-            file: imagenValida ? file : null
-        });
+    onMultimediaChange({
+        soundCloud: soundCloudValido ? soundCloud : null,
+        videoUrl: videoValido ? videoUrl : null,
+        file: file && imagenValida ? file : null
+    });
 
-        const hayErrores = !soundCloudValido || !videoValido || !imagenValida;
-        onErrorChange && onErrorChange(hayErrores);
-    }, [soundCloud, videoUrl, file, onMultimediaChange, onErrorChange]);
+    const hayErrores = !soundCloudValido || !videoValido || (file && !imagenValida);
+    onErrorChange && onErrorChange(hayErrores);
+}, [soundCloud, videoUrl, file, onMultimediaChange, onErrorChange]);
+
 
     const handleFileChange = (e) => {
         const selected = e.target.files[0];
