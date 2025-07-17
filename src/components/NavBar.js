@@ -5,6 +5,7 @@ import Filtros from './Filtros';
 import Login from './Login';
 import { AuthContext } from '../context/AuthContext';
 import ProtectedLink from './componentsCrearEvento/ProtectedLink';
+import defaultAvatar from '../iconos/profile-user.png';
 
 function NavLink({ to, children }) {
   return (
@@ -43,9 +44,9 @@ export default function NavBar({ onFilter }) {
 
   // Helpers para chequear roles
   const roles = user?.roles ?? [];
-  const isAdmin       = roles.some(r => r.cdRol === 1);
+  const isAdmin = roles.some(r => r.cdRol === 1);
   const isOrganizador = roles.some(r => r.cdRol === 2);
-  const isNormal      = roles.some(r => r.cdRol === 0);
+  const isNormal = roles.some(r => r.cdRol === 0);
 
 
   const renderUserMenu = () => {
@@ -103,15 +104,15 @@ export default function NavBar({ onFilter }) {
               onClick={toggleDropdown}
             >
               <svg xmlns="http://www.w3.org/2000/svg"
-                   className="h-5 w-5"
-                   fill="none"
-                   viewBox="0 0 24 24"
-                   stroke="currentColor"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
                 <path strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h8m-8 6h16"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
                 />
               </svg>
             </label>
@@ -169,8 +170,12 @@ export default function NavBar({ onFilter }) {
           {user ? (
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img src="https://i.pravatar.cc/300" alt="User avatar" />
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <img
+                    src={user.profileImage || defaultAvatar}
+                    alt="User avatar"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </label>
               <ul

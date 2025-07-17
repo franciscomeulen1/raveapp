@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
       const loginRes = await api.get('/Usuario/Login', {
         params: { Correo: email, Password: password }
       });
+
       if (loginRes.data !== true) {
         throw new Error('Credenciales inválidas');
       }
@@ -25,28 +26,45 @@ export function AuthProvider({ children }) {
       const userRes = await api.get('/Usuario/GetUsuario', {
         params: { Mail: email }
       });
+
       const lista = userRes.data.usuarios;
       if (!Array.isArray(lista) || lista.length === 0) {
         throw new Error('No se encontró el usuario');
       }
+
       const userData = lista[0];
+      const roles = userData.roles; // array de objetos con cdRol y dsRol
 
-      // Chequea rol de “Control de entrada”
-      // const roles = userData.roles.map(r => r.cdRol);
-      const roles = userData.roles; // ahora guardamos los objetos completos
-
+      // Bloquear si tiene rol de "Control de entrada"
       if (roles.some(r => r.cdRol === 3)) {
         onBlocked();
         return;
       }
 
-      // 2) Login OK: setState y persiste en localStorage
+      // Objeto base del usuario logueado
       const logged = {
-        id:    userData.idUsuario,
-        name:  userData.nombre,
+        id: userData.idUsuario,
+        name: userData.nombre,
         email: userData.correo,
-        roles, // ahora es un array de objetos con cdRol y dsRol
+        roles, // array de objetos con cdRol y dsRol
       };
+
+      // Intenta traer imagen de perfil
+      try {
+        const resImg = await api.get('/Media', {
+          params: { IdEntidadMedia: userData.idUsuario }
+        });
+
+        const img = resImg.data.media?.find(m => !m.mdVideo); // solo imagen
+        if (img) {
+          logged.profileImage = img.url;
+          logged.profileImageId = img.idMedia;
+        }
+      } catch (err) {
+        console.warn('No se encontró imagen de perfil. Se usará ícono por defecto.');
+      }
+
+      // Guardar en estado y localStorage
       setUser(logged);
       localStorage.setItem('user', JSON.stringify(logged));
 
@@ -77,48 +95,92 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, login, logout, setUser }}>
-     {children}
+      {children}
     </AuthContext.Provider>
   );
 }
 
 
-
-
+// // context/AuthContext.js
 // import React, { createContext, useState, useEffect } from 'react';
+// import api from '../componenteapi/api';
 
-// // Creamos el contexto
 // export const AuthContext = createContext();
 
-// // Creamos el proveedor (Provider) del contexto
-// export const AuthProvider = ({ children }) => {
-//     // Guardamos el usuario en el estado
-//   const [user, setUser] = useState(null);
+// export function AuthProvider({ children }) {
+//   // 1) Rehidratar user desde localStorage al arrancar
+//   const [user, setUser] = useState(() => {
+//     const saved = localStorage.getItem('user');
+//     return saved ? JSON.parse(saved) : null;
+//   });
 
-//   // Cuando se monta el componente, intentamos cargar la sesión guardada en localStorage
-//   useEffect(() => {
-//     const storedUser = localStorage.getItem('user');
-//     if (storedUser) {
-//       setUser(JSON.parse(storedUser));
+//   const login = async ({ email, password, onBlocked }) => {
+//     try {
+//       // Comprueba credenciales
+//       const loginRes = await api.get('/Usuario/Login', {
+//         params: { Correo: email, Password: password }
+//       });
+//       if (loginRes.data !== true) {
+//         throw new Error('Credenciales inválidas');
+//       }
+
+//       // Trae datos de usuario
+//       const userRes = await api.get('/Usuario/GetUsuario', {
+//         params: { Mail: email }
+//       });
+//       const lista = userRes.data.usuarios;
+//       if (!Array.isArray(lista) || lista.length === 0) {
+//         throw new Error('No se encontró el usuario');
+//       }
+//       const userData = lista[0];
+
+//       // Chequea rol de “Control de entrada”
+//       // const roles = userData.roles.map(r => r.cdRol);
+//       const roles = userData.roles; // ahora guardamos los objetos completos
+
+//       if (roles.some(r => r.cdRol === 3)) {
+//         onBlocked();
+//         return;
+//       }
+
+//       // 2) Login OK: setState y persiste en localStorage
+//       const logged = {
+//         id:    userData.idUsuario,
+//         name:  userData.nombre,
+//         email: userData.correo,
+//         roles, // ahora es un array de objetos con cdRol y dsRol
+//       };
+//       setUser(logged);
+//       localStorage.setItem('user', JSON.stringify(logged));
+
+//     } catch (err) {
+//       if (err.message === 'Credenciales inválidas') {
+//         throw err;
+//       }
+//       console.error(err);
+//       throw new Error('Error de conexión, intenta más tarde');
 //     }
-//   }, []);
-
-//   // Función para iniciar sesión: actualiza el estado y guarda en localStorage
-//   const login = (userData) => {
-//     setUser(userData);
-//     localStorage.setItem('user', JSON.stringify(userData));
 //   };
 
-//   // Función para cerrar sesión: elimina el usuario del estado y de localStorage
 //   const logout = () => {
 //     setUser(null);
 //     localStorage.removeItem('user');
 //   };
- 
-//   // El Provider envuelve a sus hijos y les pasa el valor (user, login y logout)
+
+//   // 3) Sincronizar user entre pestañas
+//   useEffect(() => {
+//     const onStorage = e => {
+//       if (e.key === 'user') {
+//         setUser(e.newValue ? JSON.parse(e.newValue) : null);
+//       }
+//     };
+//     window.addEventListener('storage', onStorage);
+//     return () => window.removeEventListener('storage', onStorage);
+//   }, []);
+
 //   return (
-//     <AuthContext.Provider value={{ user, login, logout }}>
-//       {children}
+//     <AuthContext.Provider value={{ user, login, logout, setUser }}>
+//      {children}
 //     </AuthContext.Provider>
 //   );
-// };
+// }
