@@ -17,29 +17,56 @@ export default function Artistas() {
                 const response = await api.get('/Artista/GetArtista?isActivo=true');
                 const data = response.data.artistas;
 
-                // Para cada artista, buscar su imagen
+                const cacheRaw = localStorage.getItem('imagenesArtistasCache');
+                const cache = cacheRaw ? JSON.parse(cacheRaw) : {};
+                const nuevosCache = { ...cache };
+                const ahora = Date.now();
+
+                const TTL = 2 * 60 * 60 * 1000; // 2 horas en milisegundos
+
                 const artistasConImagenes = await Promise.all(
-                    data.map(async (artista, index) => {
+                    data.map(async (artista) => {
+                        const id = artista.idArtista;
+                        const itemCache = nuevosCache[id];
+
+                        if (itemCache && ahora - itemCache.timestamp < TTL) {
+                            return {
+                                ...artista,
+                                imagenUrl: itemCache.url
+                            };
+                        }
+
                         try {
-                            const mediaRes = await api.get(`/Media?idEntidadMedia=${artista.idArtista}`);
+                            const mediaRes = await api.get(`/Media?idEntidadMedia=${id}`);
                             const imagenUrl = mediaRes.data.media?.[0]?.url || null;
+
+                            nuevosCache[id] = {
+                                url: imagenUrl,
+                                timestamp: ahora
+                            };
 
                             return {
                                 ...artista,
-                                likes: 100 + index,
                                 imagenUrl
                             };
                         } catch (error) {
                             console.warn(`No se pudo obtener la imagen del artista ${artista.nombre}`, error);
+
+                            nuevosCache[id] = {
+                                url: null,
+                                timestamp: ahora
+                            };
+
                             return {
                                 ...artista,
-                                likes: 100 + index,
                                 imagenUrl: null
                             };
                         }
                     })
                 );
 
+
+                localStorage.setItem('imagenesArtistasCache', JSON.stringify(nuevosCache));
                 setArtistas(artistasConImagenes);
             } catch (err) {
                 console.error('Error al obtener artistas:', err);
@@ -52,6 +79,8 @@ export default function Artistas() {
         fetchArtistas();
         window.scrollTo(0, 0);
     }, []);
+
+
 
     if (loading) return <div>Cargando artistas...</div>;
     if (error) return <div>Hubo un error: {error}</div>;

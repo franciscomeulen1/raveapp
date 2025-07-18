@@ -10,42 +10,61 @@ import HeartNoLike from "../iconos/heart-nolike.png";
 import AvatarGroup from '../components/AvatarGroup';
 
 export default function Artista() {
-
     const location = useLocation();
     const { id } = useParams();
 
     const [artista, setArtista] = useState(location.state?.artista || null);
+    const [imagenUrl, setImagenUrl] = useState(null);
     const [loading, setLoading] = useState(!artista);
     const [error, setError] = useState(null);
+    const [imagenCargada, setImagenCargada] = useState(false);
+
 
     useEffect(() => {
-        if (!artista) {
+        const fetchArtista = async () => {
+            try {
+                const response = await api.get(`/Artista/GetArtista?idArtista=${id}`);
+                const data = response.data.artistas;
+                if (data && data.length > 0) {
+                    setArtista(data[0]);
+                } else {
+                    setError("Artista no encontrado");
+                }
+            } catch (err) {
+                console.error("Error al obtener el artista:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            api.get(`/Artista/GetArtista?idArtista=${id}`)
-                .then(response => {
-                    const data = response.data.artistas;
+        if (!artista) fetchArtista();
+        else setLoading(false);
 
-                    if (data && data.length > 0) {
-                        setArtista({
-                            ...data[0],
-                            likes: 123 // likes hardcodeados temporalmente
-                        });
-                    } else {
-                        setError("Artista no encontrado");
-                    }
-                    setLoading(false);
-                })
-                .catch(err => {
-                    console.error("Error al obtener el artista:", err);
-                    setError(err.message);
-                    setLoading(false);
-                });
-        }
+        // Cargar imagen desde la API Media
+        const fetchImagen = async () => {
+            try {
+                const mediaRes = await api.get(`/Media?idEntidadMedia=${id}`);
+                const url = mediaRes.data.media?.[0]?.url || null;
+                setImagenUrl(url);
+            } catch (err) {
+                console.warn('No se pudo cargar la imagen del artista', err);
+                setImagenUrl(null);
+            }
+        };
+
+        fetchImagen();
         window.scrollTo(0, 0);
-    }, [artista, id]);
+    }, [id, artista]);
 
     if (loading) return <div className="text-center mt-20">Cargando artista...</div>;
     if (error) return <div className="text-center mt-20 text-red-600">Hubo un error: {error}</div>;
+
+
+    const instagramUrl = artista.socials?.mdInstagram;
+    const spotifyUrl = artista.socials?.mdSpotify;
+    const soundcloudUrl = artista.socials?.mdSoundcloud;
+    const likes = artista.likes || 0;
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -53,27 +72,74 @@ export default function Artista() {
                 <NavBar />
                 <div className='flex flex-wrap items-center gap-4'>
                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{artista.nombre}</h1>
-                    <a href="https://www.spotify.com" target="_blank" rel='noreferrer'>
-                        <img src={Spotify} alt="spotify" width="55px" />
-                    </a>
-                    <a href="https://www.soundcloud.com" target="_blank" rel='noreferrer'>
-                        <img src={Soundcloud} alt="soundcloud" width="55px" />
-                    </a>
-                    <a href="https://www.instagram.com" target="_blank" rel='noreferrer'>
-                        <img src={Instagram} alt="instagram" width="55px" />
-                    </a>
+
+                    {/* Redes sociales */}
+                    {spotifyUrl ? (
+                        <a href={spotifyUrl} target="_blank" rel="noreferrer">
+                            <img src={Spotify} alt="spotify" width="55px" />
+                        </a>
+                    ) : (
+                        <img src={Spotify} alt="spotify" width="55px" className="grayscale opacity-50" />
+                    )}
+
+                    {soundcloudUrl ? (
+                        <a href={soundcloudUrl} target="_blank" rel="noreferrer">
+                            <img src={Soundcloud} alt="soundcloud" width="55px" />
+                        </a>
+                    ) : (
+                        <img src={Soundcloud} alt="soundcloud" width="55px" className="grayscale opacity-50" />
+                    )}
+
+                    {instagramUrl ? (
+                        <a href={instagramUrl} target="_blank" rel="noreferrer">
+                            <img src={Instagram} alt="instagram" width="55px" />
+                        </a>
+                    ) : (
+                        <img src={Instagram} alt="instagram" width="55px" className="grayscale opacity-50" />
+                    )}
                 </div>
 
+                {/* Likes y avatar group */}
                 <div className='flex px-10 items-center'>
                     <div><img src={HeartNoLike} alt="heart" width="80%" /></div>
                     <AvatarGroup />
-                    <p className='font-semibold text-lg ml-3'>A {artista.likes} personas les gusta esto.</p>
+                    <p className='font-semibold text-lg ml-3'>A {likes} personas les gusta esto.</p>
                 </div>
 
+                {/* Imagen + bio */}
                 <div className='grid md:grid-cols-4 lg:grid-cols-3 sm:mx-28 mt-5 space-y-5'>
-                    <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
-                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="dj" className='rounded-full sm:w-full md:max-w-sm' />
+                    {/* <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
+                        <img src={imagenFinal} alt={`Imagen de ${artista.nombre}`} className='rounded-full sm:w-full md:max-w-sm object-cover' />
+                    </div> */}
+                    <div className="sm:col-span-3 md:col-span-2 lg:col-span-1 flex justify-center">
+                        <div className="relative w-64 h-64 rounded-full overflow-hidden bg-gray-100">
+
+                            {/* Si NO hay imagen, mostrar círculo con texto */}
+                            {imagenUrl === null && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-300 text-gray-700 font-semibold text-center px-4 text-sm">
+                                    Artista sin foto
+                                </div>
+                            )}
+
+                            {/* Si HAY imagen, mostrarla con spinner hasta que cargue */}
+                            {imagenUrl && (
+                                <>
+                                    {!imagenCargada && (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
+                                    )}
+                                    <img
+                                        src={imagenUrl}
+                                        alt={`Imagen de ${artista.nombre}`}
+                                        onLoad={() => setImagenCargada(true)}
+                                        className={`rounded-full object-cover w-full h-full transition-opacity duration-500 ${imagenCargada ? 'opacity-100' : 'opacity-0'}`}
+                                    />
+                                </>
+                            )}
+                        </div>
                     </div>
+
                     <div className='md:col-span-2 lg:col-span-2 pl-5 font-medium'>
                         <p>{artista.bio}</p>
                     </div>
@@ -86,72 +152,88 @@ export default function Artista() {
 
 
 
-// import React from 'react';
+// import React, { useEffect, useState } from 'react';
+// import { useLocation, useParams } from 'react-router-dom';
 // import NavBar from '../components/NavBar';
 // import Footer from '../components/Footer';
+// import api from '../componenteapi/api';
 // import Instagram from '../iconos/instagram.png';
 // import Spotify from "../iconos/spotify.png";
 // import Soundcloud from "../iconos/soundcloud.png";
-// import HeartNoLike from "../iconos/heart-nolike.png"
+// import HeartNoLike from "../iconos/heart-nolike.png";
 // import AvatarGroup from '../components/AvatarGroup';
-// import { useParams, useLocation } from 'react-router-dom';
 
-// export default function Artista(props) {
-    
+// export default function Artista() {
+
 //     const location = useLocation();
-//     const { nombre } = useParams();
-//     const descripcion = location.state.descripcion;
-//     const likes = location.state.likes;
+//     const { id } = useParams();
 
-//     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+//     const [artista, setArtista] = useState(location.state?.artista || null);
+//     const [loading, setLoading] = useState(!artista);
+//     const [error, setError] = useState(null);
+
+//     useEffect(() => {
+//         if (!artista) {
+
+//             api.get(`/Artista/GetArtista?idArtista=${id}`)
+//                 .then(response => {
+//                     const data = response.data.artistas;
+
+//                     if (data && data.length > 0) {
+//                         setArtista({
+//                             ...data[0],
+//                             likes: 123 // likes hardcodeados temporalmente
+//                         });
+//                     } else {
+//                         setError("Artista no encontrado");
+//                     }
+//                     setLoading(false);
+//                 })
+//                 .catch(err => {
+//                     console.error("Error al obtener el artista:", err);
+//                     setError(err.message);
+//                     setLoading(false);
+//                 });
+//         }
+//         window.scrollTo(0, 0);
+//     }, [artista, id]);
+
+//     if (loading) return <div className="text-center mt-20">Cargando artista...</div>;
+//     if (error) return <div className="text-center mt-20 text-red-600">Hubo un error: {error}</div>;
 
 //     return (
-//         <div style={{ minHeight: '100vh', position: 'relative' }}>
-//             <div className="sm:px-10 mb-11"  style={{ paddingBottom: '60px' }}>
+//         <div className="flex flex-col min-h-screen">
+//             <div className="flex-1 sm:px-10 mb-11">
 //                 <NavBar />
-//                 <div className='flex'>
-//                     {/* <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Nombre del artista</h1> */}
-//                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{nombre}</h1>
-//                     <div className='mt-4'>
-//                         <a href="https://www.spotify.com" target="_blank" rel='noreferrer'>
-//                             <img src={Spotify} alt="spotify" width="55%" />
-//                         </a>
-//                     </div>
-//                     <div className='mt-4'>
-//                         <a href="https://www.soundcloud.com" target="_blank" rel='noreferrer'>
-//                             <img src={Soundcloud} alt="soundcloud" width="55%" />
-//                         </a>
-//                     </div>
-//                     <div className='mt-4'>
-//                         <a href="https://www.instagram.com" target="_blank" rel='noreferrer'>
-//                             <img src={Instagram} alt="instagram" width="55%" />
-//                         </a>
-//                     </div>
+//                 <div className='flex flex-wrap items-center gap-4'>
+//                     <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{artista.nombre}</h1>
+//                     <a href="https://www.spotify.com" target="_blank" rel='noreferrer'>
+//                         <img src={Spotify} alt="spotify" width="55px" />
+//                     </a>
+//                     <a href="https://www.soundcloud.com" target="_blank" rel='noreferrer'>
+//                         <img src={Soundcloud} alt="soundcloud" width="55px" />
+//                     </a>
+//                     <a href="https://www.instagram.com" target="_blank" rel='noreferrer'>
+//                         <img src={Instagram} alt="instagram" width="55px" />
+//                     </a>
 //                 </div>
 
-//                 {/* -------------------------------------------------------- */}
-
-//                  <div className='flex px-10 items-center'>
-//                 <div><img src={HeartNoLike} alt="heart" width="80%" /></div>
-//                  <AvatarGroup />
-//                  <p className='font-semibold text-lg ml-3'>A {likes} personas les gusta esto.</p>
-//                  </div>
- 
-//                 {/* -------------------------------------------------------- */}
+//                 <div className='flex px-10 items-center'>
+//                     <div><img src={HeartNoLike} alt="heart" width="80%" /></div>
+//                     <AvatarGroup />
+//                     <p className='font-semibold text-lg ml-3'>A {artista.likes} personas les gusta esto.</p>
+//                 </div>
 
 //                 <div className='grid md:grid-cols-4 lg:grid-cols-3 sm:mx-28 mt-5 space-y-5'>
-//                 <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
-//                     <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="dj" className='rounded-full sm:w-full md:max-w-sm' />
+//                     <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
+//                         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt="dj" className='rounded-full sm:w-full md:max-w-sm' />
+//                     </div>
+//                     <div className='md:col-span-2 lg:col-span-2 pl-5 font-medium'>
+//                         <p>{artista.bio}</p>
+//                     </div>
 //                 </div>
-//                 <div className='md:col-span-2 lg:col-span-2 pl-5 font-medium'>
-//                     {/* <p>INFORMACION DEL ARTISTA - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> */}
-//                     <p>{descripcion}</p>
-//                 </div>
-
-//                 </div>
-
 //             </div>
-//             <Footer style={{ position: 'absolute', bottom: 0, width: '100%' }}/>
+//             <Footer />
 //         </div>
-//     )
-//     }
+//     );
+// }
