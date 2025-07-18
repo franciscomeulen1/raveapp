@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -6,27 +6,43 @@ import api from '../componenteapi/api';
 import Instagram from '../iconos/instagram.png';
 import Spotify from "../iconos/spotify.png";
 import Soundcloud from "../iconos/soundcloud.png";
-import HeartNoLike from "../iconos/heart-nolike.png";
 import AvatarGroup from '../components/AvatarGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as whiteHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as redHeart } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../context/AuthContext';
+
 
 export default function Artista() {
     const location = useLocation();
     const { id } = useParams();
+
+    const { user } = useContext(AuthContext);
 
     const [artista, setArtista] = useState(location.state?.artista || null);
     const [imagenUrl, setImagenUrl] = useState(null);
     const [loading, setLoading] = useState(!artista);
     const [error, setError] = useState(null);
     const [imagenCargada, setImagenCargada] = useState(false);
-
+    const [isLiked, setIsLiked] = useState(false);
+    const [likesCount, setLikesCount] = useState(0);
 
     useEffect(() => {
         const fetchArtista = async () => {
             try {
-                const response = await api.get(`/Artista/GetArtista?idArtista=${id}`);
+                setLoading(true);
+
+                const url = user
+                    ? `/Artista/GetArtista?idArtista=${id}&idUsuario=${user.id}`
+                    : `/Artista/GetArtista?idArtista=${id}`;
+
+                const response = await api.get(url);
                 const data = response.data.artistas;
+
                 if (data && data.length > 0) {
                     setArtista(data[0]);
+                    setIsLiked(data[0].isFavorito === 1);
+                    setLikesCount(data[0].likes || 0);
                 } else {
                     setError("Artista no encontrado");
                 }
@@ -38,10 +54,11 @@ export default function Artista() {
             }
         };
 
-        if (!artista) fetchArtista();
-        else setLoading(false);
+        fetchArtista();
+        window.scrollTo(0, 0);
+    }, [id, user]); // 👈 Importante: solo depende de id y user
 
-        // Cargar imagen desde la API Media
+    useEffect(() => {
         const fetchImagen = async () => {
             try {
                 const mediaRes = await api.get(`/Media?idEntidadMedia=${id}`);
@@ -54,8 +71,9 @@ export default function Artista() {
         };
 
         fetchImagen();
-        window.scrollTo(0, 0);
-    }, [id, artista]);
+    }, [id]); // ✅ Solo depende del ID del artista
+
+
 
     if (loading) return <div className="text-center mt-20">Cargando artista...</div>;
     if (error) return <div className="text-center mt-20 text-red-600">Hubo un error: {error}</div>;
@@ -64,7 +82,30 @@ export default function Artista() {
     const instagramUrl = artista.socials?.mdInstagram;
     const spotifyUrl = artista.socials?.mdSpotify;
     const soundcloudUrl = artista.socials?.mdSoundcloud;
-    const likes = artista.likes || 0;
+
+    const handleLikeClick = async () => {
+        try {
+            await api.put('/Usuario/ArtistaFavorito', {
+                idUsuario: user.id,
+                idArtista: artista.idArtista
+            });
+
+            // Actualizá el estado local
+            if (isLiked) {
+                setIsLiked(false);
+                setLikesCount(prev => Math.max(prev - 1, 0));
+            } else {
+                setIsLiked(true);
+                setLikesCount(prev => prev + 1);
+            }
+
+        } catch (error) {
+            console.error('Error al hacer like al artista:', error);
+            alert('Ocurrió un error al intentar guardar tu favorito.');
+        }
+    };
+
+
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -100,10 +141,21 @@ export default function Artista() {
                 </div>
 
                 {/* Likes y avatar group */}
-                <div className='flex px-10 items-center'>
-                    <div><img src={HeartNoLike} alt="heart" width="80%" /></div>
+                <div className='flex px-10 items-center gap-3'>
+                    {user && (
+                        <button
+                            onClick={handleLikeClick}
+                            className="w-15 h-15 flex items-center justify-center"
+                        >
+                            <FontAwesomeIcon
+                                icon={isLiked ? redHeart : whiteHeart}
+                                size="2x"
+                                className={`transition-transform duration-200 ${isLiked ? 'text-red-500' : 'text-gray-500'} hover:scale-110`}
+                            />
+                        </button>
+                    )}
                     <AvatarGroup />
-                    <p className='font-semibold text-lg ml-3'>A {likes} personas les gusta esto.</p>
+                    <p className='font-semibold text-lg'>A {likesCount} personas les gusta esto.</p>
                 </div>
 
                 {/* Imagen + bio */}

@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import CardsEventos from '../components/CardsEventos';
 import Footer from '../components/Footer';
 import Carousel from '../components/Carousel';
 import api from '../componenteapi/api';
+import { AuthContext } from '../context/AuthContext';
 
 function Inicio() {
   const [eventos, setEventos] = useState([]);
   const [filteredEventos, setFilteredEventos] = useState([]);
   const [loading, setLoading] = useState(true);  // <-- Nuevo estado loading
+
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +24,10 @@ function Inicio() {
       generosDict[gen.cdGenero] = gen.dsGenero;
     });
 
-    const eventosResponse = await api.get('/Evento/GetEventos?Estado=2');
+    // const eventosResponse = await api.get('/Evento/GetEventos?Estado=2');
+    const eventosResponse = user
+      ? await api.get(`/Evento/GetEventos?Estado=2&IdUsuarioFav=${user.id}`)
+      : await api.get('/Evento/GetEventos?Estado=2');
     const eventosApi = eventosResponse.data.eventos;
 
     const eventosProcesados = eventosApi.map(evento => ({
@@ -42,7 +48,8 @@ function Inicio() {
       localidad: evento.domicilio.localidad.nombre,
       direccion: evento.domicilio.direccion,
       descripcion: evento.descripcion,
-      imagen: evento.media && evento.media.length > 0 ? evento.media[0].imagen : null
+      imagen: evento.media && evento.media.length > 0 ? evento.media[0].imagen : null,
+      isFavorito: evento.isFavorito === 1 // booleano
     }));
 
     setEventos(eventosProcesados);
@@ -57,7 +64,7 @@ function Inicio() {
 
     fetchData();
     window.scrollTo(0, 0);
-  }, []);
+  }, [user]);
 
   const filterEventos = (eventos, filtros) => {
     return eventos.filter(evento => {
@@ -101,7 +108,7 @@ function Inicio() {
               <p className="text-gray-500">¡Vuelve pronto para descubrir nuevas fiestas!</p>
             </div>
           ) : (
-            <CardsEventos eventos={filteredEventos} />
+            <CardsEventos eventos={filteredEventos} user={user} />           
           )}
         </div>
       </div>

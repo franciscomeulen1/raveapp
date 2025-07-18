@@ -1,7 +1,7 @@
 import React from 'react';
 import CardEvento from './CardEvento';
 
-export default function CardsEventos({ eventos }) {
+export default function CardsEventos({ eventos, user }) {
     return (
         <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
             {eventos.map(evento => {
@@ -18,7 +18,9 @@ export default function CardsEventos({ eventos }) {
                         generos={evento.generos}
                         lgbt={evento.lgbt}
                         after={evento.after}
+                        isFavorito={evento.isFavorito}
                         eventoCompleto={evento} // si querés pasar todo el objeto
+                        user={user}
                     />
                 );
             })}

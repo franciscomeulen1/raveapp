@@ -4,15 +4,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as whiteHeart } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as redHeart } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import api from '../componenteapi/api';
+
 
 export default function CardEvento(props) {
-    const [isLiked, setIsLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(props.isFavorito);
 
-    const handleLikeClick = (event) => {
+    const handleLikeClick = async (event) => {
         event.preventDefault(); // evitar que el clic navegue
         event.stopPropagation(); // evitar burbuja
-        setIsLiked(!isLiked);
+
+        try {
+            await api.put('/Usuario/EventoFavorito', {
+                idUsuario: props.user.id,
+                idEvento: props.id
+            });
+
+            setIsLiked(!isLiked);
+        } catch (error) {
+            console.error('Error al actualizar favorito:', error);
+            alert('Ocurrió un error al intentar guardar tu favorito.');
+        }
     };
+
 
     return (
         <Link
@@ -33,13 +47,15 @@ export default function CardEvento(props) {
                     <h2 className="card-title">{props.nombre}</h2>
                     <p>{props.fecha}</p>
                     <div className="card-actions justify-end flex-wrap gap-1">
-                        <button onClick={handleLikeClick}>
-                            <FontAwesomeIcon
-                                icon={isLiked ? redHeart : whiteHeart}
-                                size="lg"
-                                className={`heart ${isLiked ? 'liked' : ''}`}
-                            />
-                        </button>
+                        {props.user && (
+                            <button onClick={handleLikeClick}>
+                                <FontAwesomeIcon
+                                    icon={isLiked ? redHeart : whiteHeart}
+                                    size="lg"
+                                    className={`heart ${isLiked ? 'liked' : ''}`}
+                                />
+                            </button>
+                        )}
                         {Array.isArray(props.generos) ? (
                             props.generos.map((g, index) => (
                                 <div
