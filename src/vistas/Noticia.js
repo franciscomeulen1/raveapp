@@ -68,7 +68,45 @@ export default function Noticia() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <div className="container mx-auto p-4 flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-start justify-center px-4 sm:px-10 pt-4 sm:pt-6 md:pt-20">
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-8 max-w-6xl w-full">
+
+          {/* Imagen */}
+          <div className="w-full md:w-auto flex justify-center md:justify-start">
+            <img
+              src={imagenUrl || imagenFallback}
+              alt="noticia"
+              className="w-full max-w-md md:max-w-lg lg:max-w-xl object-cover rounded-lg shadow-md aspect-[1.2]"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = imagenFallback;
+              }}
+            />
+          </div>
+
+          {/* Texto */}
+          <div className="w-full text-center md:text-left">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4">{noticiaData.titulo}</h1>
+            <p className="text-gray-700 leading-relaxed mb-4">{noticiaData.contenido}</p>
+
+            {noticiaData.urlEvento && noticiaData.urlEvento.trim() !== '' && (
+              <a
+                href={noticiaData.urlEvento}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-4 px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-pink-600 transition"
+              >
+                Ir a evento
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+
+
+
+      {/* <div className="container mx-auto p-4 flex-1 flex items-center justify-center">
         <div className="flex flex-col md:flex-row items-center" style={{ gap: '1cm' }}>
           <div className="flex-shrink-0">
             <img
@@ -97,7 +135,7 @@ export default function Noticia() {
             )}
           </div>
         </div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   );

@@ -111,34 +111,22 @@ export default function Artista() {
         <div className="flex flex-col min-h-screen">
             <div className="flex-1 sm:px-10 mb-11">
                 <NavBar />
-                <div className='flex flex-wrap items-center gap-4'>
-                    <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>{artista.nombre}</h1>
+                <div className="px-4 mt-2 sm:mt-4 sm:px-10 mb-6 flex flex-wrap items-center gap-4">
+                    <h1 className='text-2xl sm:text-3xl font-bold underline underline-offset-8'>{artista.nombre}</h1>
 
-                    {/* Redes sociales */}
-                    {spotifyUrl ? (
-                        <a href={spotifyUrl} target="_blank" rel="noreferrer">
-                            <img src={Spotify} alt="spotify" width="55px" />
+                    <div className="flex gap-3 flex-wrap">
+                        <a href={spotifyUrl || "#"} target="_blank" rel="noreferrer">
+                            <img src={Spotify} alt="spotify" className={`w-8 sm:w-10 ${!spotifyUrl ? 'grayscale opacity-50' : ''}`} />
                         </a>
-                    ) : (
-                        <img src={Spotify} alt="spotify" width="55px" className="grayscale opacity-50" />
-                    )}
-
-                    {soundcloudUrl ? (
-                        <a href={soundcloudUrl} target="_blank" rel="noreferrer">
-                            <img src={Soundcloud} alt="soundcloud" width="55px" />
+                        <a href={soundcloudUrl || "#"} target="_blank" rel="noreferrer">
+                            <img src={Soundcloud} alt="soundcloud" className={`w-8 sm:w-10 ${!soundcloudUrl ? 'grayscale opacity-50' : ''}`} />
                         </a>
-                    ) : (
-                        <img src={Soundcloud} alt="soundcloud" width="55px" className="grayscale opacity-50" />
-                    )}
-
-                    {instagramUrl ? (
-                        <a href={instagramUrl} target="_blank" rel="noreferrer">
-                            <img src={Instagram} alt="instagram" width="55px" />
+                        <a href={instagramUrl || "#"} target="_blank" rel="noreferrer">
+                            <img src={Instagram} alt="instagram" className={`w-8 sm:w-10 ${!instagramUrl ? 'grayscale opacity-50' : ''}`} />
                         </a>
-                    ) : (
-                        <img src={Instagram} alt="instagram" width="55px" className="grayscale opacity-50" />
-                    )}
+                    </div>
                 </div>
+
 
                 {/* Likes y avatar group */}
                 <div className='flex px-10 items-center gap-3'>
@@ -155,16 +143,13 @@ export default function Artista() {
                         </button>
                     )}
                     <AvatarGroup />
-                    <p className='font-semibold text-lg'>A {likesCount} personas les gusta esto.</p>
+                    <p className='font-medium text-sm sm:text-base'>A {likesCount} personas les gusta esto.</p>
                 </div>
 
                 {/* Imagen + bio */}
-                <div className='grid md:grid-cols-4 lg:grid-cols-3 sm:mx-28 mt-5 space-y-5'>
-                    {/* <div className='image-full sm:col-span-3 md:col-span-2 lg:col-span-1'>
-                        <img src={imagenFinal} alt={`Imagen de ${artista.nombre}`} className='rounded-full sm:w-full md:max-w-sm object-cover' />
-                    </div> */}
+                <div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-3 gap-y-6 sm:px-8 px-4 mt-5'>
                     <div className="sm:col-span-3 md:col-span-2 lg:col-span-1 flex justify-center">
-                        <div className="relative w-64 h-64 rounded-full overflow-hidden bg-gray-100">
+                        <div className="relative w-36 h-36 sm:w-52 sm:h-52 md:w-64 md:h-64 rounded-full overflow-hidden bg-gray-100">
 
                             {/* Si NO hay imagen, mostrar círculo con texto */}
                             {imagenUrl === null && (
