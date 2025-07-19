@@ -34,7 +34,8 @@ export default function CardEvento(props) {
             state={{ evento: props.eventoCompleto }} // Puedes ajustar según cómo lo uses
             className="p-5 inline-flex relative cursor-pointer"
         >
-            <div className="card w-96 bg-base-100 shadow-xl">
+            {/* <div className="card w-96 bg-base-100 shadow-xl"> */}
+            <div className="card w-full bg-base-100 shadow-xl">
                 <div className="image-container">
                     <figure>
                         <img

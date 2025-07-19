@@ -100,14 +100,14 @@ export default function Artistas() {
 
     return (
         <div>
-            <div className="sm:px-10 mb-11">
+            <div className="px-4 sm:px-10 mb-11">
                 <NavBar />
                 <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Artistas</h1>
-                <div className='mx-28'>
+                <div className="mx-auto max-w-screen-xl px-2 sm:px-6 lg:px-12">
                     {clavesOrdenadas.map(letra => (
                         <div key={letra}>
                             <div><p className='font-bold text-3xl mb-4'>{letra}</p></div>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-28 gap-y-8 justify-items-center">
+                            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6 justify-items-center">
                                 {nombresAgrupados[letra].map(artista => (
                                     <AvatarArtista
                                         key={artista.idArtista}
