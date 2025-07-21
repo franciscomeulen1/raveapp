@@ -48,7 +48,8 @@ export default function Evento() {
             localidad: eventoData.domicilio.localidad.nombre,
             direccion: eventoData.domicilio.direccion,
             descripcion: eventoData.descripcion,
-            imagen: eventoData.media && eventoData.media.length > 0 ? eventoData.media[0].imagen : null
+            imagen: eventoData.media && eventoData.media.length > 0 ? eventoData.media[0].imagen : null,
+            soundcloud: eventoData.soundCloud
           };
 
           setEvento(procesado);

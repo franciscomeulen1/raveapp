@@ -22,7 +22,9 @@ export default function CardsEventos({ eventos, user }) {
                         eventoCompleto={evento} // si querés pasar todo el objeto
                         user={user}
                     />
+
                 );
+
             })}
         </div>
     );

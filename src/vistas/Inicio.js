@@ -10,13 +10,16 @@ function Inicio() {
   const [eventos, setEventos] = useState([]);
   const [filteredEventos, setFilteredEventos] = useState([]);
   const [loading, setLoading] = useState(true);  // <-- Nuevo estado loading
+  const [visibleCount, setVisibleCount] = useState(8); // mostrar los primeros 8
+
 
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
-    try {
+  try {
     setLoading(true);
+
     const generosResponse = await api.get('/Evento/GetGeneros');
     const generosArray = generosResponse.data;
     const generosDict = {};
@@ -24,43 +27,65 @@ function Inicio() {
       generosDict[gen.cdGenero] = gen.dsGenero;
     });
 
-    // const eventosResponse = await api.get('/Evento/GetEventos?Estado=2');
     const eventosResponse = user
       ? await api.get(`/Evento/GetEventos?Estado=2&IdUsuarioFav=${user.id}`)
       : await api.get('/Evento/GetEventos?Estado=2');
     const eventosApi = eventosResponse.data.eventos;
 
-    const eventosProcesados = eventosApi.map(evento => ({
-      id: evento.idEvento,
-      nombreEvento: evento.nombre,
-      dias: evento.fechas.map(fecha => ({
-        fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
-        horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-        horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-        entradas: fecha.entradas || []
-      })),
-      generos: evento.genero.map(genId => generosDict[genId] || 'Desconocido'),
-      artistas: evento.artistas || [],
-      lgbt: evento.isLgbt,
-      after: evento.isAfter,
-      provincia: evento.domicilio.provincia.nombre,
-      municipio: evento.domicilio.municipio.nombre,
-      localidad: evento.domicilio.localidad.nombre,
-      direccion: evento.domicilio.direccion,
-      descripcion: evento.descripcion,
-      imagen: evento.media && evento.media.length > 0 ? evento.media[0].imagen : null,
-      isFavorito: evento.isFavorito === 1 // booleano
+    const eventosConMultimedia = await Promise.all(eventosApi.map(async (evento) => {
+  let imagenUrl = null;
+  let videoUrl = null;
+
+  try {
+    const mediaResponse = await api.get(`/Media?idEntidadMedia=${evento.idEvento}`);
+    const mediaArray = mediaResponse.data.media || [];
+
+    const imagen = mediaArray.find(m => m.mdVideo === null && m.url);
+    if (imagen) {
+      imagenUrl = imagen.url;
+    }
+
+    const video = mediaArray.find(m => m.mdVideo !== null && m.mdVideo);
+    if (video) {
+      videoUrl = video.mdVideo;
+    }
+  } catch (err) {
+    console.warn(`No se pudo obtener media para evento ${evento.idEvento}`, err);
+  }
+
+  return {
+    id: evento.idEvento,
+    nombreEvento: evento.nombre,
+    dias: evento.fechas.map(fecha => ({
+      fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
+      horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+      horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+      entradas: fecha.entradas || []
+    })),
+    generos: evento.genero.map(genId => generosDict[genId] || 'Desconocido'),
+    artistas: evento.artistas || [],
+    lgbt: evento.isLgbt,
+    after: evento.isAfter,
+    provincia: evento.domicilio.provincia.nombre,
+    municipio: evento.domicilio.municipio.nombre,
+    localidad: evento.domicilio.localidad.nombre,
+    direccion: evento.domicilio.direccion,
+    descripcion: evento.descripcion,
+    imagen: imagenUrl,
+    video: videoUrl, // ✅ agregado aquí
+    soundcloud: evento.soundCloud,
+    isFavorito: evento.isFavorito === 1
+  };
     }));
 
-    setEventos(eventosProcesados);
-    setFilteredEventos(eventosProcesados);
+    setEventos(eventosConMultimedia);
+    setFilteredEventos(eventosConMultimedia);
   } catch (error) {
     console.error('Error al cargar eventos:', error);
   } finally {
     setLoading(false);
   }
 };
-
 
     fetchData();
     window.scrollTo(0, 0);
@@ -88,6 +113,10 @@ function Inicio() {
     setFilteredEventos(resultados);
   };
 
+  const handleLoadMore = () => {
+  setVisibleCount(prev => prev + 8); // mostrar 8 más
+};
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className='flex-1'>
@@ -108,8 +137,15 @@ function Inicio() {
               <p className="text-gray-500">¡Vuelve pronto para descubrir nuevas fiestas!</p>
             </div>
           ) : (
-            <CardsEventos eventos={filteredEventos} user={user} />           
+            <CardsEventos eventos={filteredEventos.slice(0, visibleCount)} user={user} />       
           )}
+          {filteredEventos.length > visibleCount && (
+           <div className="flex justify-center my-6">
+           <button className="btn btn-primary" onClick={handleLoadMore}>
+           Cargar más
+          </button>
+         </div>
+       )}
         </div>
       </div>
       <Footer />
