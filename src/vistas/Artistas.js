@@ -17,33 +17,11 @@ export default function Artistas() {
                 const response = await api.get('/Artista/GetArtista?isActivo=true');
                 const data = response.data.artistas;
 
-                const cacheRaw = localStorage.getItem('imagenesArtistasCache');
-                const cache = cacheRaw ? JSON.parse(cacheRaw) : {};
-                const nuevosCache = { ...cache };
-                const ahora = Date.now();
-
-                const TTL = 2 * 60 * 60 * 1000; // 2 horas en milisegundos MODIFICAR
-
                 const artistasConImagenes = await Promise.all(
                     data.map(async (artista) => {
-                        const id = artista.idArtista;
-                        const itemCache = nuevosCache[id];
-
-                        if (itemCache && ahora - itemCache.timestamp < TTL) {
-                            return {
-                                ...artista,
-                                imagenUrl: itemCache.url
-                            };
-                        }
-
                         try {
-                            const mediaRes = await api.get(`/Media?idEntidadMedia=${id}`);
+                            const mediaRes = await api.get(`/Media?idEntidadMedia=${artista.idArtista}`);
                             const imagenUrl = mediaRes.data.media?.[0]?.url || null;
-
-                            nuevosCache[id] = {
-                                url: imagenUrl,
-                                timestamp: ahora
-                            };
 
                             return {
                                 ...artista,
@@ -51,12 +29,6 @@ export default function Artistas() {
                             };
                         } catch (error) {
                             console.warn(`No se pudo obtener la imagen del artista ${artista.nombre}`, error);
-
-                            nuevosCache[id] = {
-                                url: null,
-                                timestamp: ahora
-                            };
-
                             return {
                                 ...artista,
                                 imagenUrl: null
@@ -65,8 +37,6 @@ export default function Artistas() {
                     })
                 );
 
-
-                localStorage.setItem('imagenesArtistasCache', JSON.stringify(nuevosCache));
                 setArtistas(artistasConImagenes);
             } catch (err) {
                 console.error('Error al obtener artistas:', err);
@@ -79,8 +49,6 @@ export default function Artistas() {
         fetchArtistas();
         window.scrollTo(0, 0);
     }, []);
-
-
 
     if (loading) return <div>Cargando artistas...</div>;
     if (error) return <div>Hubo un error: {error}</div>;
@@ -126,6 +94,7 @@ export default function Artistas() {
         </div>
     );
 }
+
 
 
 // import React, { useState, useEffect } from 'react';
