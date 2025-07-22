@@ -26,6 +26,8 @@ export default function Artista() {
     const [imagenCargada, setImagenCargada] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(0);
+    const [refreshAvatars, setRefreshAvatars] = useState(false);
+
 
     useEffect(() => {
         const fetchArtista = async () => {
@@ -83,6 +85,7 @@ export default function Artista() {
     const spotifyUrl = artista.socials?.mdSpotify;
     const soundcloudUrl = artista.socials?.mdSoundcloud;
 
+
     const handleLikeClick = async () => {
         try {
             await api.put('/Usuario/ArtistaFavorito', {
@@ -90,7 +93,6 @@ export default function Artista() {
                 idArtista: artista.idArtista
             });
 
-            // Actualizá el estado local
             if (isLiked) {
                 setIsLiked(false);
                 setLikesCount(prev => Math.max(prev - 1, 0));
@@ -99,11 +101,14 @@ export default function Artista() {
                 setLikesCount(prev => prev + 1);
             }
 
+            setRefreshAvatars(prev => !prev); // 👈 Fuerza el refresco del avatar group
+
         } catch (error) {
             console.error('Error al hacer like al artista:', error);
             alert('Ocurrió un error al intentar guardar tu favorito.');
         }
     };
+
 
 
 
@@ -142,8 +147,12 @@ export default function Artista() {
                             />
                         </button>
                     )}
-                    <AvatarGroup />
-                    <p className='font-medium text-sm sm:text-base'>A {likesCount} personas les gusta esto.</p>
+                    <AvatarGroup idArtista={artista.idArtista} refreshTrigger={refreshAvatars} />
+                    {likesCount > 0 && (
+                        <p className='font-medium text-sm sm:text-base'>
+                            A {likesCount} {likesCount === 1 ? 'persona le gusta esto.' : 'personas les gusta esto.'}
+                        </p>
+                    )}
                 </div>
 
                 {/* Imagen + bio */}
