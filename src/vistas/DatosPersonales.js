@@ -56,7 +56,7 @@ export default function DatosPersonales() {
                     dni: data.dni || '',
                     telefono: data.telefono || '',
                     correo: data.correo || '',
-                    nombreFantasia: data.nombreFantasia || '',
+                    // nombreFantasia: data.nombreFantasia || '',
                     dtNacimiento: data.dtNacimiento ? data.dtNacimiento.split('T')[0] : '',
                     direccion: data.domicilio?.direccion || '',
                 });
@@ -91,39 +91,6 @@ export default function DatosPersonales() {
 
         fetchUserData();
     }, [user]);
-
-
-
-    // useEffect(() => {
-    //     if (!user) return; // ⛔ No intentes continuar si no hay usuario
-
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const res = await api.get('/Usuario/GetUsuario', {
-    //                 params: { IdUsuario: user.id }
-    //             });
-    //             const data = res.data.usuarios[0];
-    //             setUserData(data);
-    //             setFormData({
-    //                 nombre: data.nombre || '',
-    //                 apellido: data.apellido || '',
-    //                 dni: data.dni || '',
-    //                 telefono: data.telefono || '',
-    //                 correo: data.correo || '',
-    //                 nombreFantasia: data.nombreFantasia || '',
-    //                 dtNacimiento: data.dtNacimiento ? data.dtNacimiento.split('T')[0] : '',
-    //                 direccion: data.domicilio?.direccion || '',
-    //             });
-    //             setSelectedProvincia({ nombre: data.domicilio?.provincia?.nombre || '', id: data.domicilio?.provincia?.codigo || '' });
-    //             setSelectedMunicipio({ nombre: data.domicilio?.municipio?.nombre || '', id: data.domicilio?.municipio?.codigo || '' });
-    //             setSelectedLocalidad({ nombre: data.domicilio?.localidad?.nombre || '', id: data.domicilio?.localidad?.codigo || '' });
-    //         } catch (err) {
-    //             console.error('Error al traer los datos:', err);
-    //         }
-    //     };
-
-    //     fetchUserData();
-    // }, [user]); // 👈 usamos solo [user] en la dependencia
 
 
     const handleChange = (field, value) => {
@@ -177,7 +144,7 @@ export default function DatosPersonales() {
             cbu: userData.cbu || '',
             dni: formData.dni,
             telefono: formData.telefono,
-            nombreFantasia: formData.nombreFantasia,
+            // nombreFantasia: formData.nombreFantasia,
             dtNacimiento: formData.dtNacimiento ? new Date(formData.dtNacimiento).toISOString() : null,
             bio: userData.bio || '',
             cdRoles: userData.roles ? userData.roles.map(r => r.cdRol) : [],
@@ -397,7 +364,7 @@ export default function DatosPersonales() {
 
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {['nombre', 'apellido', 'dni', 'telefono', 'correo', 'nombreFantasia'].map(field => (
+                        {['nombre', 'apellido', 'dni', 'telefono', 'correo'].map(field => (
                             <EditableField
                                 key={field}
                                 label={field.charAt(0).toUpperCase() + field.slice(1)}
@@ -405,12 +372,6 @@ export default function DatosPersonales() {
                                 onChange={value => handleChange(field, value)}
                             />
                         ))}
-                        {/* <EditableField
-                            label="Fecha de Nacimiento"
-                            value={formData.dtNacimiento || ''}
-                            onChange={value => handleChange('dtNacimiento', value)}
-                            type="date"
-                        /> */}
                         <div className="flex flex-col">
                             <EditableField
                                 label="Fecha de Nacimiento"

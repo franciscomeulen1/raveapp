@@ -19,7 +19,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
-    nombreFantasia: '', // username
+    // nombreFantasia: '', // username
     password: '',
     confirmPassword: '',
     dni: '',
@@ -83,7 +83,7 @@ const Register = () => {
       cbu: '',
       dni: formData.dni,
       telefono: formData.telefono,
-      nombreFantasia: formData.nombreFantasia,
+      // nombreFantasia: formData.nombreFantasia,
       bio: '',
       password: formData.password,
       socials: {
@@ -160,7 +160,7 @@ const Register = () => {
                 />
               </label>
 
-              <label className="block">
+              {/* <label className="block">
                 <span>Crea un usuario:</span>
                 <input
                   type="text"
@@ -171,7 +171,7 @@ const Register = () => {
                   placeholder="Ej: usuario1"
                   required
                 />
-              </label>
+              </label> */}
 
               <label className="block">
                 <span>Crea una contraseña:</span>
