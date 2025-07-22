@@ -22,7 +22,7 @@ export default function Artistas() {
                 const nuevosCache = { ...cache };
                 const ahora = Date.now();
 
-                const TTL = 2 * 60 * 60 * 1000; // 2 horas en milisegundos
+                const TTL = 2 * 60 * 60 * 1000; // 2 horas en milisegundos MODIFICAR
 
                 const artistasConImagenes = await Promise.all(
                     data.map(async (artista) => {

@@ -10,7 +10,6 @@ function Inicio() {
   const [eventos, setEventos] = useState([]);
   const [filteredEventos, setFilteredEventos] = useState([]);
   const [loading, setLoading] = useState(true);  // <-- Nuevo estado loading
-  const [visibleCount, setVisibleCount] = useState(8); // mostrar los primeros 8
 
 
   const { user } = useContext(AuthContext);
@@ -113,10 +112,6 @@ function Inicio() {
     setFilteredEventos(resultados);
   };
 
-  const handleLoadMore = () => {
-  setVisibleCount(prev => prev + 8); // mostrar 8 más
-};
-
   return (
     <div className="flex flex-col min-h-screen">
       <div className='flex-1'>
@@ -137,15 +132,9 @@ function Inicio() {
               <p className="text-gray-500">¡Vuelve pronto para descubrir nuevas fiestas!</p>
             </div>
           ) : (
-            <CardsEventos eventos={filteredEventos.slice(0, visibleCount)} user={user} />       
+            <CardsEventos eventos={filteredEventos} user={user} />  
           )}
-          {filteredEventos.length > visibleCount && (
-           <div className="flex justify-center my-6">
-           <button className="btn btn-primary" onClick={handleLoadMore}>
-           Cargar más
-          </button>
-         </div>
-       )}
+          
         </div>
       </div>
       <Footer />
