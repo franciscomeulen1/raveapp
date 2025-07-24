@@ -6,6 +6,7 @@ import {
   Route,
   Routes
 } from "react-router-dom";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -40,7 +41,9 @@ import CrearArtista from "./vistasadmin/CrearArtista";
 import EditarCarousel from "./vistasadmin/EditarCarousel";
 
 function App() {
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   return (
+    <GoogleOAuthProvider clientId={clientId}>
     <AuthProvider>
       <Router>
         <Routes>
@@ -82,6 +85,7 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 
