@@ -1,12 +1,10 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-import api from '../componenteapi/api';
+import BotonGoogleLogin from '../components/BotonGoogleLogin';
 
 function Login() {
-  const { login, setUser } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [blocked, setBlocked] = useState(false);
@@ -23,6 +21,7 @@ function Login() {
         password,
         onBlocked: () => setBlocked(true),
       });
+
       if (!blocked) {
         setEmail('');
         setPassword('');
@@ -36,88 +35,6 @@ function Login() {
       }
     } catch (err) {
       setError(err.message);
-    }
-  };
-
-  const generateRandomPassword = (length = 16) => {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
-    let password = '';
-    for (let i = 0; i < length; i++) {
-      const randomIdx = Math.floor(Math.random() * charset.length);
-      password += charset[randomIdx];
-    }
-    return password;
-  };
-
-
-  const handleGoogleSuccess = async credentialResponse => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    const { email, given_name, family_name } = decoded;
-
-    try {
-      const res = await api.get('/Usuario/GetUsuario', { params: { Mail: email } });
-      const usuarios = res.data.usuarios;
-
-      let usuario;
-
-      if (usuarios.length > 0) {
-        usuario = usuarios[0];
-      } else {
-        const payload = {
-          domicilio: {
-            localidad: { nombre: '', codigo: '' },
-            municipio: { nombre: '', codigo: '' },
-            provincia: { nombre: '', codigo: '' },
-            direccion: '',
-            latitud: 0,
-            longitud: 0,
-          },
-          nombre: given_name,
-          apellido: family_name,
-          correo: email,
-          cbu: '',
-          dni: '',
-          telefono: '',
-          bio: '',
-          password: generateRandomPassword(),
-          socials: {
-            idSocial: '',
-            mdInstagram: '',
-            mdSpotify: '',
-            mdSoundcloud: '',
-          },
-          dtNacimiento: new Date().toISOString(),
-        };
-
-
-        await api.post('/Usuario/CreateUsuario', payload);
-
-        // ahora buscás al usuario ya creado
-        const buscarRes = await api.get('/Usuario/GetUsuario', { params: { Mail: email } });
-        const encontrados = buscarRes.data.usuarios;
-
-        if (!encontrados || encontrados.length === 0) {
-          throw new Error('Usuario creado pero no encontrado');
-        }
-
-        usuario = encontrados[0];
-
-      }
-
-      const logged = {
-        id: usuario.idUsuario,
-        name: usuario.nombre,
-        email: usuario.correo,
-        roles: usuario.roles || [{ cdRol: 0, dsRol: 'Usuario' }],
-      };
-
-      setUser(logged);
-      localStorage.setItem('user', JSON.stringify(logged));
-      document.getElementById('my-modal-login').checked = false;
-      navigate('/');
-    } catch (err) {
-      console.error('Error en login con Google:', err);
-      setError('No se pudo iniciar sesión con Google');
     }
   };
 
@@ -166,11 +83,7 @@ function Login() {
 
           <div className="modal-action flex-col gap-3 items-center">
             <button type="submit" className="btn w-full">Ingresar</button>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError('Falló el inicio con Google')}
-              width="100%"
-            />
+            <BotonGoogleLogin setError={setError} />
             <button type="button" className="btn btn-ghost">¿Olvidaste la contraseña?</button>
           </div>
         </form>
@@ -182,22 +95,22 @@ function Login() {
 export default Login;
 
 
-// // components/Login.js
+
 // import { useState, useContext } from 'react';
 // import { AuthContext } from '../context/AuthContext';
 // import { useNavigate } from 'react-router-dom';
-
+// import { GoogleLogin } from '@react-oauth/google';
+// import { jwtDecode } from 'jwt-decode';
+// import api from '../componenteapi/api';
 
 // function Login() {
-//   const { login } = useContext(AuthContext);
+//   const { login, setUser } = useContext(AuthContext);
 //   const [email, setEmail] = useState('');
 //   const [password, setPassword] = useState('');
-
-//   const navigate = useNavigate();
-
-//   // estado local para el modal de bloqueo
 //   const [blocked, setBlocked] = useState(false);
 //   const [error, setError] = useState('');
+
+//   const navigate = useNavigate();
 
 //   const handleSubmit = async e => {
 //     e.preventDefault();
@@ -208,13 +121,11 @@ export default Login;
 //         password,
 //         onBlocked: () => setBlocked(true),
 //       });
-//       // si no fue bloqueado, limpio campos y cierro modal
 //       if (!blocked) {
 //         setEmail('');
 //         setPassword('');
 //         document.getElementById('my-modal-login').checked = false;
 
-//         // Redirige si había un destino guardado
 //         const redirectTo = localStorage.getItem('postLoginRedirect');
 //         if (redirectTo) {
 //           localStorage.removeItem('postLoginRedirect');
@@ -226,9 +137,98 @@ export default Login;
 //     }
 //   };
 
+//   const generateRandomPassword = (length = 16) => {
+//     const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
+//     let password = '';
+//     for (let i = 0; i < length; i++) {
+//       const randomIdx = Math.floor(Math.random() * charset.length);
+//       password += charset[randomIdx];
+//     }
+//     return password;
+//   };
+
+
+//   const handleGoogleSuccess = async credentialResponse => {
+//     const decoded = jwtDecode(credentialResponse.credential);
+//     const { email, given_name, family_name } = decoded;
+
+//     try {
+//       const res = await api.get('/Usuario/GetUsuario', { params: { Mail: email } });
+//       const usuarios = res.data.usuarios;
+
+//       let usuario;
+
+//       if (usuarios.length > 0) {
+//         usuario = usuarios[0];
+//       } else {
+//         const payload = {
+//           domicilio: {
+//             localidad: { nombre: '', codigo: '' },
+//             municipio: { nombre: '', codigo: '' },
+//             provincia: { nombre: '', codigo: '' },
+//             direccion: '',
+//             latitud: 0,
+//             longitud: 0,
+//           },
+//           nombre: given_name,
+//           apellido: family_name,
+//           correo: email,
+//           cbu: '',
+//           dni: '',
+//           telefono: '',
+//           bio: '',
+//           password: generateRandomPassword(),
+//           socials: {
+//             idSocial: '',
+//             mdInstagram: '',
+//             mdSpotify: '',
+//             mdSoundcloud: '',
+//           },
+//           dtNacimiento: new Date().toISOString(),
+//         };
+
+
+//         try {
+//           const crearRes = await api.post('/Usuario/CreateUsuario', payload);
+//           console.log('Respuesta del POST CreateUsuario:', crearRes.data);
+//         } catch (error) {
+//           console.error('Error al crear usuario con Google:', error.response?.data || error.message);
+//           setError('Error al crear el usuario. Intente más tarde.');
+//           return;
+//         }
+
+
+//         // ahora buscás al usuario ya creado
+//         const buscarRes = await api.get('/Usuario/GetUsuario', { params: { Mail: email } });
+//         const encontrados = buscarRes.data.usuarios;
+
+//         if (!encontrados || encontrados.length === 0) {
+//           throw new Error('Usuario creado pero no encontrado');
+//         }
+
+//         usuario = encontrados[0];
+
+//       }
+
+//       const logged = {
+//         id: usuario.idUsuario,
+//         name: usuario.nombre,
+//         email: usuario.correo,
+//         roles: usuario.roles || [{ cdRol: 0, dsRol: 'Usuario' }],
+//       };
+
+//       setUser(logged);
+//       localStorage.setItem('user', JSON.stringify(logged));
+//       document.getElementById('my-modal-login').checked = false;
+//       navigate('/');
+//     } catch (err) {
+//       console.error('Error en login con Google:', err);
+//       setError('No se pudo iniciar sesión con Google');
+//     }
+//   };
+
 //   return (
 //     <>
-//       {/* Botón que abre el modal. Si estamos parados en la pagina de register, redirecciona al inicio */}
 //       <label
 //         htmlFor="my-modal-login"
 //         className="btn modal-button btn-primary"
@@ -241,7 +241,6 @@ export default Login;
 //         Ingresar
 //       </label>
 
-//       {/* Modal */}
 //       <input type="checkbox" id="my-modal-login" className="modal-toggle" />
 //       <label htmlFor="my-modal-login" className="modal cursor-pointer">
 //         <form className="modal-box" onSubmit={handleSubmit}>
@@ -271,9 +270,14 @@ export default Login;
 //             </p>
 //           )}
 
-//           <div className="modal-action justify-between">
-//             <button type="submit" className="btn">Ingresar</button>
-//             <button type="button" className="btn btn-ghost">Olvidaste la contraseña?</button>
+//           <div className="modal-action flex-col gap-3 items-center">
+//             <button type="submit" className="btn w-full">Ingresar</button>
+//             <GoogleLogin
+//               onSuccess={handleGoogleSuccess}
+//               onError={() => setError('Falló el inicio con Google')}
+//             />
+
+//             <button type="button" className="btn btn-ghost">¿Olvidaste la contraseña?</button>
 //           </div>
 //         </form>
 //       </label>
@@ -282,3 +286,5 @@ export default Login;
 // }
 
 // export default Login;
+
+
