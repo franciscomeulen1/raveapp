@@ -4,6 +4,8 @@ import Footer from '../components/Footer';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import BotonGoogleLogin from '../components/BotonGoogleLogin';
+
 
 const Register = () => {
 
@@ -19,7 +21,6 @@ const Register = () => {
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
-    // nombreFantasia: '', // username
     password: '',
     confirmPassword: '',
     dni: '',
@@ -129,11 +130,12 @@ const Register = () => {
           <div className="max-w-md w-full p-6">
             <h1 className="text-3xl font-bold mb-4">Registrarse</h1>
             <p className="mb-4">Completa tus datos, o regístrate con Google:</p>
-            <button className="btn btn-outline w-full mb-4">Login with Google</button>
+            {/* <button className="btn btn-outline w-full mb-4">Login with Google</button> */}
+            <BotonGoogleLogin setError={setError} />
 
             {error && <div className="text-red-500 mb-3">{error}</div>}
 
-            <form className="space-y-3" onSubmit={handleSubmit}>
+            <form className="space-y-3 mt-4" onSubmit={handleSubmit}>
               <label className="block">
                 <span>Tu nombre:</span>
                 <input
@@ -159,19 +161,6 @@ const Register = () => {
                   required
                 />
               </label>
-
-              {/* <label className="block">
-                <span>Crea un usuario:</span>
-                <input
-                  type="text"
-                  name="nombreFantasia"
-                  value={formData.nombreFantasia}
-                  onChange={handleChange}
-                  className="input input-bordered w-full"
-                  placeholder="Ej: usuario1"
-                  required
-                />
-              </label> */}
 
               <label className="block">
                 <span>Crea una contraseña:</span>
