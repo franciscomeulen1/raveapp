@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
       }
 
       const userData = lista[0];
-      const roles = userData.roles; // array de objetos con cdRol y dsRol
+      const roles = userData.roles;
 
       // Bloquear si tiene rol de "Control de entrada"
       if (roles.some(r => r.cdRol === 3)) {
@@ -41,28 +41,13 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      // Objeto base del usuario logueado
+      // Objeto base del usuario logueado (sin imagen)
       const logged = {
         id: userData.idUsuario,
         name: userData.nombre,
         email: userData.correo,
-        roles, // array de objetos con cdRol y dsRol
+        roles,
       };
-
-      // Intenta traer imagen de perfil
-      try {
-        const resImg = await api.get('/Media', {
-          params: { IdEntidadMedia: userData.idUsuario }
-        });
-
-        const img = resImg.data.media?.find(m => !m.mdVideo); // solo imagen
-        if (img) {
-          logged.profileImage = img.url;
-          logged.profileImageId = img.idMedia;
-        }
-      } catch (err) {
-        console.warn('No se encontró imagen de perfil. Se usará ícono por defecto.');
-      }
 
       // Guardar en estado y localStorage
       setUser(logged);
@@ -120,6 +105,7 @@ export function AuthProvider({ children }) {
 //       const loginRes = await api.get('/Usuario/Login', {
 //         params: { Correo: email, Password: password }
 //       });
+
 //       if (loginRes.data !== true) {
 //         throw new Error('Credenciales inválidas');
 //       }
@@ -128,28 +114,45 @@ export function AuthProvider({ children }) {
 //       const userRes = await api.get('/Usuario/GetUsuario', {
 //         params: { Mail: email }
 //       });
+
 //       const lista = userRes.data.usuarios;
 //       if (!Array.isArray(lista) || lista.length === 0) {
 //         throw new Error('No se encontró el usuario');
 //       }
+
 //       const userData = lista[0];
+//       const roles = userData.roles; // array de objetos con cdRol y dsRol
 
-//       // Chequea rol de “Control de entrada”
-//       // const roles = userData.roles.map(r => r.cdRol);
-//       const roles = userData.roles; // ahora guardamos los objetos completos
-
+//       // Bloquear si tiene rol de "Control de entrada"
 //       if (roles.some(r => r.cdRol === 3)) {
 //         onBlocked();
 //         return;
 //       }
 
-//       // 2) Login OK: setState y persiste en localStorage
+//       // Objeto base del usuario logueado
 //       const logged = {
-//         id:    userData.idUsuario,
-//         name:  userData.nombre,
+//         id: userData.idUsuario,
+//         name: userData.nombre,
 //         email: userData.correo,
-//         roles, // ahora es un array de objetos con cdRol y dsRol
+//         roles, // array de objetos con cdRol y dsRol
 //       };
+
+//       // Intenta traer imagen de perfil
+//       try {
+//         const resImg = await api.get('/Media', {
+//           params: { IdEntidadMedia: userData.idUsuario }
+//         });
+
+//         const img = resImg.data.media?.find(m => !m.mdVideo); // solo imagen
+//         if (img) {
+//           logged.profileImage = img.url;
+//           logged.profileImageId = img.idMedia;
+//         }
+//       } catch (err) {
+//         console.warn('No se encontró imagen de perfil. Se usará ícono por defecto.');
+//       }
+
+//       // Guardar en estado y localStorage
 //       setUser(logged);
 //       localStorage.setItem('user', JSON.stringify(logged));
 
@@ -180,7 +183,9 @@ export function AuthProvider({ children }) {
 
 //   return (
 //     <AuthContext.Provider value={{ user, login, logout, setUser }}>
-//      {children}
+//       {children}
 //     </AuthContext.Provider>
 //   );
 // }
+
+

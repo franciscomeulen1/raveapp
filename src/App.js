@@ -24,7 +24,7 @@ import EventosFavoritos from "./vistas/EventosFavoritos";
 import MisEventos from "./vistasduenioevento/MisEventos";
 import EntradasVendidas from "./vistasduenioevento/EntradasVendidas";
 import CancelarEvento from "./vistasduenioevento/CancelarEvento";
-import DatosPersonales from "./vistas/DatosPersonales";
+import MiPerfil from "./vistas/MiPerfil";
 import EventosAValidar from "./vistasadmin/EventosAValidar";
 import EventoAValidar from "./vistasadmin/EventoAValidar";
 import ModifDeEvento from "./vistasduenioevento/ModifDeEvento";
@@ -62,7 +62,7 @@ function App() {
           <Route path="/crearevento" element={<CrearEvento />} />
           <Route path="/mis-entradas" element={<EntradasAdquiridas />} />
           <Route path="/eventos-favoritos" element={<EventosFavoritos />} />
-          <Route path="/datospersonales" element={<DatosPersonales />} />
+          <Route path="/miperfil" element={<MiPerfil />} />
           <Route path="/entrada-adquirida" element={<EntradaAdquirida />} />
           {/* Rutas para organizadores */}
           <Route path="/mis-eventos-creados" element={<MisEventos />} />
