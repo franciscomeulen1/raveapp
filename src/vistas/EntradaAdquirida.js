@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 import { AiFillSound } from "react-icons/ai";
 import { FaCalendarAlt } from "react-icons/fa";
 import { BsGeoAltFill } from "react-icons/bs";
-import Resenias from "../components/Resenias";
+import Resenias from "../components/componentsVistaEvento/Resenias";
 
 const datosEntrada = {
     nombreEvento: "Nombre del evento",

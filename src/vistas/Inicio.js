@@ -56,6 +56,7 @@ function Inicio() {
     id: evento.idEvento,
     nombreEvento: evento.nombre,
     dias: evento.fechas.map(fecha => ({
+      idFecha: fecha.idFecha,
       fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
       horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
       horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
@@ -71,7 +72,7 @@ function Inicio() {
     direccion: evento.domicilio.direccion,
     descripcion: evento.descripcion,
     imagen: imagenUrl,
-    video: videoUrl, // ✅ agregado aquí
+    youtube: videoUrl, 
     soundcloud: evento.soundCloud,
     isFavorito: evento.isFavorito === 1
   };
