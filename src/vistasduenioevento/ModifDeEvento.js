@@ -363,12 +363,20 @@ useEffect(() => {
 
         <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
+        {/* <InputEntradasCantPrecio
+          diasEvento={fechaHoraEvento.length}
+          onEntradasPorDiaChange={setHayEarlyBirdsPorDia}
+          onEntradasChange={setEntradasPorDia}
+          entradasIniciales={entradasPorDia}
+        /> */}
         <InputEntradasCantPrecio
           diasEvento={fechaHoraEvento.length}
           onEntradasPorDiaChange={setHayEarlyBirdsPorDia}
           onEntradasChange={setEntradasPorDia}
           entradasIniciales={entradasPorDia}
+          soloEditarPrecios={true}
         />
+
 
         <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
 
