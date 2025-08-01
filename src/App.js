@@ -40,6 +40,7 @@ import CrearNoticia from "./vistasadmin/CrearNoticia";
 import CrearArtista from "./vistasadmin/CrearArtista";
 import EditarCarousel from "./vistasadmin/EditarCarousel";
 import ActualizarTyC from "./vistasadmin/ActualizarTyC";
+import ProtectedRoutePorRol from "./components/ProtectedRoutePorRol";
 
 function App() {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -59,30 +60,134 @@ function App() {
           <Route path="/noticias/:id" element={<Noticia />} />
           <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
           <Route path="/precrearevento" element={<PreCrearEvento />} />
+
           {/* Rutas para usuarios logueados */}
+
           <Route path="/crearevento" element={<CrearEvento />} />
-          <Route path="/mis-entradas" element={<EntradasAdquiridas />} />
-          <Route path="/eventos-favoritos" element={<EventosFavoritos />} />
-          <Route path="/miperfil" element={<MiPerfil />} />
-          <Route path="/entrada-adquirida" element={<EntradaAdquirida />} />
-          {/* Rutas para organizadores */}
-          <Route path="/mis-eventos-creados" element={<MisEventos />} />
-          <Route path="/entradas-vendidas/:eventoId" element={<EntradasVendidas />} />
-          <Route path="/cancelar-evento/:id" element={<CancelarEvento />} />
-          <Route path="/modificar-evento/:id" element={<ModifDeEvento />} />
-          <Route path="/mis-fiestas-recurrentes" element={<MisFiestasRecurrentes />} />
-          <Route path="/resenias-de-la-fiesta" element={<ReseniasDeLaFiesta />} />
-          {/* Rutas para administrador */}
-          <Route path="/eventosavalidar" element={<EventosAValidar />} />
-          <Route path="/eventoavalidar" element={<EventoAValidar />} />
-          <Route path="/modificar-eliminar-noticias" element={<ModificarEliminarNoticias />} />
-          <Route path="/modificar-eliminar-artistas" element={<ModificarEliminarArtistas />} />
-          <Route path="/editar-artista/:id" element={<EditarArtista />} />
-          <Route path="/editar-noticia/:id" element={<EditarNoticia />} />
-          <Route path="/crear-noticia" element={<CrearNoticia />} />
-          <Route path="/crear-artista" element={<CrearArtista />} />
-          <Route path="/editar-carrusel" element={<EditarCarousel />} />
-          <Route path="/actualizar-tyc" element={<ActualizarTyC />} />
+
+          <Route path="/mis-entradas" element={
+                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                  <EntradasAdquiridas />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/eventos-favoritos" element={
+                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                  <EventosFavoritos />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/miperfil" element={
+                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                  <MiPerfil />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/entrada-adquirida" element={
+                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                  <EntradaAdquirida />
+                </ProtectedRoutePorRol>
+                } />
+
+          {/* Rutas para organizadores (cdRol = 2) */}
+
+          <Route path="/mis-eventos-creados" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <MisEventos />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/entradas-vendidas/:eventoId" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <EntradasVendidas />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/cancelar-evento/:id" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <CancelarEvento />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/modificar-evento/:id" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <ModifDeEvento />
+                </ProtectedRoutePorRol>
+                } />
+
+          <Route path="/mis-fiestas-recurrentes" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <MisFiestasRecurrentes />
+                </ProtectedRoutePorRol>
+                } />
+          
+          <Route path="/resenias-de-la-fiesta" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <ReseniasDeLaFiesta />
+                </ProtectedRoutePorRol>
+                } />
+          
+
+          {/* Rutas para administrador (cdRol = 1) */}
+
+          <Route path="/eventosavalidar" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <EventosAValidar />
+                </ProtectedRoutePorRol>
+                } />
+
+          <Route path="/eventoavalidar" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <EventoAValidar />
+                </ProtectedRoutePorRol>
+                } /> 
+
+          <Route path="/modificar-eliminar-noticias" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <ModificarEliminarNoticias />
+                </ProtectedRoutePorRol>
+                } />     
+
+          <Route path="/modificar-eliminar-artistas" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <ModificarEliminarArtistas />
+                </ProtectedRoutePorRol>
+                } />    
+
+          <Route path="/editar-artista/:id" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <EditarArtista />
+                </ProtectedRoutePorRol>
+                } />     
+
+          <Route path="/editar-noticia/:id" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <EditarNoticia />
+                </ProtectedRoutePorRol>
+                } />     
+
+          <Route path="/crear-noticia" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                  <CrearNoticia />
+                </ProtectedRoutePorRol>
+                } />          
+
+          <Route path="/crear-artista" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                   <CrearArtista />
+                </ProtectedRoutePorRol>
+                } />
+          <Route path="/editar-carrusel" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                   <EditarCarousel />
+                </ProtectedRoutePorRol>
+                } />
+
+          <Route path="/actualizar-tyc" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                   <ActualizarTyC />
+                </ProtectedRoutePorRol>
+                } />
           
         </Routes>
       </Router>

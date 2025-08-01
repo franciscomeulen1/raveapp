@@ -88,6 +88,7 @@ export default function NavBar({ onFilter }) {
           <li><Link to="/crear-noticia">Crear noticia</Link></li>
           <li><Link to="/modificar-eliminar-noticias">Editar noticias</Link></li>
           <li><Link to="/editar-carrusel">Editar Carrusel</Link></li>
+          <li><Link to="/actualizar-tyc">Actualizar TyC</Link></li>
         </>
       );
     }
