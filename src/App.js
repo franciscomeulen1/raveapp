@@ -39,6 +39,7 @@ import EntradaAdquirida from "./vistas/EntradaAdquirida";
 import CrearNoticia from "./vistasadmin/CrearNoticia";
 import CrearArtista from "./vistasadmin/CrearArtista";
 import EditarCarousel from "./vistasadmin/EditarCarousel";
+import ActualizarTyC from "./vistasadmin/ActualizarTyC";
 
 function App() {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -81,6 +82,7 @@ function App() {
           <Route path="/crear-noticia" element={<CrearNoticia />} />
           <Route path="/crear-artista" element={<CrearArtista />} />
           <Route path="/editar-carrusel" element={<EditarCarousel />} />
+          <Route path="/actualizar-tyc" element={<ActualizarTyC />} />
           
         </Routes>
       </Router>

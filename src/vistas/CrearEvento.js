@@ -12,6 +12,7 @@ import InputCantDiasEvento from '../components/componentsCrearEvento/InputCantDi
 import InputEsEventoRecurrente from '../components/componentsCrearEvento/InputEsEventoRecurrente';
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
+import CheckTyC from '../components/componentsCrearEvento/CheckTyC';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -42,6 +43,7 @@ function CrearEvento() {
   const [entradasPorDia, setEntradasPorDia] = useState([]);
   const [multimedia, setMultimedia] = useState({ soundCloud: '', videoUrl: '', file: '' });
   const [errorMultimedia, setErrorMultimedia] = useState(false);
+  const [aceptaTyC, setAceptaTyC] = useState(false);
 
   const fechaAnteriorRef = useRef();
 
@@ -128,6 +130,10 @@ function CrearEvento() {
     }
     if (!multimedia.file) {
       alert('Debes subir una imagen válida (jpg, jpeg o png menor a 2MB).');
+      return false;
+    }
+    if (!aceptaTyC) {
+      alert('Debes aceptar los términos y condiciones para continuar.');
       return false;
     }
     return true;
@@ -439,12 +445,7 @@ function CrearEvento() {
             onErrorChange={setErrorMultimedia}
           />
 
-          <div className='form-control mb-4'>
-            <label className='cursor-pointer label justify-start'>
-              <input type='checkbox' className='checkbox checkbox-accent mr-2' />
-              <span className='label-text'>Acepto términos y condiciones</span>
-            </label>
-          </div>
+          <CheckTyC onChange={setAceptaTyC} />
 
           <button type='button' onClick={handleCrearEvento} className='btn btn-primary bg-purple-600 text-white rounded-xl'>Crear Evento</button>
         </form>
