@@ -11,8 +11,8 @@ import SoundCloudEvento from '../components/componentsVistaEvento/SoundCloudEven
 import FechasEvento from '../components/componentsVistaEvento/FechasEvento';
 import EtiquetasEvento from '../components/componentsVistaEvento/EtiquetasEvento';
 import UbicacionEvento from '../components/componentsVistaEvento/UbicacionEvento';
-import ArtistasEvento from '../components/componentsVistaEvento/ArtistasEvento';
 import ImagenEvento from '../components/componentsVistaEvento/ImagenEvento';
+import ArtistasEventoValidar from '../components/componentsEventoAValidar/ArtistasEventoAValidar';
 
 const EventoAValidar = () => {
     const { idEvento } = useParams();
@@ -104,13 +104,24 @@ const EventoAValidar = () => {
     const genero = evento.genero.map(getNombreGenero).join(', ');
     const artistas = evento.artistas;
     const dias = evento.fechas.map(fecha => ({
-              idFecha: fecha.idFecha,
-              fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
-              horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-              horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
-            }));
+        idFecha: fecha.idFecha,
+        fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
+        horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+        horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+    }));
     const lgbt = evento.isLgbt;
     const after = evento.isAfter;
+
+    const actualizarArtista = (artistaActualizado) => {
+        setEvento((prev) => ({
+            ...prev,
+            artistas: prev.artistas.map((a) =>
+                a.idArtista === artistaActualizado.idArtista
+                    ? { ...a, ...artistaActualizado }
+                    : a
+            ),
+        }));
+    };
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -135,7 +146,11 @@ const EventoAValidar = () => {
 
                         <ImagenEvento imagen={media.imagen} />
 
-                        <ArtistasEvento artistas={artistas} />
+                        <ArtistasEventoValidar
+                            artistas={artistas}
+                            onUpdateArtista={actualizarArtista}
+                        />
+
 
                         <FechasEvento dias={dias} />
 
@@ -144,7 +159,7 @@ const EventoAValidar = () => {
                         <EtiquetasEvento lgbt={lgbt} after={after} />
                     </div>
 
-                    
+
                     <div className="order-3 lg:order-2">
                         <div className="mb-6">
                             <h2 className="text-xl font-semibold">Descripción del evento</h2>
