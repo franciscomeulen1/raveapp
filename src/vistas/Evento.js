@@ -14,6 +14,7 @@ import ArtistasEvento from '../components/componentsVistaEvento/ArtistasEvento';
 import FechasEvento from '../components/componentsVistaEvento/FechasEvento';
 import UbicacionEvento from '../components/componentsVistaEvento/UbicacionEvento';
 import EtiquetasEvento from '../components/componentsVistaEvento/EtiquetasEvento';
+import GenerosEvento from '../components/componentsVistaEvento/GenerosEvento';
 
 export default function Evento() {
   const { id } = useParams();
@@ -132,6 +133,7 @@ export default function Evento() {
             <FechasEvento dias={evento.dias} />
             <UbicacionEvento nombreEvento={evento.nombreEvento} direccion={evento.direccion} localidad={evento.localidad} municipio={evento.localidad} provincia={evento.provincia} />
             <EtiquetasEvento lgbt={evento.lgbt} after={evento.after} />
+            <GenerosEvento generos={evento.generos}/>
 
             <form onSubmit={handleComprarSubmit} className='mt-5'>
               {evento.dias.map((dia, index) => (
