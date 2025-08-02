@@ -7,8 +7,8 @@ import { AiFillSound, AiOutlineUser } from 'react-icons/ai';
 
 const EventoAValidar = () => {
     return (
-        <div>
-            <div className="sm:px-10 mb-11">
+        <div className="flex flex-col min-h-screen">
+            <div className="flex-1 sm:px-10 mb-11">
                 <NavBar />
 
                 <h1 className="mx-10 sm:px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8">Evento a validar</h1>
