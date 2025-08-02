@@ -80,9 +80,10 @@ const EventosAValidar = () => {
             .join(', ');
     };
 
-    const handleVerificar = (evento) => {
-        navigate('/eventoavalidar', { state: { evento } });
+    const handleVerificar = (idEvento) => {
+        navigate(`/eventoavalidar/${idEvento}`);
     };
+
 
     const eventosFiltrados = eventos.filter((evento) => {
         const texto = searchTerm.toLowerCase();
@@ -158,7 +159,7 @@ const EventosAValidar = () => {
                                             </p>
                                         </div>
                                         <button
-                                            onClick={() => handleVerificar(evento)}
+                                            onClick={() => handleVerificar(evento.idEvento)}
                                             className="btn btn-primary bg-purple-500 hover:bg-purple-600 text-white"
                                         >
                                             Verificar

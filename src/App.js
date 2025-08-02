@@ -58,7 +58,7 @@ function App() {
           <Route path="/artistas/:id" element={<Artista />} />
           <Route path="/noticias" element={<Noticias />} />
           <Route path="/noticias/:id" element={<Noticia />} />
-          <Route path="/comollegar/:nombre" element={<ComoLlegar />} />
+          <Route path="/comollegar/:idEvento" element={<ComoLlegar />} />
           <Route path="/precrearevento" element={<PreCrearEvento />} />
 
           {/* Rutas para usuarios logueados */}
@@ -136,7 +136,7 @@ function App() {
                 </ProtectedRoutePorRol>
                 } />
 
-          <Route path="/eventoavalidar" element={
+          <Route path="/eventoavalidar/:idEvento" element={
                 <ProtectedRoutePorRol rolesPermitidos={[1]}>
                   <EventoAValidar />
                 </ProtectedRoutePorRol>

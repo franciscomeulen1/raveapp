@@ -1,134 +1,176 @@
-import React from 'react';
+// EventoAValidar.js
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { BsGeoAltFill } from 'react-icons/bs';
-import { FaCalendarAlt, FaClock, FaMusic } from 'react-icons/fa';
-import { AiFillSound, AiOutlineUser } from 'react-icons/ai';
+import api from '../componenteapi/api';
+import { FaMusic } from 'react-icons/fa';
+import { AiOutlineUser } from 'react-icons/ai';
+import YoutubeEvento from '../components/componentsVistaEvento/YoutubeEvento';
+import SoundCloudEvento from '../components/componentsVistaEvento/SoundCloudEvento';
+import FechasEvento from '../components/componentsVistaEvento/FechasEvento';
+import EtiquetasEvento from '../components/componentsVistaEvento/EtiquetasEvento';
+import UbicacionEvento from '../components/componentsVistaEvento/UbicacionEvento';
+import ArtistasEvento from '../components/componentsVistaEvento/ArtistasEvento';
+import ImagenEvento from '../components/componentsVistaEvento/ImagenEvento';
 
 const EventoAValidar = () => {
+    const { idEvento } = useParams();
+    const [evento, setEvento] = useState(null);
+    const [media, setMedia] = useState({ imagen: null, video: null });
+    const [entradasPorFecha, setEntradasPorFecha] = useState([]);
+    const [tiposEntrada, setTiposEntrada] = useState([]);
+    const [generosDisponibles, setGenerosDisponibles] = useState([]);
+    const [usuario, setUsuario] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchEvento = async () => {
+            try {
+                const eventoRes = await api.get(`/Evento/GetEventos?IdEvento=${idEvento}`);
+                const eventoData = eventoRes.data.eventos[0];
+                setEvento(eventoData);
+
+                // Obtener datos del usuario creador del evento
+                const usuarioRes = await api.get(`/Usuario/GetUsuario?IdUsuario=${eventoData.usuario.idUsuario}`);
+                setUsuario(usuarioRes.data.usuarios[0]);
+
+                // Obtener medios (imagen y video)
+                try {
+                    const mediaRes = await api.get(`/Media?idEntidadMedia=${idEvento}`);
+                    const mediaList = mediaRes.data.media;
+                    const imagen = mediaList.find((m) => m.url)?.url || null;
+                    const video = mediaList.find((m) => m.mdVideo)?.mdVideo || null;
+                    setMedia({ imagen, video });
+                } catch (err) {
+                    console.warn('No hay imagen o video');
+                    setMedia({ imagen: null, video: null });
+                }
+
+                // Tipos de entrada
+                const tiposRes = await api.get('/Entrada/GetTiposEntrada');
+                setTiposEntrada(tiposRes.data);
+
+                // Generos
+                const generosRes = await api.get('/Evento/GetGeneros');
+                setGenerosDisponibles(generosRes.data);
+
+                // Entradas por fecha
+                const entradasTodas = await Promise.all(
+                    eventoData.fechas.map(async (f) => {
+                        const entradasRes = await api.get(`/Entrada/GetEntradasFecha?IdFecha=${f.idFecha}`);
+                        return { fecha: f, entradas: entradasRes.data };
+                    })
+                );
+
+                setEntradasPorFecha(entradasTodas);
+                setLoading(false);
+            } catch (err) {
+                console.error('Error al obtener datos del evento:', err);
+                setLoading(false);
+            }
+        };
+
+        fetchEvento();
+    }, [idEvento]);
+
+    const getNombreTipoEntrada = (cdTipo) => {
+        return tiposEntrada.find((t) => t.cdTipo === cdTipo)?.dsTipo || 'Desconocido';
+    };
+
+    const getNombreGenero = (cdGenero) => {
+        return generosDisponibles.find((g) => g.cdGenero === cdGenero)?.dsGenero || cdGenero;
+    };
+
+    if (loading || !evento || !usuario) {
+        return (
+            <div className="flex flex-col min-h-screen">
+                <NavBar />
+                <main className="flex-1 flex items-center justify-center">
+                    <p className="text-lg text-gray-600">Cargando evento...</p>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
+    const nombre = evento.nombre;
+    const propietario = `${usuario.nombre} ${usuario.apellido}`;
+    const correo = usuario.correo;
+    const direccion = evento.domicilio.direccion;
+    const localidad = evento.domicilio.provincia.nombre;
+    const municipio = evento.domicilio.provincia.nombre;
+    const provincia = evento.domicilio.provincia.nombre;
+    const genero = evento.genero.map(getNombreGenero).join(', ');
+    const artistas = evento.artistas;
+    const dias = evento.fechas.map(fecha => ({
+              idFecha: fecha.idFecha,
+              fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
+              horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+              horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+            }));
+    const lgbt = evento.isLgbt;
+    const after = evento.isAfter;
+
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-1 sm:px-10 mb-11">
                 <NavBar />
+                <h1 className="mx-10 sm:px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8">Evento a validar:</h1>
+                <h2 className="mx-10 sm:px-10 mb-4 sm:mb-8 mt-2 text-xl"><span className="font-bold">Nombre de evento: </span>{nombre}</h2>
 
-                <h1 className="mx-10 sm:px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8">Evento a validar</h1>
-
-                {/* Información adicional en fila */}
                 <div className="mx-10 sm:px-10 mb-6 flex flex-col sm:flex-row sm:justify-between gap-4">
                     <div className="flex items-center gap-x-2">
-                        <AiOutlineUser style={{ color: '#080808' }} className="size-5" />
-                        <p>
-                            <span className="font-bold">Propietario:</span> underclub
-                        </p>
+                        <AiOutlineUser className="size-5" />
+                        <p><span className="font-bold">Propietario:</span> {propietario} ({correo})</p>
                     </div>
                     <div className="flex items-center gap-x-2">
-                        <FaCalendarAlt style={{ color: '#080808' }} className="size-5" />
-                        <p>
-                            <span className="font-bold">Fecha de creación:</span> 02/09/2022
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-x-2">
-                        <FaMusic style={{ color: '#080808' }} className="size-5" />
-                        <p>
-                            <span className="font-bold">Género:</span> Techno
-                        </p>
+                        <FaMusic className="size-5" />
+                        <p><span className="font-bold">Género:</span> {genero}</p>
                     </div>
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-10 mb-6 px-5 sm:px-10">
-                    {/* Sección de imagen */}
-                    <div className="order-2 lg:order-1 row-span-2">
-                        <div className="mb-6 flex justify-center">
-                            <img
-                                src="https://www.dondeir.com/wp-content/uploads/2018/09/fiesta-1.jpg"
-                                width="450"
-                                height="auto"
-                                alt="imagen de evento"
-                                className="rounded-xl"
-                            />
-                        </div>
+                    <div className="order-2 lg:order-1">
 
-                        <div className="flex items-center gap-x-2 mb-4">
-                            <AiFillSound style={{ color: '#080808' }} className="inline size-6" />
-                            <p className="font-bold">
-                                <span className="underline underline-offset-4">Artistas:</span>
-                                <span className="text-lg"> Nombre del artista</span>
-                            </p>
-                        </div>
+                        <ImagenEvento imagen={media.imagen} />
 
-                        <div className="flex items-center gap-x-2 mb-2">
-                            <FaCalendarAlt style={{ color: '#080808' }} className="size-5" />
-                            <p>
-                                <span className="font-bold">Fecha del evento:</span> 10/10/2022
-                            </p>
-                        </div>
+                        <ArtistasEvento artistas={artistas} />
 
-                        <div className="flex items-center gap-x-2 mb-2">
-                            <FaClock style={{ color: '#080808' }} className="size-5" />
-                            <p>
-                                <span className="font-bold">Horario:</span> 23:50hs a 07:00hs
-                            </p>
-                        </div>
+                        <FechasEvento dias={dias} />
 
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-x-2">
-                                <BsGeoAltFill style={{ color: '#080808' }} className="size-5" />
-                                <p className="font-semibold"> Av. Cnel. Niceto Vega 6599 - Capital Federal</p>
-                            </div>
-                        </div>
+                        <UbicacionEvento idEvento={idEvento} direccion={direccion} localidad={localidad} municipio={municipio} provincia={provincia} />
+
+                        <EtiquetasEvento lgbt={lgbt} after={after} />
                     </div>
 
-                    {/* Descripción del evento */}
+                    
                     <div className="order-3 lg:order-2">
                         <div className="mb-6">
                             <h2 className="text-xl font-semibold">Descripción del evento</h2>
-                            <p className="text-gray-700 mt-2">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius, mauris at aliquet
-                                euismod, justo urna efficitur nulla, vel vehicula libero nisl sed nulla.
-                            </p>
+                            <p className="text-gray-700 mt-2">{evento.descripcion || 'Sin descripción.'}</p>
+                        </div>
+
+                        <div>
+                            <h3 className="text-xl font-semibold text-purple-700 mb-2">Entradas</h3>
+                            {entradasPorFecha.map(({ fecha, entradas }) => (
+                                <div key={fecha.idFecha} className="mb-4">
+                                    <p className="text-sm text-gray-500 mb-1">Fecha: {new Date(fecha.inicio).toLocaleDateString()}</p>
+                                    {entradas.map((e, idx) => (
+                                        <p key={idx} className="text-gray-700">
+                                            {getNombreTipoEntrada(e.tipo.cdTipo)}: <span className="font-medium">Precio: ${e.precio}</span> - <span className="font-medium">Cantidad: {e.cantidad}</span>
+                                        </p>
+                                    ))}
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Detalles adicionales */}
-                    <div className="order-4 lg:order-3">
-                        <h3 className="text-xl font-semibold text-purple-700">Entradas</h3>
-                        <p className="text-gray-700">
-                            Entradas generales: <span className="font-medium">Precio: $1500</span> -{' '}
-                            <span className="font-medium">Cantidad: 700</span>
-                        </p>
-                        <p className="text-gray-700">
-                            Entradas VIP: <span className="font-medium">Precio: $2500</span> -{' '}
-                            <span className="font-medium">Cantidad: 200</span>
-                        </p>
-                    </div>
+                    <div className='order-4 lg:order-3'><SoundCloudEvento url={evento.soundCloud} /></div>
 
-                    {/* Iframes embebidos */}
-                    <div className="order-5 lg:order-4">
-                        <iframe
-                            title="musicaSoundCloud"
-                            width="100%"
-                            height="315"
-                            scrolling="no"
-                            frameBorder="no"
-                            allow="autoplay"
-                            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1406208106"
-                            className="mb-6 rounded"
-                        ></iframe>
-                    </div>
+                    <div className='order-5 lg:order-4'><YoutubeEvento url={media.video} /></div>
+
                     <div className="order-6 lg:order-5">
-                        <iframe
-                            height="315"
-                            src="https://www.youtube.com/embed/zmqS5hEi_QI"
-                            title="YouTube video player"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            className="w-full mb-6 rounded"
-                        ></iframe>
-                    </div>
-
-                    {/* Motivo de rechazo y acciones */}
-                    <div className="order-7 lg:order-6">
                         <h3 className="text-lg font-medium">En caso de rechazar el evento, completar el motivo de rechazo:</h3>
                         <textarea
                             className="w-full mt-2 p-2 border border-gray-300 rounded"

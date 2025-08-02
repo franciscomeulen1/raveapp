@@ -8,7 +8,8 @@ const libraries = ['places'];
 
 export default function ComoLlegar() {
     const location = useLocation();
-    const nombreEvento = location.state.nombreEvento;
+    // eslint-disable-next-line
+    const idEvento = location.state.idEvento;
     // const direccionEvento = location.state.direccion; // A resolver despues en base a como recibo la dirección.
 
     const [directions, setDirections] = useState(null);
@@ -89,7 +90,7 @@ export default function ComoLlegar() {
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <div className="sm:px-10 mb-11" style={{ flex: '1' }}>
                 <NavBar />
-                <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Cómo llegar a: {nombreEvento}</h1>
+                <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Cómo llegar a: NOMBRE DE EVENTO</h1>
                 <div className='grid md:grid-cols-3 mx-10 gap-3'>
                     {/* IZQUIERDA */}
                     <div className='columns-1'>

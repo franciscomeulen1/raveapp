@@ -1,11 +1,11 @@
 import { BsGeoAltFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
-export default function UbicacionEvento({ nombreEvento, direccion, localidad, municipio, provincia }) {
+export default function UbicacionEvento({ idEvento, direccion, localidad, municipio, provincia }) {
   const navigate = useNavigate();
 
   const handleComoLlegarClick = () => {
-    navigate(`/comollegar/${nombreEvento}`, { state: { nombreEvento, direccion } });
+    navigate(`/comollegar/${idEvento}`, { state: { idEvento, direccion } });
   };
 
   // Lógica para evitar repeticiones

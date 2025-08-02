@@ -131,7 +131,7 @@ export default function Evento() {
             <ImagenEvento imagen={evento.imagen} />
             <ArtistasEvento artistas={evento.artistas} />
             <FechasEvento dias={evento.dias} />
-            <UbicacionEvento nombreEvento={evento.nombreEvento} direccion={evento.direccion} localidad={evento.localidad} municipio={evento.localidad} provincia={evento.provincia} />
+            <UbicacionEvento idEvento={evento.id} direccion={evento.direccion} localidad={evento.localidad} municipio={evento.localidad} provincia={evento.provincia} />
             <EtiquetasEvento lgbt={evento.lgbt} after={evento.after} />
             <GenerosEvento generos={evento.generos}/>
 
