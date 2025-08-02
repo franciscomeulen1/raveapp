@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../componenteapi/api';
+import { FaMusic } from 'react-icons/fa';
 
 export default function GenerosEvento({ generos }) {
   const [listaGeneros, setListaGeneros] = useState([]);
@@ -27,6 +28,7 @@ export default function GenerosEvento({ generos }) {
 
   return (
     <div className="flex flex-wrap gap-2 mt-4">
+    <FaMusic style={{ color: '#080808' }} className="size-5" />
       {generosNombres.map((nombre, index) => (
         <div
           key={index}
