@@ -66,32 +66,42 @@ const EventoItem = ({ evento, estadoTexto }) => {
   };
 
   const renderImagen = () => {
-    if (evento.media?.url) {
+    if (evento.imagenUrl) {
       return (
         <img
-          src={evento.media.url}
+          src={evento.imagenUrl}
           alt={`Imagen de ${evento.nombre}`}
-          className="w-16 h-16 object-cover rounded-md"
+          className="w-full h-full object-cover rounded-md"
         />
       );
     }
     return (
-      <div className="w-16 h-16 bg-gray-300 flex items-center justify-center rounded-md text-sm text-gray-700">
+      <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-md text-sm text-gray-700">
         Sin imagen
       </div>
     );
   };
 
+
+
+
+
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg shadow-sm bg-white space-y-4 md:space-y-0 md:space-x-4">
+    <div className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border rounded-lg shadow-sm bg-white space-y-4 lg:space-y-0 lg:space-x-4">
 
       {/* Estado + Imagen */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-start md:justify-start space-x-4">
+        {/* Estado */}
         <span className={`font-semibold text-md ${estadoColor[estadoTexto] || 'text-gray-600'}`}>
           {estadoTexto}
         </span>
-        {renderImagen()}
+
+        {/* Imagen */}
+        <div className="w-60 h-40 lg:w-44 lg:h-32 shrink-0">
+          {renderImagen()}
+        </div>
       </div>
+
 
       {/* Info del evento */}
       <div className="flex-1">
@@ -104,7 +114,7 @@ const EventoItem = ({ evento, estadoTexto }) => {
       </div>
 
       {/* Botones */}
-      <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-2 w-full md:w-auto">
+      <div className="flex flex-col space-y-2 lg:space-y-0 lg:flex-row lg:space-x-2 w-full lg:w-auto">
         {renderBotones()}
       </div>
     </div>

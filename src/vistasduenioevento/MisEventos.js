@@ -21,7 +21,25 @@ const MisEventos = () => {
         });
         const estadosRes = await api.get('/Evento/GetEstadosEvento');
 
-        setEventos(eventosRes.data.eventos || []);
+        const eventos = eventosRes.data.eventos || [];
+
+        // Buscar imágenes de cada evento
+        const eventosConImagen = await Promise.all(
+          eventos.map(async (evento) => {
+            try {
+              const mediaRes = await api.get('/Media', {
+                params: { idEntidadMedia: evento.idEvento },
+              });
+              const imagenUrl = mediaRes.data.media.find(m => m.url && !m.mdVideo)?.url || null;
+              return { ...evento, imagenUrl };
+            } catch (err) {
+              console.error(`Error al obtener imagen del evento ${evento.idEvento}:`, err);
+              return { ...evento, imagenUrl: null };
+            }
+          })
+        );
+
+        setEventos(eventosConImagen);
         setEstadosEvento(estadosRes.data || []);
       } catch (error) {
         console.error('Error al cargar los eventos o estados:', error);
@@ -30,6 +48,7 @@ const MisEventos = () => {
 
     if (user?.id) fetchData();
   }, [user]);
+
 
   const getEarliestDate = (evento) => {
     const fechas = evento.fechas.map(f => new Date(f.inicio));
