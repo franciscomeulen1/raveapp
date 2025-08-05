@@ -11,6 +11,7 @@ import InputGeneroMusical from '../components/componentsCrearEvento/InputGeneroM
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento'; // ok
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt'; // ok
 import InputMultimedia from '../components/componentsCrearEvento/InputMultimedia';
+import AclaracionModifEvento from '../components/componentsModifEvento/AclaracionModifEvento';
 import api from '../componenteapi/api';
 // import { AuthContext } from '../context/AuthContext';
 
@@ -342,6 +343,8 @@ const ModifDeEvento = () => {
     <div className="sm:px-10 mb-11">
       <NavBar />
       <h1 className="px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8">Modificar Evento</h1>
+
+      <AclaracionModifEvento />
 
       <form className="px-10">
   <div className="form-control w-full mb-4">
