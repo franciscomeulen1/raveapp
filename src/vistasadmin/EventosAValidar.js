@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import api from '../componenteapi/api';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 
@@ -10,7 +10,6 @@ const EventosAValidar = () => {
     const [generos, setGeneros] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEventos = async () => {
@@ -78,10 +77,6 @@ const EventosAValidar = () => {
             .map((cd) => generos.find((g) => g.cdGenero === cd)?.dsGenero)
             .filter(Boolean)
             .join(', ');
-    };
-
-    const handleVerificar = (idEvento) => {
-        navigate(`/eventoavalidar/${idEvento}`);
     };
 
 
@@ -158,12 +153,12 @@ const EventosAValidar = () => {
                                                 <span className="text-gray-600">{evento.propietario.correo}</span>
                                             </p>
                                         </div>
-                                        <button
-                                            onClick={() => handleVerificar(evento.idEvento)}
-                                            className="btn btn-primary bg-purple-500 hover:bg-purple-600 text-white"
+                                        <Link
+                                            to={`/eventoavalidar/${evento.idEvento}`}
+                                            className="btn btn-primary bg-purple-500 hover:bg-purple-600 text-white text-center"
                                         >
                                             Verificar
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             ))}
