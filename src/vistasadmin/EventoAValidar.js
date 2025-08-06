@@ -234,7 +234,6 @@ const EventoAValidar = () => {
                         <p className="text-sm text-gray-500 mt-2">* El motivo de rechazo se le enviará por mail al creador del evento.</p>
 
                         <div className="flex gap-4 mt-4">
-                            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Validar</button>
                             <button
                                 onClick={validarEvento}
                                 disabled={validando}

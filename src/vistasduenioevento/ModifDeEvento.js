@@ -41,6 +41,8 @@ const ModifDeEvento = () => {
   const [errorMultimedia, setErrorMultimedia] = useState(false);
   const [mediaImagenUrl, setMediaImagenUrl] = useState(null);
   const [mediaVideoUrl, setMediaVideoUrl] = useState('');
+  const [confirmacionModificacion, setConfirmacionModificacion] = useState(false);
+
 
   // Obtener evento si no viene por state
   useEffect(() => {
@@ -215,6 +217,10 @@ const ModifDeEvento = () => {
       alert('El link de SoundCloud o Youtube no es válido. Solo se aceptan enlaces de soundcloud.com y youtube.com.');
       return false;
     }
+    if (!confirmacionModificacion) {
+      alert('Debes confirmar que deseas modificar el evento.');
+      return false;
+    }
     return true;
   };
 
@@ -295,44 +301,52 @@ const ModifDeEvento = () => {
   }
 };
 
+const actualizarMultimedia = async () => {
+  try {
+    let medias = [];
 
-  const actualizarMultimedia = async () => {
     try {
       const mediaResp = await api.get(`/Media?idEntidadMedia=${evento.idEvento}`);
-      const medias = mediaResp.data.media || [];
-
-      const imagenExistente = medias.find(m => m.url);
-      const videoExistente = medias.find(m => m.mdVideo);
-
-      if (multimedia.file) {
-        if (imagenExistente?.idMedia) await api.delete(`/Media/${imagenExistente.idMedia}`);
-
-        const formData = new FormData();
-        formData.append('IdEntidadMedia', evento.idEvento);
-        formData.append('File', multimedia.file);
-
-        await api.post('/Media', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-      }
-
-      if (multimedia.videoUrl) {
-        if (videoExistente?.idMedia) await api.delete(`/Media/${videoExistente.idMedia}`);
-
-        const formDataVideo = new FormData();
-        formDataVideo.append('IdEntidadMedia', evento.idEvento);
-        formDataVideo.append('File', null);
-        formDataVideo.append('Video', multimedia.videoUrl);
-
-        await api.post('/Media', formDataVideo, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-      }
+      medias = mediaResp.data.media || [];
     } catch (err) {
-      console.error('Error al actualizar multimedia:', err);
-      alert('Error al actualizar la imagen o video del evento.');
+      // Si el error es 404, significa que no hay multimedia aún, lo manejamos como caso normal
+      if (err.response && err.response.status !== 404) {
+        throw err; // Otros errores los dejamos caer al catch principal
+      }
     }
-  };
+
+    const imagenExistente = medias.find(m => m.url);
+    const videoExistente = medias.find(m => m.mdVideo);
+
+    if (multimedia.file) {
+      if (imagenExistente?.idMedia) await api.delete(`/Media/${imagenExistente.idMedia}`);
+
+      const formData = new FormData();
+      formData.append('IdEntidadMedia', evento.idEvento);
+      formData.append('File', multimedia.file);
+
+      await api.post('/Media', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+    }
+
+    if (multimedia.videoUrl) {
+      if (videoExistente?.idMedia) await api.delete(`/Media/${videoExistente.idMedia}`);
+
+      const formDataVideo = new FormData();
+      formDataVideo.append('IdEntidadMedia', evento.idEvento);
+      formDataVideo.append('File', null);
+      formDataVideo.append('Video', multimedia.videoUrl);
+
+      await api.post('/Media', formDataVideo, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+    }
+  } catch (err) {
+    console.error('Error al actualizar multimedia:', err);
+    alert('Error al actualizar la imagen o video del evento.');
+  }
+};
 
   if (!evento) {
     return <div className="p-10">Cargando evento...</div>;
@@ -434,11 +448,17 @@ const ModifDeEvento = () => {
   />
 
   <div className="form-control mb-4 mt-6">
-    <label className="cursor-pointer label justify-start">
-      <input type="checkbox" className="checkbox checkbox-accent mr-2" />
-      <span className="label-text">Confirmo que deseo modificar el evento</span>
-    </label>
-  </div>
+  <label className="cursor-pointer label justify-start">
+    <input
+      type="checkbox"
+      className="checkbox checkbox-accent mr-2"
+      checked={confirmacionModificacion}
+      onChange={(e) => setConfirmacionModificacion(e.target.checked)}
+    />
+    <span className="label-text">Confirmo que deseo modificar el evento</span>
+  </label>
+</div>
+
 
   <button
     type="button"
