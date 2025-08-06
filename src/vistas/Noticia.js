@@ -86,7 +86,7 @@ export default function Noticia() {
 
           {/* Texto */}
           <div className="w-full text-center md:text-left">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-4">{noticiaData.titulo}</h1>
+            <h1 className="text-lg md:text-xl lg:text-2xl font-bold mb-4">{noticiaData.titulo}</h1>
             <p className="text-gray-700 leading-relaxed mb-4">{noticiaData.contenido}</p>
 
             {noticiaData.urlEvento && noticiaData.urlEvento.trim() !== '' && (
