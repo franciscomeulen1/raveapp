@@ -74,7 +74,7 @@ export default function Noticias() {
       <NavBar />
       <div className="flex-grow sm:px-10 mb-11">
         <h1 className="text-3xl font-bold underline mb-8 text-center">Novedades</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-10 sm:px-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-10 sm:px-20">
           {noticias.map((noticia) => (
             <CardNoticia
               key={noticia.id}
