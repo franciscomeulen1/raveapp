@@ -53,7 +53,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/evento/:id" element={<Evento />} />
-          <Route path="/comprar" element={<Comprar />} />
           <Route path="/artistas" element={<Artistas />} />
           <Route path="/artistas/:id" element={<Artista />} />
           <Route path="/noticias" element={<Noticias />} />
@@ -86,6 +85,12 @@ function App() {
           <Route path="/entrada-adquirida" element={
                 <ProtectedRoutePorRol rolesPermitidos={[0]}>
                   <EntradaAdquirida />
+                </ProtectedRoutePorRol>
+                } />
+
+          <Route path="/comprar" element={
+                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                  <Comprar />
                 </ProtectedRoutePorRol>
                 } />
 
