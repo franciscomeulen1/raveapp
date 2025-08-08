@@ -346,6 +346,7 @@ export default function Comprar() {
               initialProvincia={selectedProvincia?.nombre || ''}
               initialMunicipio={selectedMunicipio?.nombre || ''}
               initialLocalidad={selectedLocalidad?.nombre || ''}
+              disabled={!!usuarioData?.domicilio?.direccion}
               onUbicacionChange={({ provincia, municipio, localidad }) => {
                 setSelectedProvincia(provincia);
                 setSelectedMunicipio(municipio);
