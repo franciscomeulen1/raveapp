@@ -41,6 +41,10 @@ import CrearArtista from "./vistasadmin/CrearArtista";
 import EditarCarousel from "./vistasadmin/EditarCarousel";
 import ActualizarTyC from "./vistasadmin/ActualizarTyC";
 import ProtectedRoutePorRol from "./components/ProtectedRoutePorRol";
+import GraciasPorTuCompra from "./vistas/GraciasPorTuCompra";
+import OlvideContrasena from "./vistas/OlvideContrasena";
+import RestablecerContrasena from "./vistas/RestablecerContrasena";
+
 
 function App() {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -59,6 +63,8 @@ function App() {
           <Route path="/noticias/:id" element={<Noticia />} />
           <Route path="/comollegar/:idEvento" element={<ComoLlegar />} />
           <Route path="/precrearevento" element={<PreCrearEvento />} />
+          <Route path="/olvide-contrasena" element={<OlvideContrasena />} />
+          <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
 
           {/* Rutas para usuarios logueados */}
 
@@ -91,6 +97,12 @@ function App() {
           <Route path="/comprar" element={
                 <ProtectedRoutePorRol rolesPermitidos={[0]}>
                   <Comprar />
+                </ProtectedRoutePorRol>
+                } />
+
+          <Route path="/gracias-por-tu-compra" element={
+                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                  <GraciasPorTuCompra />
                 </ProtectedRoutePorRol>
                 } />
 
