@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import InputDeArtistas from '../components/componentsCrearEvento/InputDeArtistas';
@@ -22,6 +23,7 @@ function CrearEvento() {
   }, []);
 
   const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [nombreEvento, setNombreEvento] = useState('');
   const [diasEvento, setDiasEvento] = useState(1);
@@ -44,6 +46,7 @@ function CrearEvento() {
   const [multimedia, setMultimedia] = useState({ soundCloud: '', videoUrl: '', file: '' });
   const [errorMultimedia, setErrorMultimedia] = useState(false);
   const [aceptaTyC, setAceptaTyC] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const fechaAnteriorRef = useRef();
 
@@ -329,7 +332,7 @@ function CrearEvento() {
       await crearEntradasPorFecha(idEventoCreado);
       await actualizarRolAOrganizadorSiEsNecesario();
 
-      alert('Evento y entradas creados correctamente.');
+      setShowSuccessModal(true);
 
       try {
         if (multimedia.videoUrl) {
@@ -451,12 +454,27 @@ function CrearEvento() {
         </form>
       </div>
       <Footer />
+      
+      {/* MODAL DE ÉXITO */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+            <h2 className="text-2xl font-bold mb-4 text-green-600">¡Evento creado exitosamente!</h2>
+            <p className="mb-6">Tu evento y las entradas se han creado correctamente.</p>
+            <button
+              onClick={() => navigate('/mis-eventos-creados')}
+              className="btn btn-primary bg-purple-600 text-white rounded-xl"
+            >
+              Aceptar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default CrearEvento;
-
 
 // import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 // import NavBar from '../components/NavBar';
@@ -472,11 +490,11 @@ export default CrearEvento;
 // import InputEsEventoRecurrente from '../components/componentsCrearEvento/InputEsEventoRecurrente';
 // import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
 // import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
+// import CheckTyC from '../components/componentsCrearEvento/CheckTyC';
 // import api from '../componenteapi/api';
 // import { AuthContext } from '../context/AuthContext';
 
 // function CrearEvento() {
-
 //   useEffect(() => {
 //     window.scrollTo(0, 0);
 //   }, []);
@@ -503,6 +521,7 @@ export default CrearEvento;
 //   const [entradasPorDia, setEntradasPorDia] = useState([]);
 //   const [multimedia, setMultimedia] = useState({ soundCloud: '', videoUrl: '', file: '' });
 //   const [errorMultimedia, setErrorMultimedia] = useState(false);
+//   const [aceptaTyC, setAceptaTyC] = useState(false);
 
 //   const fechaAnteriorRef = useRef();
 
@@ -523,6 +542,30 @@ export default CrearEvento;
 //   const handleEntradasChange = useCallback((datos) => {
 //     setEntradasPorDia(datos);
 //   }, []);
+
+//   // Inicializa estructuras internas cuando cambia la cantidad de días del evento
+//   useEffect(() => {
+//     const nuevasEntradas = Array.from({ length: diasEvento }, () => ({
+//       generales: 0,
+//       generalesEarly: 0,
+//       vip: 0,
+//       vipEarly: 0,
+//       generalesPrice: '',
+//       generalesEarlyPrice: '',
+//       vipPrice: '',
+//       vipEarlyPrice: '',
+//     }));
+//     setEntradasPorDia(nuevasEntradas);
+
+//     const nuevasConfigs = Array.from({ length: diasEvento }, () => ({
+//       inicioVenta: '',
+//       finVentaGeneralVip: ''
+//     }));
+//     setConfigFechasVenta(nuevasConfigs);
+
+//     const inicialHayEB = Array.from({ length: diasEvento }, () => false);
+//     setHayEarlyBirdsPorDia(inicialHayEB);
+//   }, [diasEvento]);
 
 //   const validarFormulario = () => {
 //     if (!nombreEvento.trim()) {
@@ -565,6 +608,10 @@ export default CrearEvento;
 //     }
 //     if (!multimedia.file) {
 //       alert('Debes subir una imagen válida (jpg, jpeg o png menor a 2MB).');
+//       return false;
+//     }
+//     if (!aceptaTyC) {
+//       alert('Debes aceptar los términos y condiciones para continuar.');
 //       return false;
 //     }
 //     return true;
@@ -696,20 +743,17 @@ export default CrearEvento;
 //     // Este if evalúa si debemos evitar actualizar el rol del usuario
 //     // "Si el usuario no existe, o no es 'Usuario', o ya es 'Organizador', entonces no hagas nada".
 //     if (
-//       !user?.id || // “Si no hay usuario logueado, o no tiene ID”
-//       !user.roles.some(r => r.cdRol === 0) ||  // “Si el usuario no tiene el rol Usuario (código 0)”
-//       user.roles.some(r => r.cdRol === 2) // “Si el usuario ya tiene el rol Organizador (código 2)”
+//       !user?.id ||
+//       !user.roles.some(r => r.cdRol === 0) ||
+//       user.roles.some(r => r.cdRol === 2)
 //     ) return;
 
-//     // 1. Obtener datos completos del usuario
 //     const response = await api.get(`/Usuario/GetUsuario?IdUsuario=${user.id}`);
 //     const usuario = response.data.usuarios?.[0];
 //     if (!usuario) return;
 
-//     // 2. Preparar cdRoles actualizados
 //     const nuevosRoles = [...new Set(usuario.roles.map(r => r.cdRol).concat(2))];
 
-//     // 3. Armar body completo para PUT
 //     const body = {
 //       idUsuario: usuario.idUsuario,
 //       nombre: usuario.nombre,
@@ -736,27 +780,14 @@ export default CrearEvento;
 //     console.log('Body enviado', body);
 //     await api.put('/Usuario/UpdateUsuario', body);
 
-//     // Actualiza el AuthContext y localStorage, Actualiza roles localmente
-//     const tieneRolOrganizador = user.roles.some(r => r.cdRol === 2);
-//     if (!tieneRolOrganizador) {
-//       const rolesActualizados = [
-//         ...user.roles,
-//         { cdRol: 2, dsRol: 'Organizador' }
-//       ];
+//     const rolesActualizados = [...user.roles, { cdRol: 2, dsRol: 'Organizador' }];
+//     const usuarioActualizado = { ...user, roles: rolesActualizados };
 
-//       const usuarioActualizado = {
-//         ...user,
-//         roles: rolesActualizados
-//       };
-
-//       setUser(usuarioActualizado);
-//       localStorage.setItem('user', JSON.stringify(usuarioActualizado));
-//     }
+//     setUser(usuarioActualizado);
+//     localStorage.setItem('user', JSON.stringify(usuarioActualizado));
 
 //     console.log('Rol de organizador asignado al usuario y reflejado en el contexto.');
 //   };
-
-
 
 //   const handleCrearEvento = async () => {
 //     try {
@@ -774,8 +805,6 @@ export default CrearEvento;
 //       console.log('Evento creado correctamente. ID:', idEventoCreado);
 
 //       await crearEntradasPorFecha(idEventoCreado);
-
-//       // Actualizar el rol del usuario si es necesario
 //       await actualizarRolAOrganizadorSiEsNecesario();
 
 //       alert('Evento y entradas creados correctamente.');
@@ -788,12 +817,9 @@ export default CrearEvento;
 //           formDataVideo.append('Video', multimedia.videoUrl);
 
 //           await api.post('/Media', formDataVideo, {
-//             headers: {
-//               'Content-Type': 'multipart/form-data'
-//             }
+//             headers: { 'Content-Type': 'multipart/form-data' }
 //           });
 //         }
-
 //       } catch (error) {
 //         console.error('Error al subir video:', error);
 //       }
@@ -803,7 +829,6 @@ export default CrearEvento;
 //           const formData = new FormData();
 //           formData.append('IdEntidadMedia', idEventoCreado);
 //           formData.append('File', multimedia.file);
-//           // formData.append('Video', null);
 
 //           await api.post('/Media', formData, {
 //             headers: { 'Content-Type': 'multipart/form-data' }
@@ -817,7 +842,6 @@ export default CrearEvento;
 //       console.error('Error al crear evento:', error);
 //       alert('Ocurrió un error al crear el evento. Revisa la consola para más detalles.');
 //     }
-
 //   };
 
 //   return (
@@ -880,6 +904,7 @@ export default CrearEvento;
 //             diasEvento={diasEvento}
 //             onEntradasPorDiaChange={handleEntradasPorDiaChange}
 //             onEntradasChange={handleEntradasChange}
+//             entradasIniciales={entradasPorDia}
 //           />
 
 //           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
@@ -888,6 +913,7 @@ export default CrearEvento;
 //             diasEvento={diasEvento}
 //             entradasPorDia={hayEarlyBirdsPorDia}
 //             onConfigEntradasChange={setConfigFechasVenta}
+//             configInicial={configFechasVenta}
 //           />
 
 //           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
@@ -897,12 +923,7 @@ export default CrearEvento;
 //             onErrorChange={setErrorMultimedia}
 //           />
 
-//           <div className='form-control mb-4'>
-//             <label className='cursor-pointer label justify-start'>
-//               <input type='checkbox' className='checkbox checkbox-accent mr-2' />
-//               <span className='label-text'>Acepto términos y condiciones</span>
-//             </label>
-//           </div>
+//           <CheckTyC onChange={setAceptaTyC} />
 
 //           <button type='button' onClick={handleCrearEvento} className='btn btn-primary bg-purple-600 text-white rounded-xl'>Crear Evento</button>
 //         </form>
