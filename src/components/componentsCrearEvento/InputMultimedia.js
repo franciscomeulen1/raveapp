@@ -110,7 +110,7 @@ const InputMultimedia = ({ onMultimediaChange, onErrorChange, imagenInicial, vid
 
             <div className='form-control w-full mb-4'>
                 <label className='label'>
-                    <span className='label-text font-semibold text-lg text-purple-500'>Agregar video (Opcional):</span>
+                    <span className='label-text font-semibold text-lg text-purple-500'>Agregar video (YouTube solamente):</span>
                 </label>
                 <input
                     type='text'
