@@ -101,18 +101,26 @@ export default function Evento() {
         if (quantity > 0) {
           const precio = parseInt(select.dataset.precio);
           const tipo = select.dataset.tipo;
+          const cdTipoEntrada = parseInt(select.dataset.cdtipo, 10);
+          const idFecha = dia.idFecha;
           const itemSubtotal = precio * quantity;
           subtotal += itemSubtotal;
           purchaseItems.push({
-            dia: dia.fecha,
-            tipo,
-            precio,
+            // Datos para RESERVA:
+            idFecha,
+            cdTipoEntrada,              // <--- clave para el PUT
             cantidad: quantity,
+            // Datos para UI / resumen:
+            dia: dia.fecha,
+            dsTipo: tipo,               // opcional (nombre del tipo)
+            tipo,                       // si lo usás en ResumenCompra
+            precio,
             itemSubtotal
           });
         }
       });
     });
+    console.log(purchaseItems); /////////////////// prueba
 
     const serviceFee = 1000;
     const total = subtotal + serviceFee;
@@ -187,9 +195,6 @@ export default function Evento() {
   );
 }
 
-
-
-
 // // Evento.js
 // import { useEffect, useState } from 'react';
 // import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -219,6 +224,7 @@ export default function Evento() {
 
 //   useEffect(() => {
 //     window.scrollTo(0, 0);
+
 //     const fetchEvento = async () => {
 //       try {
 //         setLoading(true);
@@ -227,6 +233,7 @@ export default function Evento() {
 
 //         if (eventosApi && eventosApi.length > 0) {
 //           const eventoData = eventosApi[0];
+
 //           const procesado = {
 //             id: eventoData.idEvento,
 //             nombreEvento: eventoData.nombre,
@@ -234,7 +241,8 @@ export default function Evento() {
 //               idFecha: fecha.idFecha,
 //               fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
 //               horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-//               horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+//               horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+//               estado: fecha.estado
 //             })),
 //             generos: eventoData.genero || [],
 //             artistas: eventoData.artistas || [],
@@ -269,10 +277,9 @@ export default function Evento() {
 //       }
 //     };
 
-//     if (!evento) {
-//       fetchEvento();
-//     }
-//   }, [id, evento]);
+//     fetchEvento(); // <--- SIEMPRE
+
+//   }, [id]);
 
 //   const handleCantidadChange = (totalSeleccionadas) => {
 //     setComprarHabilitado(totalSeleccionadas > 0);
@@ -303,6 +310,7 @@ export default function Evento() {
 //         }
 //       });
 //     });
+//     console.log(purchaseItems); /////////////////// prueba
 
 //     const serviceFee = 1000;
 //     const total = subtotal + serviceFee;
@@ -323,15 +331,38 @@ export default function Evento() {
 //             <ImagenEvento imagen={evento.imagen} />
 //             <ArtistasEvento artistas={evento.artistas} />
 //             <FechasEvento dias={evento.dias} />
-//             <UbicacionEvento idEvento={evento.id} direccion={evento.direccion} localidad={evento.localidad} municipio={evento.localidad} provincia={evento.provincia} />
+//             <UbicacionEvento idEvento={evento.id} direccion={evento.direccion} localidad={evento.localidad} municipio={evento.municipio} provincia={evento.provincia} />
 //             <EtiquetasEvento lgbt={evento.lgbt} after={evento.after} />
-//             <GenerosEvento generos={evento.generos}/>
+//             <GenerosEvento generos={evento.generos} />
 
 //             <form onSubmit={handleComprarSubmit} className='mt-5'>
 //               {evento.dias.map((dia, index) => (
 //                 <div key={index} className="mb-6">
-//                   {evento.dias.length > 1 && <h2 className="text-xl font-bold mb-2">Entradas para el {dia.fecha}</h2>}
-//                   <TablaDeEntradas idFecha={dia.idFecha} diaIndex={index} onCantidadChange={handleCantidadChange} />
+//                   {evento.dias.length > 1 && (
+//                     <h2 className="text-xl font-bold mb-2">
+//                       Entradas para el {dia.fecha}
+//                     </h2>
+//                   )}
+
+//                   {/* Título según el estado de la fecha */}
+//                   {dia.estado === 1 && (
+//                     <p className="mb-2 font-medium text-warning">
+//                       Entradas aún no disponibles para la venta
+//                     </p>
+//                   )}
+
+//                   {dia.estado === 3 && (
+//                     <p className="mb-2 font-medium text-error">
+//                       Venta de entradas finalizada
+//                     </p>
+//                   )}
+
+//                   <TablaDeEntradas
+//                     idFecha={dia.idFecha}
+//                     diaIndex={index}
+//                     estadoFecha={dia.estado}   // <-- NUEVO
+//                     onCantidadChange={handleCantidadChange}
+//                   />
 //                 </div>
 //               ))}
 
