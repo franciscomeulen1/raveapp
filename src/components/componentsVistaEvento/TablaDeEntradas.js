@@ -2,20 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../componenteapi/api';
 
-export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCantidadChange }) {
+export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, forceDisabled = false, onCantidadChange }) {
   const [entradasDisponibles, setEntradasDisponibles] = useState([]);
 
-  const disabledMode = estadoFecha !== 2; // true para "Aprobado" (1) u otros, habilitado solo si
+  // Habilitado SOLO si la fecha está "En venta" (2) y NO está bloqueada
+  const disabledMode = estadoFecha !== 2 || forceDisabled;
 
   useEffect(() => {
     const fetchEntradas = async () => {
       try {
-        // Si la fecha está "En venta" (2), traemos SOLO disponibles (Estado=0).
-        // Si NO está "En venta", traemos todas las configuradas para mostrarlas grisadas (sin &Estado=0).
-        const urlEntradas =
-          estadoFecha === 2
-            ? `/Entrada/GetEntradasFecha?IdFecha=${idFecha}&Estado=0`
-            : `/Entrada/GetEntradasFecha?IdFecha=${idFecha}`;
+        const urlEntradas = `/Entrada/GetEntradasFecha?IdFecha=${idFecha}&Estado=0`;
+        // const urlEntradas =
+        //   estadoFecha === 2 && !forceDisabled
+        //     ? `/Entrada/GetEntradasFecha?IdFecha=${idFecha}&Estado=0`
+        //     : `/Entrada/GetEntradasFecha?IdFecha=${idFecha}`;
 
         const [resEntradas, resTipos] = await Promise.all([
           api.get(urlEntradas),
@@ -27,16 +27,14 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
           tiposMap[tipo.cdTipo] = tipo.dsTipo;
         });
 
-        // La API puede responder array o { ... } según tu backend;
-        // asumimos array de entradas como en tus otros componentes.
         const lista = Array.isArray(resEntradas.data) ? resEntradas.data : (resEntradas.data?.entradas || []);
 
         const procesadas = lista.map(e => ({
-          cdTipo: e.tipo?.cdTipo ?? e.cdTipo, // tolerante a estructura
+          cdTipo: e.tipo?.cdTipo ?? e.cdTipo,
           tipo: tiposMap[e.tipo?.cdTipo ?? e.cdTipo] || 'Sin nombre',
           precio: e.precio,
-          cantidad: e.cantidad ?? 0, // stock disponible (si viene)
-          estadoEntrada: e.estado?.cdEstado // por si quisieras usarlo
+          cantidad: e.cantidad ?? 0,
+          estadoEntrada: e.estado?.cdEstado
         }));
 
         setEntradasDisponibles(procesadas);
@@ -44,19 +42,18 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
         console.error('Error al cargar entradas disponibles:', err);
         setEntradasDisponibles([]);
       } finally {
-        // Si está deshabilitado, aseguramos que el total notifique 0
-        if (disabledMode) onCantidadChange(0);
+        // No notificar 0 aquí: el padre maneja el bloqueo y los totals
       }
     };
 
     if (idFecha) {
       fetchEntradas();
     }
+    // Reaccionar también cuando cambia el bloqueo
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idFecha, estadoFecha]);
+  }, [idFecha, estadoFecha, forceDisabled]);
 
   const handleSelectChange = () => {
-    // Sólo contamos selects habilitados
     const total = Array.from(
       document.querySelectorAll(`[name^="dia-${diaIndex}-entrada-"]`)
     )
@@ -64,7 +61,7 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
       .map(select => parseInt(select.value, 10))
       .reduce((sum, val) => sum + (isNaN(val) ? 0 : val), 0);
 
-    onCantidadChange(total);
+    onCantidadChange(total, diaIndex);
   };
 
   return (
@@ -85,7 +82,6 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
                 <td>${entrada.precio}</td>
                 <td>
                   {entrada.cantidad === 0 || disabledMode ? (
-                    // Si está deshabilitado o sin stock, mostramos el select deshabilitado o “Agotadas”
                     disabledMode ? (
                       <select
                         name={`dia-${diaIndex}-entrada-${index}`}
@@ -93,7 +89,7 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
                         data-precio={entrada.precio}
                         data-tipo={entrada.tipo}
                         data-cdtipo={entrada.cdTipo}
-                        data-idfecha={idFecha} 
+                        data-idfecha={idFecha}
                         defaultValue="0"
                         disabled
                       >
@@ -109,7 +105,7 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
                       data-precio={entrada.precio}
                       data-tipo={entrada.tipo}
                       data-cdtipo={entrada.cdTipo}
-                      data-idfecha={idFecha} 
+                      data-idfecha={idFecha}
                       defaultValue="0"
                       onChange={handleSelectChange}
                     >
@@ -139,6 +135,8 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
     </div>
   );
 }
+
+
 
 // // TablaDeEntradas.js
 // import React, { useEffect, useState } from 'react';
@@ -234,6 +232,8 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
 //                         className="select select-bordered select-disabled w-full max-w-xs"
 //                         data-precio={entrada.precio}
 //                         data-tipo={entrada.tipo}
+//                         data-cdtipo={entrada.cdTipo}
+//                         data-idfecha={idFecha} 
 //                         defaultValue="0"
 //                         disabled
 //                       >
@@ -248,6 +248,8 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, onCant
 //                       className="select select-bordered w-full max-w-xs"
 //                       data-precio={entrada.precio}
 //                       data-tipo={entrada.tipo}
+//                       data-cdtipo={entrada.cdTipo}
+//                       data-idfecha={idFecha} 
 //                       defaultValue="0"
 //                       onChange={handleSelectChange}
 //                     >
