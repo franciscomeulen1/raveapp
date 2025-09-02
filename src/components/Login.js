@@ -38,6 +38,10 @@ function Login() {
     }
   };
 
+  const handleOlvideContrasena = () => {
+    navigate(`/olvide-contrasena`);
+  };
+
   return (
     <>
       <label
@@ -84,7 +88,7 @@ function Login() {
           <div className="modal-action flex-col gap-3 items-center">
             <button type="submit" className="btn w-full">Ingresar</button>
             <BotonGoogleLogin setError={setError} />
-            <button type="button" className="btn btn-ghost">¿Olvidaste la contraseña?</button>
+            <button type="button" className="btn btn-ghost" onClick={handleOlvideContrasena}>¿Olvidaste la contraseña?</button>
           </div>
         </form>
       </label>

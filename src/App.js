@@ -19,7 +19,7 @@ import Artista from "./vistas/Artista";
 import Noticias from "./vistas/Noticias";
 import Noticia from "./vistas/Noticia";
 import ComoLlegar from "./vistas/ComoLlegar";
-import EntradasAdquiridas from "./vistas/EntradasAdquiridas";
+import MisEntradas from "./vistas/MisEntradas";
 import EventosFavoritos from "./vistas/EventosFavoritos";
 import MisEventos from "./vistasduenioevento/MisEventos";
 import EntradasVendidas from "./vistasduenioevento/EntradasVendidas";
@@ -44,6 +44,7 @@ import ProtectedRoutePorRol from "./components/ProtectedRoutePorRol";
 import GraciasPorTuCompra from "./vistas/GraciasPorTuCompra";
 import OlvideContrasena from "./vistas/OlvideContrasena";
 import RestablecerContrasena from "./vistas/RestablecerContrasena";
+import ConfirmacionMail from "./vistas/ConfirmacionMail";
 
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
           <Route path="/precrearevento" element={<PreCrearEvento />} />
           <Route path="/olvide-contrasena" element={<OlvideContrasena />} />
           <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
+          <Route path="/confirmacion-mail" element={<ConfirmacionMail />} />
 
           {/* Rutas para usuarios logueados */}
 
@@ -72,7 +74,7 @@ function App() {
 
           <Route path="/mis-entradas" element={
                 <ProtectedRoutePorRol rolesPermitidos={[0]}>
-                  <EntradasAdquiridas />
+                  <MisEntradas />
                 </ProtectedRoutePorRol>
                 } />
           
