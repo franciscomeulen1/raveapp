@@ -279,6 +279,14 @@ function CrearEvento() {
 
     const nuevosRoles = [...new Set(usuario.roles.map(r => r.cdRol).concat(2))];
 
+     // 🔹 Normalizar socials: null -> ""
+    const socialsNormalizados = {
+      idSocial: usuario.socials?.idSocial ?? "",        // si API espera string
+      mdInstagram: usuario.socials?.mdInstagram ?? "",
+      mdSpotify: usuario.socials?.mdSpotify ?? "",
+      mdSoundcloud: usuario.socials?.mdSoundcloud ?? "",
+    };
+
     const body = {
       idUsuario: usuario.idUsuario,
       nombre: usuario.nombre,
@@ -287,7 +295,6 @@ function CrearEvento() {
       cbu: usuario.cbu,
       dni: usuario.dni,
       telefono: usuario.telefono,
-      nombreFantasia: usuario.nombreFantasia,
       bio: usuario.bio,
       dtNacimiento: usuario.dtNacimiento,
       domicilio: {
@@ -298,7 +305,7 @@ function CrearEvento() {
         municipio: usuario.domicilio.municipio,
         localidad: usuario.domicilio.localidad,
       },
-      socials: usuario.socials,
+      socials: socialsNormalizados,
       cdRoles: nuevosRoles,
     };
 

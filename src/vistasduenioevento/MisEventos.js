@@ -17,7 +17,7 @@ const MisEventos = () => {
     const fetchData = async () => {
       try {
         const eventosRes = await api.get('/Evento/GetEventos', {
-          params: { IdUsuario: user.id },
+          params: { IdUsuarioOrg: user.id },
         });
         const estadosRes = await api.get('/Evento/GetEstadosEvento');
 
