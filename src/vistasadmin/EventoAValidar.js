@@ -1,6 +1,6 @@
 // EventoAValidar.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../componenteapi/api';
@@ -15,6 +15,9 @@ import ImagenEvento from '../components/componentsVistaEvento/ImagenEvento';
 import ArtistasEventoValidar from '../components/componentsEventoAValidar/ArtistasEventoAValidar';
 
 const EventoAValidar = () => {
+
+    const navigate = useNavigate();
+
     const { idEvento } = useParams();
     const [evento, setEvento] = useState(null);
     const [media, setMedia] = useState({ imagen: null, video: null });
@@ -154,6 +157,7 @@ const EventoAValidar = () => {
             await api.put('/Evento/UpdateEvento', payload);
 
             alert('✅ El evento ha sido aprobado correctamente.');
+            navigate('/eventosavalidar'); // ⬅️ redirección
         } catch (error) {
             console.error('Error al aprobar el evento:', error);
             alert('❌ Ocurrió un error al aprobar el evento.');
