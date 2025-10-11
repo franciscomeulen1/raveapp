@@ -135,6 +135,8 @@ export default function EntradaAdquirida() {
         return nombres.length ? nombres.join(' - ') : '—';
     }, [evento]);
 
+    const descripcionEvento = useMemo(() => evento?.descripcion || '', [evento]);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -267,6 +269,16 @@ export default function EntradaAdquirida() {
                                         <div className="text-base">{artistasStr}</div>
                                     </div>
                                 </div>
+
+                                {/* Descripción */}
+                                <div className="flex items-start gap-3">
+                                    <div>
+                                        <div className="text-base leading-relaxed whitespace-pre-line">
+                                            {descripcionEvento || '—'}
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
