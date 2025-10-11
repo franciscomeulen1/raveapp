@@ -75,7 +75,7 @@ const groupByCompraEstado = (entradas) => {
    Caches (módulo)
    ========================= */
 const cacheEvento = new Map(); // idEvento -> evento
-const cacheMedia  = new Map(); // idEvento -> imagenUrl | null
+const cacheMedia = new Map(); // idEvento -> imagenUrl | null
 
 /* =========================
    Data helpers
@@ -298,7 +298,16 @@ export default function MisEntradas() {
               {comprasFiltradas.map((c) => (
                 <div
                   key={`${c.idCompra}-${c.numCompra}-${c.cdEstado}`}
-                  onClick={() => navigate('/entrada-adquirida')}
+                  onClick={() =>
+                    navigate('/entrada-adquirida', {
+                      state: {
+                        idCompra: c.idCompra,
+                        numCompra: c.numCompra,
+                        idEvento: c.idEvento,
+                        idFecha: c.idFecha,
+                      },
+                    })
+                  }
                   className="flex flex-col md:flex-row items-center border border-base-300 rounded-2xl bg-base-200/70 hover:bg-base-200 cursor-pointer transition-transform hover:scale-[1.01] shadow-sm hover:shadow-md"
                 >
                   {/* Imagen izquierda */}
@@ -317,8 +326,8 @@ export default function MisEntradas() {
                           setCompras((prev) =>
                             prev.map((item) =>
                               item.idCompra === c.idCompra &&
-                              item.numCompra === c.numCompra &&
-                              item.cdEstado === c.cdEstado
+                                item.numCompra === c.numCompra &&
+                                item.cdEstado === c.cdEstado
                                 ? { ...item, imagenUrl: freshUrl || '', _imgRefreshed: true }
                                 : item
                             )
