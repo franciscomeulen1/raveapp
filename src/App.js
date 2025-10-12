@@ -46,6 +46,7 @@ import OlvideContrasena from "./vistas/OlvideContrasena";
 import RestablecerContrasena from "./vistas/RestablecerContrasena";
 import ConfirmacionMail from "./vistas/ConfirmacionMail";
 import VerReporteDeVentas from "./vistasadmin/VerReporteDeVentas";
+import ReporteVentasEvento from "./vistasadmin/ReporteVentasEvento";
 
 
 function App() {
@@ -212,6 +213,12 @@ function App() {
           <Route path="/ver-reporte-de-ventas" element={
                 <ProtectedRoutePorRol rolesPermitidos={[1]}>
                    <VerReporteDeVentas />
+                </ProtectedRoutePorRol>
+                } />
+                
+          <Route path="/reporte-ventas/:id" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                   <ReporteVentasEvento />
                 </ProtectedRoutePorRol>
                 } />
           
