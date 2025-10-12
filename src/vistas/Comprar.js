@@ -561,7 +561,7 @@ export default function Comprar() {
         idCompra: compraId,
         subtotal,
         cargoServicio: serviceFee,
-        backUrl: 'localhost:3000/gracias-por-tu-compra',
+        backUrl: 'https://raveapp.com.ar/gracias-por-tu-compra',
       };
 
       const res = await api.post('/Pago/CrearPago', payload);

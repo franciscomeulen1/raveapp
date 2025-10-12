@@ -39,7 +39,7 @@ export default function OlvideContrasena() {
         to: usuario.correo,
         templateData: {
           name: usuario.nombre || 'Usuario',
-          recoveryUrl: 'http://localhost:3000/restablecer-contrasena',
+          recoveryUrl: 'https://raveapp.com.ar/restablecer-contrasena',
         },
       });
 

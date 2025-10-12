@@ -19,7 +19,7 @@ export default function ConfirmacionMail() {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMsg, setResendMsg] = useState('');
 
-  const confirmationUrl = 'http://localhost:3000/confirmacion-mail';
+  const confirmationUrl = 'https://raveapp.com.ar/confirmacion-mail';
 
   const guessNameFromEmail = (email) => {
     if (!email) return 'Usuario';
