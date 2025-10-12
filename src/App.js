@@ -45,6 +45,7 @@ import GraciasPorTuCompra from "./vistas/GraciasPorTuCompra";
 import OlvideContrasena from "./vistas/OlvideContrasena";
 import RestablecerContrasena from "./vistas/RestablecerContrasena";
 import ConfirmacionMail from "./vistas/ConfirmacionMail";
+import VerReporteDeVentas from "./vistasadmin/VerReporteDeVentas";
 
 
 function App() {
@@ -205,6 +206,12 @@ function App() {
           <Route path="/actualizar-tyc" element={
                 <ProtectedRoutePorRol rolesPermitidos={[1]}>
                    <ActualizarTyC />
+                </ProtectedRoutePorRol>
+                } />
+                
+          <Route path="/ver-reporte-de-ventas" element={
+                <ProtectedRoutePorRol rolesPermitidos={[1]}>
+                   <VerReporteDeVentas />
                 </ProtectedRoutePorRol>
                 } />
           

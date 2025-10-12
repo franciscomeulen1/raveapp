@@ -203,7 +203,7 @@ export default function EntradaAdquirida() {
             <NavBar />
 
             <div className="flex-grow px-6 sm:px-10 md:px-16 mb-14">
-                <h1 className="mb-4 mt-4 text-3xl font-bold">{titulo}</h1>
+                <h1 className="mb-4 mt-4 text-xl sm:text-2xl font-bold">{titulo}</h1>
 
                 {loading && (
                     <div className="animate-pulse space-y-4">
