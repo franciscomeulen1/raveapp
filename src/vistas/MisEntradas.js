@@ -115,7 +115,7 @@ export default function MisEntradas() {
   const { user } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
-  const [compras, setCompras] = useState([]); // [{... , cdEstado, dsEstado, imagenUrl, _imgRefreshed }]
+  const [compras, setCompras] = useState([]); // [{... , idFiesta, hasFiesta, cdEstado, dsEstado, imagenUrl, _imgRefreshed }]
   const [error, setError] = useState('');
   const [selectedFilter, setSelectedFilter] = useState(FILTERS[0]); // default: Paga (4)
 
@@ -175,6 +175,9 @@ export default function MisEntradas() {
             const fin = fechaMatch?.fin || evento?.finEvento;
             const fechaTexto = inicio && fin ? formatDateTimeRange(inicio, fin) : 'Fecha a confirmar';
 
+            const idFiesta = evento?.idFiesta ?? null;
+            const hasFiesta = !!(idFiesta && String(idFiesta).trim() !== '');
+
             return {
               idCompra: g.idCompra,
               numCompra: g.numCompra,
@@ -182,6 +185,8 @@ export default function MisEntradas() {
               idFecha: g.idFecha,
               cdEstado: g.cdEstado,
               dsEstado: g.dsEstado,
+              idFiesta,
+              hasFiesta,
               eventoNombre: nombre,
               fechaTexto,
               imagenUrl,
@@ -248,8 +253,7 @@ export default function MisEntradas() {
                     className={`text-left ${f.code === selectedFilter.code ? 'active font-semibold' : ''}`}
                     onClick={() => {
                       setSelectedFilter(f);
-                      setIsOpen(false);                // cerrar
-                      // quitar foco para evitar que DaisyUI lo muestre por :focus-within
+                      setIsOpen(false);
                       requestAnimationFrame(() => {
                         if (document.activeElement && document.activeElement instanceof HTMLElement) {
                           document.activeElement.blur();
@@ -295,70 +299,237 @@ export default function MisEntradas() {
 
           {isLogged && !loading && !error && comprasFiltradas.length > 0 && (
             <div className="space-y-6">
-              {comprasFiltradas.map((c) => (
-                <div
-                  key={`${c.idCompra}-${c.numCompra}-${c.cdEstado}`}
-                  onClick={() =>
-                    navigate('/entrada-adquirida', {
-                      state: {
-                        idCompra: c.idCompra,
-                        numCompra: c.numCompra,
-                        idEvento: c.idEvento,
-                        idFecha: c.idFecha,
-                      },
-                    })
-                  }
-                  className="flex flex-col md:flex-row items-center border border-base-300 rounded-2xl bg-base-200/70 hover:bg-base-200 cursor-pointer transition-transform hover:scale-[1.01] shadow-sm hover:shadow-md"
-                >
-                  {/* Imagen izquierda */}
-                  <div className="w-full md:w-64 h-48 md:h-44 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden bg-base-300 relative">
-                    {c.imagenUrl ? (
-                      <img
-                        src={c.imagenUrl}
-                        alt={c.eventoNombre}
-                        className="w-full h-full object-cover"
-                        onError={async (e) => {
-                          if (c._imgRefreshed) {
-                            e.currentTarget.src = '';
-                            return;
-                          }
-                          const freshUrl = await fetchImagenEvento(c.idEvento, { force: true });
-                          setCompras((prev) =>
-                            prev.map((item) =>
-                              item.idCompra === c.idCompra &&
-                                item.numCompra === c.numCompra &&
-                                item.cdEstado === c.cdEstado
-                                ? { ...item, imagenUrl: freshUrl || '', _imgRefreshed: true }
-                                : item
-                            )
-                          );
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full grid place-items-center text-sm opacity-70">
-                        Sin imagen
+              {comprasFiltradas.map((c) => {
+                const showReviewCTA = selectedFilter.code === 2 && c.hasFiesta; // solo utilizadas + fiesta recurrente
+                return (
+                  <div
+                    key={`${c.idCompra}-${c.numCompra}-${c.cdEstado}`}
+                    onClick={() =>
+                      navigate('/entrada-adquirida', {
+                        state: {
+                          idCompra: c.idCompra,
+                          numCompra: c.numCompra,
+                          idEvento: c.idEvento,
+                          idFecha: c.idFecha,
+                        },
+                      })
+                    }
+                    className="border border-base-300 rounded-2xl bg-base-200/70 hover:bg-base-200 cursor-pointer transition-transform hover:scale-[1.01] shadow-sm hover:shadow-md"
+                  >
+                    {/* ====== XS (mobile): stack total ====== */}
+                    <div className="block md:hidden p-5">
+                      {/* Imagen */}
+                      <div className="w-full rounded-2xl overflow-hidden bg-base-300 relative aspect-[3/2] mx-auto sm:aspect-[16/9] sm:max-w-[560px]">
+                        {c.imagenUrl ? (
+                          <img
+                            src={c.imagenUrl}
+                            alt={c.eventoNombre}
+                            className="w-full h-full object-cover"
+                            onError={async (e) => {
+                              if (c._imgRefreshed) { e.currentTarget.src = ''; return; }
+                              const freshUrl = await fetchImagenEvento(c.idEvento, { force: true });
+                              setCompras((prev) =>
+                                prev.map((item) =>
+                                  item.idCompra === c.idCompra &&
+                                    item.numCompra === c.numCompra &&
+                                    item.cdEstado === c.cdEstado
+                                    ? { ...item, imagenUrl: freshUrl || '', _imgRefreshed: true }
+                                    : item
+                                )
+                              );
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full grid place-items-center text-sm opacity-70">
+                            Sin imagen
+                          </div>
+                        )}
+                        <div className={`absolute top-2 left-2 badge ${estadoBadgeClass(c.cdEstado)} badge-md shadow`}>
+                          {c.dsEstado || '—'}
+                        </div>
                       </div>
-                    )}
 
-                    {/* Badge de estado */}
-                    <div className={`absolute top-2 left-2 badge ${estadoBadgeClass(c.cdEstado)} badge-md shadow`}>
-                      {c.dsEstado || '—'}
+                      {/* Info */}
+                      <div className="mt-4">
+                        <p className="text-lg font-semibold">
+                          {c.cantidadEntradas === 1 ? 'Entrada' : 'Entradas'} para el evento{' '}
+                          <span className="text-purple-700">{c.eventoNombre}</span>
+                        </p>
+                        <p className="text-sm mt-1 opacity-80">{c.fechaTexto}</p>
+                        <div className="mt-3 text-sm opacity-70 font-semibold">
+                          {c.cantidadEntradas} {c.cantidadEntradas === 1 ? 'entrada' : 'entradas'}
+                        </div>
+                      </div>
+
+                      {/* CTA reseña */}
+                      {showReviewCTA && (
+                        <div className="mt-5">
+                          <div className="bg-base-100/70 border border-base-300 rounded-xl p-4">
+                            <p className="text-sm mb-3">
+                              Como has asistido a un evento de una fiesta recurrente, si lo deseas, puedes dejar tu reseña.
+                            </p>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/resena/nueva', {
+                                  state: { idEvento: c.idEvento, idFecha: c.idFecha, idFiesta: c.idFiesta },
+                                });
+                              }}
+                            >
+                              Dejar reseña
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ====== MD (tablet): 2 columnas (izq: imagen+info; der: CTA) ====== */}
+                    <div className="hidden md:grid lg:hidden grid-cols-2 gap-5 p-5 items-start">
+                      {/* Col izquierda: imagen + info en columna */}
+                      <div>
+                        <div className="w-full h-44 rounded-2xl overflow-hidden bg-base-300 relative">
+                          {c.imagenUrl ? (
+                            <img
+                              src={c.imagenUrl}
+                              alt={c.eventoNombre}
+                              className="w-full h-full object-cover"
+                              onError={async (e) => {
+                                if (c._imgRefreshed) { e.currentTarget.src = ''; return; }
+                                const freshUrl = await fetchImagenEvento(c.idEvento, { force: true });
+                                setCompras((prev) =>
+                                  prev.map((item) =>
+                                    item.idCompra === c.idCompra &&
+                                      item.numCompra === c.numCompra &&
+                                      item.cdEstado === c.cdEstado
+                                      ? { ...item, imagenUrl: freshUrl || '', _imgRefreshed: true }
+                                      : item
+                                  )
+                                );
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full grid place-items-center text-sm opacity-70">
+                              Sin imagen
+                            </div>
+                          )}
+                          <div className={`absolute top-2 left-2 badge ${estadoBadgeClass(c.cdEstado)} badge-md shadow`}>
+                            {c.dsEstado || '—'}
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <p className="text-lg font-semibold">
+                            {c.cantidadEntradas === 1 ? 'Entrada' : 'Entradas'} para el evento{' '}
+                            <span className="text-purple-700">{c.eventoNombre}</span>
+                          </p>
+                          <p className="text-sm mt-1 opacity-80">{c.fechaTexto}</p>
+                          <div className="mt-3 text-sm opacity-70 font-semibold">
+                            {c.cantidadEntradas} {c.cantidadEntradas === 1 ? 'entrada' : 'entradas'}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Col derecha: CTA */}
+                      {showReviewCTA ? (
+                        <div className="md:border-l md:border-base-300 md:pl-5">
+                          <div className="bg-base-100/70 border border-base-300 rounded-xl p-4">
+                            <p className="text-sm mb-3">
+                              Como has asistido a un evento de una fiesta recurrente, si lo deseas, puedes dejar tu reseña.
+                            </p>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/resena/nueva', {
+                                  state: { idEvento: c.idEvento, idFecha: c.idFecha, idFiesta: c.idFiesta },
+                                });
+                              }}
+                            >
+                              Dejar reseña
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div /> /* mantiene el grid alineado si no hay CTA */
+                      )}
+                    </div>
+
+                    {/* ====== LG+ (desktop): 3 columnas (imagen | info | CTA) ====== */}
+                    <div className="hidden lg:grid grid-cols-[16rem,1fr,22rem] gap-5 p-5 items-center">
+                      {/* Imagen */}
+                      <div className="w-full h-44 rounded-2xl overflow-hidden bg-base-300 relative">
+                        {c.imagenUrl ? (
+                          <img
+                            src={c.imagenUrl}
+                            alt={c.eventoNombre}
+                            className="w-full h-full object-cover"
+                            onError={async (e) => {
+                              if (c._imgRefreshed) { e.currentTarget.src = ''; return; }
+                              const freshUrl = await fetchImagenEvento(c.idEvento, { force: true });
+                              setCompras((prev) =>
+                                prev.map((item) =>
+                                  item.idCompra === c.idCompra &&
+                                    item.numCompra === c.numCompra &&
+                                    item.cdEstado === c.cdEstado
+                                    ? { ...item, imagenUrl: freshUrl || '', _imgRefreshed: true }
+                                    : item
+                                )
+                              );
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full grid place-items-center text-sm opacity-70">
+                            Sin imagen
+                          </div>
+                        )}
+                        <div className={`absolute top-2 left-2 badge ${estadoBadgeClass(c.cdEstado)} badge-md shadow`}>
+                          {c.dsEstado || '—'}
+                        </div>
+                      </div>
+
+                      {/* Info */}
+                      <div className="text-left">
+                        <p className="text-lg font-semibold">
+                          {c.cantidadEntradas === 1 ? 'Entrada' : 'Entradas'} para el evento{' '}
+                          <span className="text-purple-700">{c.eventoNombre}</span>
+                        </p>
+                        <p className="text-sm mt-1 opacity-80">{c.fechaTexto}</p>
+                        <div className="mt-3 text-sm opacity-70 font-semibold">
+                          {c.cantidadEntradas} {c.cantidadEntradas === 1 ? 'entrada' : 'entradas'}
+                        </div>
+                      </div>
+
+                      {/* CTA */}
+                      {showReviewCTA ? (
+                        <div className="md:border-l md:border-base-300 md:pl-5">
+                          <div className="bg-base-100/70 border border-base-300 rounded-xl p-4">
+                            <p className="text-sm mb-3">
+                              Como has asistido a un evento de una fiesta recurrente, si lo deseas, puedes dejar tu reseña.
+                            </p>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/resena/nueva', {
+                                  state: { idEvento: c.idEvento, idFecha: c.idFecha, idFiesta: c.idFiesta },
+                                });
+                              }}
+                            >
+                              Dejar reseña
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div />
+                      )}
                     </div>
                   </div>
-
-                  {/* Texto derecha */}
-                  <div className="flex-1 p-5 text-center md:text-left">
-                    <p className="text-lg font-semibold">
-                      {c.cantidadEntradas === 1 ? 'Entrada' : 'Entradas'} para el evento <span className="text-purple-700">{c.eventoNombre}</span>
-                    </p>
-                    <p className="text-sm mt-1 opacity-80">{c.fechaTexto}</p>
-
-                    <div className="mt-3 text-sm opacity-70 font-semibold">
-                      {c.cantidadEntradas} {c.cantidadEntradas === 1 ? 'entrada' : 'entradas'}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -371,9 +542,8 @@ export default function MisEntradas() {
 
 
 
-
 // // src/vistas/MisEntradas.js
-// import React, { useEffect, useMemo, useState, useContext } from 'react';
+// import React, { useEffect, useMemo, useState, useContext, useRef } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import NavBar from '../components/NavBar';
 // import Footer from '../components/Footer';
@@ -381,8 +551,27 @@ export default function MisEntradas() {
 // import { AuthContext } from '../context/AuthContext';
 
 // /* =========================
-//    Utils
+//    Config & Utils
 //    ========================= */
+// const FILTERS = [
+//   { code: 4, label: 'Entradas a próximos eventos' }, // Paga
+//   { code: 5, label: 'Entradas pendientes de pago' }, // Pendiente de pago
+//   { code: 2, label: 'Entradas utilizadas' },         // Controlada
+//   { code: 6, label: 'Entradas no utilizadas' },      // No utilizada
+//   { code: 3, label: 'Entradas anuladas' },           // Anulada
+// ];
+
+// const estadoBadgeClass = (cdEstado) => {
+//   switch (cdEstado) {
+//     case 4: return 'badge-success';
+//     case 5: return 'badge-warning';
+//     case 2: return 'badge-info';
+//     case 6: return 'badge-secondary';
+//     case 3: return 'badge-error';
+//     default: return 'badge-ghost';
+//   }
+// };
+
 // const capitalize = (str) => (str ? str.charAt(0).toUpperCase() + str.slice(1) : str);
 
 // const formatDateTimeRange = (inicioISO, finISO) => {
@@ -403,17 +592,26 @@ export default function MisEntradas() {
 //   }
 // };
 
-// const groupByCompra = (entradas) => {
+// // Agrupa por idCompra + numCompra + cdEstado
+// const groupByCompraEstado = (entradas) => {
 //   const map = new Map();
 //   entradas.forEach((e) => {
-//     const key = `${e.idCompra}__${e.numCompra}`;
+//     const key = `${e.idCompra}__${e.numCompra}__${e.cdEstado}`;
 //     if (!map.has(key)) map.set(key, []);
 //     map.get(key).push(e);
 //   });
 //   return Array.from(map.entries()).map(([key, items]) => {
-//     const [idCompra, numCompra] = key.split('__');
-//     const { idEvento, idFecha } = items[0] || {};
-//     return { idCompra, numCompra: Number(numCompra), idEvento, idFecha, entradas: items };
+//     const [idCompra, numCompra, cdEstado] = key.split('__');
+//     const { idEvento, idFecha, dsEstado } = items[0] || {};
+//     return {
+//       idCompra,
+//       numCompra: Number(numCompra),
+//       cdEstado: Number(cdEstado),
+//       dsEstado,
+//       idEvento,
+//       idFecha,
+//       entradas: items,
+//     };
 //   });
 // };
 
@@ -421,7 +619,7 @@ export default function MisEntradas() {
 //    Caches (módulo)
 //    ========================= */
 // const cacheEvento = new Map(); // idEvento -> evento
-// const cacheMedia = new Map();  // idEvento -> imagenUrl | null
+// const cacheMedia = new Map(); // idEvento -> imagenUrl | null
 
 // /* =========================
 //    Data helpers
@@ -440,7 +638,6 @@ export default function MisEntradas() {
 //   try {
 //     const mediaRes = await api.get('/Media', { params: { idEntidadMedia: idEvento } });
 //     const arr = Array.isArray(mediaRes.data?.media) ? mediaRes.data.media : [];
-//     // Preferir item con url no vacío y mdVideo vacío/null
 //     let img = arr.find(
 //       (m) => m?.url && String(m.url).trim() !== '' && (!m.mdVideo || String(m.mdVideo).trim() === '')
 //     );
@@ -462,11 +659,34 @@ export default function MisEntradas() {
 //   const { user } = useContext(AuthContext);
 
 //   const [loading, setLoading] = useState(true);
-//   const [compras, setCompras] = useState([]); // [{ idCompra, numCompra, idEvento, idFecha, eventoNombre, fechaTexto, imagenUrl, cantidadEntradas, _imgRefreshed }]
+//   const [compras, setCompras] = useState([]); // [{... , cdEstado, dsEstado, imagenUrl, _imgRefreshed }]
 //   const [error, setError] = useState('');
+//   const [selectedFilter, setSelectedFilter] = useState(FILTERS[0]); // default: Paga (4)
+
+//   // Dropdown controlado
+//   const [isOpen, setIsOpen] = useState(false);
+//   const ddRef = useRef(null);
+//   const triggerRef = useRef(null);
 
 //   useEffect(() => {
 //     window.scrollTo(0, 0);
+//   }, []);
+
+//   // Cerrar al hacer click fuera o ESC
+//   useEffect(() => {
+//     const onDocClick = (e) => {
+//       if (!ddRef.current) return;
+//       if (!ddRef.current.contains(e.target)) setIsOpen(false);
+//     };
+//     const onKey = (e) => {
+//       if (e.key === 'Escape') setIsOpen(false);
+//     };
+//     document.addEventListener('mousedown', onDocClick);
+//     document.addEventListener('keydown', onKey);
+//     return () => {
+//       document.removeEventListener('mousedown', onDocClick);
+//       document.removeEventListener('keydown', onKey);
+//     };
 //   }, []);
 
 //   useEffect(() => {
@@ -478,7 +698,6 @@ export default function MisEntradas() {
 //       setLoading(true);
 //       setError('');
 //       try {
-//         // 1) Entradas del usuario
 //         const res = await api.get('/Usuario/GetEntradas', {
 //           params: { idUsuario: user.id },
 //         });
@@ -488,11 +707,8 @@ export default function MisEntradas() {
 //           setLoading(false);
 //           return;
 //         }
+//         const grupos = groupByCompraEstado(entradas);
 
-//         // 2) Agrupar por compra
-//         const grupos = groupByCompra(entradas);
-
-//         // 3) Enriquecer
 //         const enriched = await Promise.all(
 //           grupos.map(async (g) => {
 //             const evento = await getEventoCached(g.idEvento);
@@ -508,11 +724,13 @@ export default function MisEntradas() {
 //               numCompra: g.numCompra,
 //               idEvento: g.idEvento,
 //               idFecha: g.idFecha,
+//               cdEstado: g.cdEstado,
+//               dsEstado: g.dsEstado,
 //               eventoNombre: nombre,
 //               fechaTexto,
 //               imagenUrl,
 //               cantidadEntradas: g.entradas?.length || 0,
-//               _imgRefreshed: false, // flag de reintento (por card)
+//               _imgRefreshed: false,
 //             };
 //           })
 //         );
@@ -532,13 +750,65 @@ export default function MisEntradas() {
 
 //   const isLogged = useMemo(() => Boolean(user?.id), [user?.id]);
 
+//   const comprasFiltradas = useMemo(
+//     () => compras.filter((c) => c.cdEstado === selectedFilter.code),
+//     [compras, selectedFilter]
+//   );
+
 //   return (
 //     <div className="flex flex-col min-h-screen bg-base-100">
 //       <div className="sm:px-10 flex-grow">
 //         <NavBar />
-//         <h1 className="px-10 mb-6 mt-2 text-3xl font-bold underline underline-offset-8">
+
+//         <h1 className="px-10 mb-4 mt-2 text-3xl font-bold underline underline-offset-8">
 //           Mis entradas:
 //         </h1>
+
+//         {/* Dropdown “estilo título” controlado */}
+//         <div className="px-10 mb-6">
+//           <div className="dropdown" ref={ddRef}>
+//             <button
+//               ref={triggerRef}
+//               type="button"
+//               onClick={() => setIsOpen((o) => !o)}
+//               aria-haspopup="listbox"
+//               aria-expanded={isOpen}
+//               className="text-lg sm:text-xl md:text-2xl font-semibold inline-flex items-center gap-2 select-none"
+//             >
+//               {selectedFilter.label}
+//               <svg width="18" height="18" viewBox="0 0 24 24" className="opacity-70">
+//                 <path d="M7 10l5 5 5-5H7z"></path>
+//               </svg>
+//             </button>
+
+//             <ul
+//               role="listbox"
+//               className={`dropdown-content menu p-2 shadow bg-base-200 rounded-box w-72 mt-2 ${isOpen ? '' : 'hidden'}`}
+//             >
+//               {FILTERS.map((f) => (
+//                 <li key={f.code}>
+//                   <button
+//                     type="button"
+//                     className={`text-left ${f.code === selectedFilter.code ? 'active font-semibold' : ''}`}
+//                     onClick={() => {
+//                       setSelectedFilter(f);
+//                       setIsOpen(false);                // cerrar
+//                       // quitar foco para evitar que DaisyUI lo muestre por :focus-within
+//                       requestAnimationFrame(() => {
+//                         if (document.activeElement && document.activeElement instanceof HTMLElement) {
+//                           document.activeElement.blur();
+//                         }
+//                         triggerRef.current?.blur();
+//                       });
+//                     }}
+//                   >
+//                     {f.label}
+//                   </button>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+//         </div>
 
 //         <div className="px-10 pb-16">
 //           {!isLogged && (
@@ -561,36 +831,47 @@ export default function MisEntradas() {
 //             </div>
 //           )}
 
-//           {isLogged && !loading && !error && compras.length === 0 && (
-//             <div className="text-sm opacity-70">Aún no tienes entradas compradas.</div>
+//           {isLogged && !loading && !error && comprasFiltradas.length === 0 && (
+//             <div className="text-sm opacity-70">
+//               No hay entradas para “{selectedFilter.label}”.
+//             </div>
 //           )}
 
-//           {isLogged && !loading && !error && compras.length > 0 && (
+//           {isLogged && !loading && !error && comprasFiltradas.length > 0 && (
 //             <div className="space-y-6">
-//               {compras.map((c) => (
+//               {comprasFiltradas.map((c) => (
 //                 <div
-//                   key={`${c.idCompra}-${c.numCompra}`}
-//                   onClick={() => navigate('/entrada-adquirida')}
+//                   key={`${c.idCompra}-${c.numCompra}-${c.cdEstado}`}
+//                   onClick={() =>
+//                     navigate('/entrada-adquirida', {
+//                       state: {
+//                         idCompra: c.idCompra,
+//                         numCompra: c.numCompra,
+//                         idEvento: c.idEvento,
+//                         idFecha: c.idFecha,
+//                       },
+//                     })
+//                   }
 //                   className="flex flex-col md:flex-row items-center border border-base-300 rounded-2xl bg-base-200/70 hover:bg-base-200 cursor-pointer transition-transform hover:scale-[1.01] shadow-sm hover:shadow-md"
 //                 >
 //                   {/* Imagen izquierda */}
-//                   <div className="w-full md:w-64 h-48 md:h-44 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden bg-base-300">
+//                   <div className="w-full md:w-64 h-48 md:h-44 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden bg-base-300 relative">
 //                     {c.imagenUrl ? (
 //                       <img
 //                         src={c.imagenUrl}
 //                         alt={c.eventoNombre}
 //                         className="w-full h-full object-cover"
 //                         onError={async (e) => {
-//                           // Evitar loop: si ya reintentamos, mostrar placeholder
 //                           if (c._imgRefreshed) {
 //                             e.currentTarget.src = '';
 //                             return;
 //                           }
-//                           // Reintento: forzar /Media sin cache
 //                           const freshUrl = await fetchImagenEvento(c.idEvento, { force: true });
 //                           setCompras((prev) =>
 //                             prev.map((item) =>
-//                               item.idCompra === c.idCompra && item.numCompra === c.numCompra
+//                               item.idCompra === c.idCompra &&
+//                                 item.numCompra === c.numCompra &&
+//                                 item.cdEstado === c.cdEstado
 //                                 ? { ...item, imagenUrl: freshUrl || '', _imgRefreshed: true }
 //                                 : item
 //                             )
@@ -602,18 +883,22 @@ export default function MisEntradas() {
 //                         Sin imagen
 //                       </div>
 //                     )}
+
+//                     {/* Badge de estado */}
+//                     <div className={`absolute top-2 left-2 badge ${estadoBadgeClass(c.cdEstado)} badge-md shadow`}>
+//                       {c.dsEstado || '—'}
+//                     </div>
 //                   </div>
 
 //                   {/* Texto derecha */}
 //                   <div className="flex-1 p-5 text-center md:text-left">
 //                     <p className="text-lg font-semibold">
-//                       Entrada/s para el evento <span className="text-primary">{c.eventoNombre}</span>
+//                       {c.cantidadEntradas === 1 ? 'Entrada' : 'Entradas'} para el evento <span className="text-purple-700">{c.eventoNombre}</span>
 //                     </p>
 //                     <p className="text-sm mt-1 opacity-80">{c.fechaTexto}</p>
 
-//                     {/* ↓↓↓ QUITAMOS el “Compra #X”. Dejamos solo la cantidad de entradas. */}
-//                     <div className="mt-3 text-xs opacity-70">
-//                       {c.cantidadEntradas} {c.cantidadEntradas === 1 ? 'entrada' : 'entradas'} {/* ← cambiado */}
+//                     <div className="mt-3 text-sm opacity-70 font-semibold">
+//                       {c.cantidadEntradas} {c.cantidadEntradas === 1 ? 'entrada' : 'entradas'}
 //                     </div>
 //                   </div>
 //                 </div>
