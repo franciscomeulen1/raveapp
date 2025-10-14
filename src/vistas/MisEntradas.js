@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
+import DejarResenia from '../components/DejarResenia';
 
 /* =========================
    Config & Utils
@@ -75,7 +76,8 @@ const groupByCompraEstado = (entradas) => {
    Caches (módulo)
    ========================= */
 const cacheEvento = new Map(); // idEvento -> evento
-const cacheMedia = new Map(); // idEvento -> imagenUrl | null
+const cacheMedia = new Map();  // idEvento -> imagenUrl | null
+const cacheFiesta = new Map(); // idFiesta -> { isActivo, dsNombre }
 
 /* =========================
    Data helpers
@@ -107,6 +109,21 @@ const fetchImagenEvento = async (idEvento, { force = false } = {}) => {
   }
 };
 
+const getFiestaInfo = async (idFiesta) => {
+  if (!idFiesta) return null;
+  if (cacheFiesta.has(idFiesta)) return cacheFiesta.get(idFiesta);
+  try {
+    const res = await api.get('/Fiesta/GetFiestas', { params: { IdFiesta: idFiesta } });
+    const fiesta = Array.isArray(res.data?.fiestas) ? res.data.fiestas[0] : null;
+    const info = fiesta ? { isActivo: !!fiesta.isActivo, dsNombre: fiesta.dsNombre || '' } : null;
+    cacheFiesta.set(idFiesta, info);
+    return info;
+  } catch {
+    cacheFiesta.set(idFiesta, null);
+    return null;
+  }
+};
+
 /* =========================
    Component
    ========================= */
@@ -115,7 +132,7 @@ export default function MisEntradas() {
   const { user } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
-  const [compras, setCompras] = useState([]); // [{... , idFiesta, hasFiesta, cdEstado, dsEstado, imagenUrl, _imgRefreshed }]
+  const [compras, setCompras] = useState([]); // [{... , idFiesta, hasFiesta, fiestaIsActiva, fiestaNombre, cdEstado, dsEstado, imagenUrl, _imgRefreshed }]
   const [error, setError] = useState('');
   const [selectedFilter, setSelectedFilter] = useState(FILTERS[0]); // default: Paga (4)
 
@@ -123,6 +140,10 @@ export default function MisEntradas() {
   const [isOpen, setIsOpen] = useState(false);
   const ddRef = useRef(null);
   const triggerRef = useRef(null);
+
+  // Modal reseña
+  const [modalOpen, setModalOpen] = useState(false);
+  const [fiestaParaResena, setFiestaParaResena] = useState(null); // { idFiesta, dsNombre }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -177,6 +198,14 @@ export default function MisEntradas() {
 
             const idFiesta = evento?.idFiesta ?? null;
             const hasFiesta = !!(idFiesta && String(idFiesta).trim() !== '');
+            let fiestaIsActiva = false;
+            let fiestaNombre = '';
+
+            if (hasFiesta) {
+              const info = await getFiestaInfo(idFiesta);
+              fiestaIsActiva = !!info?.isActivo;
+              fiestaNombre = info?.dsNombre || '';
+            }
 
             return {
               idCompra: g.idCompra,
@@ -187,6 +216,8 @@ export default function MisEntradas() {
               dsEstado: g.dsEstado,
               idFiesta,
               hasFiesta,
+              fiestaIsActiva,
+              fiestaNombre,
               eventoNombre: nombre,
               fechaTexto,
               imagenUrl,
@@ -300,7 +331,8 @@ export default function MisEntradas() {
           {isLogged && !loading && !error && comprasFiltradas.length > 0 && (
             <div className="space-y-6">
               {comprasFiltradas.map((c) => {
-                const showReviewCTA = selectedFilter.code === 2 && c.hasFiesta; // solo utilizadas + fiesta recurrente
+                // solo utilizadas + fiesta recurrente + fiesta activa
+                const showReviewCTA = selectedFilter.code === 2 && c.hasFiesta && c.fiestaIsActiva;
                 return (
                   <div
                     key={`${c.idCompra}-${c.numCompra}-${c.cdEstado}`}
@@ -373,9 +405,8 @@ export default function MisEntradas() {
                               className="btn btn-primary btn-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate('/resena/nueva', {
-                                  state: { idEvento: c.idEvento, idFecha: c.idFecha, idFiesta: c.idFiesta },
-                                });
+                                setFiestaParaResena({ idFiesta: c.idFiesta, dsNombre: c.fiestaNombre });
+                                setModalOpen(true);
                               }}
                             >
                               Dejar reseña
@@ -443,9 +474,8 @@ export default function MisEntradas() {
                               className="btn btn-primary btn-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate('/resena/nueva', {
-                                  state: { idEvento: c.idEvento, idFecha: c.idFecha, idFiesta: c.idFiesta },
-                                });
+                                setFiestaParaResena({ idFiesta: c.idFiesta, dsNombre: c.fiestaNombre });
+                                setModalOpen(true);
                               }}
                             >
                               Dejar reseña
@@ -514,9 +544,8 @@ export default function MisEntradas() {
                               className="btn btn-primary btn-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                navigate('/resena/nueva', {
-                                  state: { idEvento: c.idEvento, idFecha: c.idFecha, idFiesta: c.idFiesta },
-                                });
+                                setFiestaParaResena({ idFiesta: c.idFiesta, dsNombre: c.fiestaNombre });
+                                setModalOpen(true);
                               }}
                             >
                               Dejar reseña
@@ -536,9 +565,19 @@ export default function MisEntradas() {
       </div>
 
       <Footer />
+
+      {/* Modal de reseña */}
+      <DejarResenia
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        idFiesta={fiestaParaResena?.idFiesta}
+        fiestaNombrePreset={fiestaParaResena?.dsNombre}
+        idUsuario={user?.id}
+      />
     </div>
   );
 }
+
 
 
 
