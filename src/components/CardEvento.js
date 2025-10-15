@@ -44,9 +44,9 @@ export default function CardEvento(props) {
                         />
                     </figure>
                 </div>
-                <div className="card-body">
-                    <h2 className="card-title">{props.nombre}</h2>
-                    <p>{props.fecha}</p>
+                <div className="card-body p-5">
+                    <h2 className="card-title text-base 2xl:text-lg font-bold">{props.nombre}</h2>
+                    <p className="text-sm">{props.fecha}</p>
                     <div className="card-actions justify-end flex-wrap gap-1">
                         {props.user && (
                             <button onClick={handleLikeClick}>

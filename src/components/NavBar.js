@@ -41,26 +41,26 @@ export default function NavBar({ onFilter }) {
   const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
-  const fetchProfileImage = async () => {
-    if (!user) return;
-    try {
-      const res = await api.get('/Media', {
-        params: { IdEntidadMedia: user.id },
-      });
-      const img = res.data.media?.find(m => !m.mdVideo);
-      if (img) {
-        setProfileImage(img.url); 
-      } else {
+    const fetchProfileImage = async () => {
+      if (!user) return;
+      try {
+        const res = await api.get('/Media', {
+          params: { IdEntidadMedia: user.id },
+        });
+        const img = res.data.media?.find(m => !m.mdVideo);
+        if (img) {
+          setProfileImage(img.url);
+        } else {
+          setProfileImage(null);
+        }
+      } catch (err) {
+        console.warn('No se pudo cargar la imagen de perfil');
         setProfileImage(null);
       }
-    } catch (err) {
-      console.warn('No se pudo cargar la imagen de perfil');
-      setProfileImage(null);
-    }
-  };
+    };
 
-  fetchProfileImage();
-}, [user]);
+    fetchProfileImage();
+  }, [user]);
 
 
   const toggleDropdown = () => {
@@ -218,7 +218,10 @@ export default function NavBar({ onFilter }) {
           ) : (
             <>
               <Login />
-              <Link to="/register" className="btn btn-primary ml-2">
+              <Link
+                to="/register"
+                className="btn btn-primary ml-2 btn-xs sm:btn-sm md:btn-md"
+              >
                 Register
               </Link>
             </>

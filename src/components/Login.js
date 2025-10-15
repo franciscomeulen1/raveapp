@@ -46,7 +46,7 @@ function Login() {
     <>
       <label
         htmlFor="my-modal-login"
-        className="btn modal-button btn-primary"
+        className="btn btn-xs sm:btn-sm md:btn-md modal-button btn-primary"
         onClick={() => {
           if (window.location.pathname === '/register') {
             localStorage.setItem('postLoginRedirect', '/');
