@@ -47,6 +47,7 @@ import RestablecerContrasena from "./vistas/RestablecerContrasena";
 import ConfirmacionMail from "./vistas/ConfirmacionMail";
 import VerReporteDeVentas from "./vistasadmin/VerReporteDeVentas";
 import ReporteVentasEvento from "./vistasadmin/ReporteVentasEvento";
+import RequireAuthCrearEvento from "./components/componentsCrearEvento/RequireAuthCrearEvento";
 
 
 function App() {
@@ -72,7 +73,15 @@ function App() {
 
           {/* Rutas para usuarios logueados */}
 
-          <Route path="/crearevento" element={<CrearEvento />} />
+          {/* protegida */}
+          <Route
+            path="/crearevento"
+            element={
+              <RequireAuthCrearEvento>
+                <CrearEvento />
+              </RequireAuthCrearEvento>
+            }
+          />
 
           <Route path="/mis-entradas" element={
                 <ProtectedRoutePorRol rolesPermitidos={[0]}>

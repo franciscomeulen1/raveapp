@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Filtros from './Filtros';
 import Login from './Login';
 import { AuthContext } from '../context/AuthContext';
-import ProtectedLink from './componentsCrearEvento/ProtectedLink';
+// import ProtectedLink from './componentsCrearEvento/ProtectedLink';
 import defaultAvatar from '../iconos/profile-user.png';
 import api from '../componenteapi/api';
 
@@ -161,7 +161,7 @@ export default function NavBar({ onFilter }) {
                 <NavLink to="/artistas">Artistas</NavLink>
                 <NavLink to="/noticias">Noticias</NavLink>
                 {/* <NavLink to="/crearevento">Crear Evento</NavLink> */}
-                <ProtectedLink to="/crearevento">Crear Evento</ProtectedLink>
+                <NavLink to="/crearevento">Crear Evento</NavLink>
               </ul>
             )}
           </div>
@@ -187,7 +187,7 @@ export default function NavBar({ onFilter }) {
               <NavLink to="/artistas">Artistas</NavLink>
               <NavLink to="/noticias">Noticias</NavLink>
               {/* <NavLink to="/crearevento">Crear Evento</NavLink> */}
-              <ProtectedLink to="/crearevento">Crear Evento</ProtectedLink>
+              <NavLink to="/crearevento">Crear Evento</NavLink>
             </ul>
           </div>
         </div>
