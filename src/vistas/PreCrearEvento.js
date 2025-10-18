@@ -1,11 +1,20 @@
-import React from 'react';
+import { useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function PreCrearEvento() {
 
+    useEffect(() => {
     window.scrollTo(0, 0); // Establece el scroll en la parte superior de la página
+    })
+
+    const navigate = useNavigate();
+
+    const handleRegister = () => {
+        navigate('/register');
+    }
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -32,12 +41,9 @@ export default function PreCrearEvento() {
                                 Iniciar sesión
                             </label>
 
-                            <button className="w-full py-3 text-lg font-bold text-white bg-[#D96A99] rounded-md shadow-md hover:bg-[#C75988]">
+                            <button className="w-full py-3 text-lg font-bold text-white bg-[#D96A99] rounded-md shadow-md hover:bg-[#C75988]"
+                                    onClick={handleRegister}>
                                 Registrarme
-                            </button>
-                            <button className="w-full flex items-center justify-center gap-2 py-2 border border-gray-400 rounded-md shadow-md hover:bg-gray-100">
-                                <FcGoogle />
-                                <span className="text-lg font-semibold text-gray-700">Login with Google</span>
                             </button>
                         </div>
                     </div>
