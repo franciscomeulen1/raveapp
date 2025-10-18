@@ -65,7 +65,7 @@ export default function TablaDeEntradas({ idFecha, diaIndex, estadoFecha, forceD
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto relative z-0">
       <table className="table w-full">
         <thead>
           <tr>

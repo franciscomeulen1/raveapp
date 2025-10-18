@@ -21,11 +21,17 @@ export default function Comprar() {
   const { user } = useContext(AuthContext);
 
   // Vienen desde Evento.js
+  // const {
+  //   evento: eventoInicial,
+  //   purchaseItems: purchaseItemsIniciales,
+  //   subtotal: subtotalInicial,
+  // } = location.state;
+  const state = location.state || {};
   const {
-    evento: eventoInicial,
-    purchaseItems: purchaseItemsIniciales,
-    subtotal: subtotalInicial,
-  } = location.state;
+    evento: eventoInicial = null,
+    purchaseItems: purchaseItemsIniciales = [],
+    subtotal: subtotalInicial = 0,
+  } = state;
 
   // Estado principal de la compra que se muestra en la vista
   const [evento, setEvento] = useState(eventoInicial);
