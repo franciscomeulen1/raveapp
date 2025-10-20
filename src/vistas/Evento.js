@@ -46,6 +46,7 @@ export default function Evento() {
 
           const procesado = {
             id: eventoData.idEvento,
+            idFiesta: eventoData.idFiesta || null,
             nombreEvento: eventoData.nombre,
             dias: eventoData.fechas.map(fecha => ({
               idFecha: fecha.idFecha,
@@ -229,7 +230,12 @@ export default function Evento() {
           <div className='order-3 lg:order-2'><DescripcionEvento descripcion={evento.descripcion} /></div>
           <div className='order-4 lg:order-3'><SoundCloudEvento url={evento.soundcloud} /></div>
           <div className='order-5 lg:order-4'><YoutubeEvento url={evento.youtube} /></div>
-          <div className='order-6 lg:order-5'><Resenias /></div>
+          {evento.idFiesta && (
+            <div className='order-6 lg:order-5'>
+              <Resenias idFiesta={evento.idFiesta} />
+            </div>
+          )}
+
         </div>
       </div>
       <Footer />
@@ -247,8 +253,8 @@ export default function Evento() {
               <button
                 className="btn btn-primary flex-1"
                 onClick={() => {
-                    // Nos aseguramos de NO tener ningún redirect viejo
-                   localStorage.removeItem('postLoginRedirect');
+                  // Nos aseguramos de NO tener ningún redirect viejo
+                  localStorage.removeItem('postLoginRedirect');
                   setMustLoginOpen(false);
                   const loginCb = document.getElementById('my-modal-login');
                   if (loginCb) loginCb.checked = true;
