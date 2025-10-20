@@ -63,9 +63,16 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    // (opcional) si en algún momento agregás auth por token:
+    try {
+      delete api.defaults.headers.common.Authorization;
+    } catch (e) { }
+
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('postLoginRedirect'); // evita redirecciones “fantasma” tras el próximo login
   };
+
 
   // 3) Sincronizar user entre pestañas
   useEffect(() => {

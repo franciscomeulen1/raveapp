@@ -28,10 +28,16 @@ function Login() {
         document.getElementById('my-modal-login').checked = false;
 
         const redirectTo = localStorage.getItem('postLoginRedirect');
-        if (redirectTo) {
-          localStorage.removeItem('postLoginRedirect');
-          navigate(redirectTo);
+        const shouldRedirect = redirectTo && window.location.pathname === '/precrearevento';
+
+        // limpiar siempre para evitar claves viejas
+        localStorage.removeItem('postLoginRedirect');
+
+        if (shouldRedirect) {
+          navigate(redirectTo, { replace: true });
         }
+        // si no, NO navegamos: te quedás donde estabas
+
       }
     } catch (err) {
       setError(err.message);

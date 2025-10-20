@@ -93,15 +93,19 @@ const BotonGoogleLogin = ({ setError }) => {
       const cb = document.getElementById('my-modal-login');
       if (cb) cb.checked = false;
 
-            // Respeta postLoginRedirect; si no hay, no navegamos (te quedás en la misma página)
       const redirectTo = localStorage.getItem('postLoginRedirect');
-      localStorage.removeItem('postLoginRedirect'); // evita redirecciones “viejas”
-      if (redirectTo) {
-        navigate(redirectTo);
+      const shouldRedirect = redirectTo && window.location.pathname === '/precrearevento';
+
+      // limpiar siempre
+      localStorage.removeItem('postLoginRedirect');
+
+      if (shouldRedirect) {
+        navigate(redirectTo, { replace: true });
       } else if (window.location.pathname === '/register') {
-        // Si el login ocurre dentro de /register, sí volvemos al inicio
         navigate('/');
       }
+      // caso contrario: te quedás en la página actual
+
     }
   };
 
