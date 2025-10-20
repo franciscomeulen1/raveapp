@@ -177,11 +177,30 @@ const Resenias = ({ idFiesta }) => {
                             className="border-b-2 border-gray-200 rounded-lg p-4 mb-4"
                         >
                             {/* Header de cada reseña */}
-                            <div className="flex flex-col gap-2 sm:grid sm:grid-cols-12 sm:items-center">
-                                {/* Nombre */}
-                                <span className="font-bold break-words sm:col-span-5">{nombreCompleto}</span>
+                            {/* Mobile (xs) → nombre en 1ra fila; estrellas izquierda + fecha derecha en 2da fila */}
+                            <div className="sm:hidden">
+                                <span className="text-sm font-bold break-words">{nombreCompleto}</span>
 
-                                {/* Estrellas (centradas en móviles, alineadas en sm+) */}
+                                <div className="mt-1 flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        {[...Array(5)].map((_, i) => (
+                                            <FontAwesomeIcon
+                                                icon={faStar}
+                                                key={i}
+                                                className={`h-4 w-4 sm:h-5 sm:w-5 ${i < r.estrellas ? 'text-yellow-500' : 'text-gray-300'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="text-sm text-gray-500">{fecha}</span>
+                                </div>
+                            </div>
+
+                            {/* Desktop / tablet (sm+) → grilla como ya la tenías */}
+                            <div className="hidden sm:grid sm:grid-cols-12 sm:items-center">
+                                {/* Nombre */}
+                                <span className="sm:text-sm xl:text-base font-bold break-words sm:col-span-5">{nombreCompleto}</span>
+
+                                {/* Estrellas */}
                                 <div className="flex items-center sm:justify-center sm:col-span-4">
                                     {[...Array(5)].map((_, i) => (
                                         <FontAwesomeIcon
@@ -192,12 +211,14 @@ const Resenias = ({ idFiesta }) => {
                                     ))}
                                 </div>
 
-                                {/* Fecha (derecha en sm+) */}
-                                <span className="text-gray-500 sm:text-right sm:col-span-3">{fecha}</span>
+                                {/* Fecha */}
+                                <span className="sm:text-sm xl:text-base text-gray-500 sm:text-right">{fecha}</span>
+
                             </div>
 
+
                             {/* Comentario */}
-                            <p className="mt-2 whitespace-pre-line break-words">{r.comentario}</p>
+                            <p className="text-sm xl:text-base mt-2 whitespace-pre-line break-words">{r.comentario}</p>
                         </div>
                     );
                 })

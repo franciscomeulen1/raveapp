@@ -175,7 +175,7 @@ export default function Evento() {
     <div>
       <div className="sm:px-10 mb-11">
         <NavBar />
-        <h1 className='mx-10 sm:px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>
+        <h1 className='mx-10 sm:px-10 mb-8 mt-2 text-xl xl:text-2xl font-bold underline underline-offset-8'>
           {evento.nombreEvento}
         </h1>
 
@@ -192,7 +192,7 @@ export default function Evento() {
               {evento.dias.map((dia, index) => (
                 <div key={index} className="mb-6">
                   {evento.dias.length > 1 && (
-                    <h2 className="text-xl font-bold mb-2">
+                    <h2 className="text-base xl:text-xl font-bold mb-2">
                       Entradas para el {dia.fecha}
                     </h2>
                   )}
