@@ -167,7 +167,11 @@ export default function MisFiestasRecurrentes() {
                                                 )}
                                             </td>
                                             <td>
-                                                <Link to="/resenias-de-la-fiesta" className="link link-primary">
+                                                <Link
+                                                    to={`/resenias-de-la-fiesta/${fiesta.idFiesta}`}
+                                                    state={{ nombreFiesta: fiesta.dsNombre }}
+                                                    className="link link-primary"
+                                                >
                                                     Ver calificaciones
                                                 </Link>
                                             </td>

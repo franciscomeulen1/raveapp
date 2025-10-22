@@ -151,7 +151,7 @@ function App() {
                 </ProtectedRoutePorRol>
                 } />
           
-          <Route path="/resenias-de-la-fiesta" element={
+          <Route path="/resenias-de-la-fiesta/:id" element={
                 <ProtectedRoutePorRol rolesPermitidos={[2]}>
                   <ReseniasDeLaFiesta />
                 </ProtectedRoutePorRol>
