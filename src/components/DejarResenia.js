@@ -1,6 +1,8 @@
 // src/components/DejarResenia.jsx
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../componenteapi/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons'; // (importado como pediste)
 
 export default function DejarResenia({
     open,
@@ -24,6 +26,9 @@ export default function DejarResenia({
     const [justDeleted, setJustDeleted] = useState(false);
 
     const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+    // --- Nuevo: estado para hover visual de estrellas ---
+    const [hoverStar, setHoverStar] = useState(0);
 
     const headerText = useMemo(() => (
         <>
@@ -57,6 +62,7 @@ export default function DejarResenia({
 
             setIsEdit(false); setIdResenia(null);
             setEstrellas(0); setComentario(''); setDtInsert(null);
+            setHoverStar(0);
 
             if (fiestaNombrePreset) {
                 setFiestaNombre(fiestaNombrePreset);
@@ -148,11 +154,28 @@ export default function DejarResenia({
             setJustDeleted(true);
             setConfirmingDelete(false);
             setIsEdit(false); setIdResenia(null); setEstrellas(0); setComentario(''); setDtInsert(null);
+            setHoverStar(0);
             onSuccess?.();
         } catch (error) {
             console.error(error);
             setErr('No se pudo eliminar tu reseña. Intenta nuevamente.');
         } finally { setSubmitting(false); }
+    };
+
+    // --- NUEVO: render de estrellas seleccionables con FontAwesome ---
+    const currentVisual = hoverStar > 0 ? hoverStar : estrellas;
+    const onKeyDownStars = (e) => {
+        if (submitting) return;
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            setEstrellas((prev) => Math.min(5, Math.max(1, (prev || 0) + 1)));
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            setEstrellas((prev) => Math.min(5, Math.max(1, (prev || 0) - 1)));
+        } else if (e.key === '0') {
+            e.preventDefault();
+            setEstrellas(0);
+        }
     };
 
     return (
@@ -190,23 +213,44 @@ export default function DejarResenia({
                     ) : (
                         !justDeleted && (
                             <>
+                                {/* --- CAMBIO: bloque de calificación con FontAwesome --- */}
                                 <div>
                                     <label className="block text-sm font-semibold mb-2">Calificación</label>
-                                    <div className="rating">
-                                        {[1, 2, 3, 4, 5].map((n) => (
-                                            <input
-                                                key={n}
-                                                type="radio"
-                                                name="rating"
-                                                className="mask mask-star-2 bg-yellow-400"
-                                                checked={estrellas === n}
-                                                onChange={() => setEstrellas(n)}
-                                                aria-label={`${n} ${n === 1 ? 'estrella' : 'estrellas'}`}
-                                                disabled={submitting}
-                                            />
-                                        ))}
+
+                                    <div
+                                        className="flex items-center gap-1"
+                                        role="radiogroup"
+                                        aria-label="Calificación por estrellas"
+                                        tabIndex={0}
+                                        onKeyDown={onKeyDownStars}
+                                        onBlur={() => setHoverStar(0)}
+                                    >
+                                        {[1, 2, 3, 4, 5].map((n) => {
+                                            const filled = n <= currentVisual;
+                                            return (
+                                                <button
+                                                    key={n}
+                                                    type="button"
+                                                    className="p-1"
+                                                    onMouseEnter={() => setHoverStar(n)}
+                                                    onMouseLeave={() => setHoverStar(0)}
+                                                    onFocus={() => setHoverStar(n)}
+                                                    onClick={() => setEstrellas(n)}
+                                                    aria-checked={estrellas === n}
+                                                    role="radio"
+                                                    aria-label={`${n} ${n === 1 ? 'estrella' : 'estrellas'}`}
+                                                    disabled={submitting}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faStar}
+                                                        className={`h-5 w-5 sm:h-6 sm:w-6 ${filled ? 'text-yellow-500' : 'text-gray-300'}`}
+                                                    />
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                     {estrellas > 0 && <p className="text-xs opacity-70 mt-1">{estrellas} / 5</p>}
+                                    {/* Nota: faStarHalfAlt queda importado por consistencia con otros componentes */}
                                 </div>
 
                                 <div>
