@@ -229,59 +229,71 @@ export default function ReseniasDeLaFiesta() {
           </h1>
 
           {/* Promedio + controles */}
-          <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
+          <div className="mt-3 grid grid-cols-1 lg:grid-cols-3 items-center gap-3">
+            {/* Promedio */}
             <div className="flex items-center min-w-0">
               {renderAvgStars(avg.avgEstrellas)}
               <span className="text-gray-600 ml-2">{avg.avgEstrellas.toFixed(1)}</span>
               <span className="text-gray-500 ml-2">({avg.cantResenias} reseñas)</span>
             </div>
 
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs h-8"
-              placeholder="Buscar reseñas..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            {/* Buscador */}
+            <div>
+              <input
+                type="text"
+                className="input input-bordered w-full sm:w-64 h-8"
+                placeholder="Buscar reseñas..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
 
-            <div className="dropdown dropdown-end shrink-0">
+            {/* Ordenar (siempre a la derecha) */}
+            <div className="justify-self-end">
               <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-outline btn-xs sm:btn-sm"
-                onClick={() => setOpenMenu((o) => !o)}
+                className="dropdown dropdown-end"
                 onBlur={() => setOpenMenu(false)}
               >
-                Ordenar
-              </div>
-              {openMenu && (
-                <ul
+                <div
                   tabIndex={0}
-                  className="dropdown-content menu menu-sm p-2 shadow bg-base-100 rounded-box w-64 mt-2 z-[1]"
+                  role="button"
+                  className="btn btn-outline btn-xs lg:btn-sm"
+                  onClick={() => setOpenMenu((o) => !o)}
                 >
-                  <li>
-                    <button
-                      type="button"
-                      className={order === 'desc' ? 'active' : ''}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {setOrder('desc'); setOpenMenu(false);}}>
-                      Más reciente → más antigua
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      className={order === 'asc' ? 'active' : ''}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {setOrder('asc'); setOpenMenu(false);}}
-                    >
-                      Más antigua → más reciente
-                    </button>
-                  </li>
-                </ul>
-              )}
+                  Ordenar
+                </div>
+
+                {openMenu && (
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu menu-sm p-2 shadow bg-base-100 rounded-box w-64 mt-2 z-50"
+                  >
+                    <li>
+                      <button
+                        type="button"
+                        className={order === 'desc' ? 'active' : ''}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { setOrder('desc'); setOpenMenu(false); }}
+                      >
+                        Más reciente → más antigua
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        type="button"
+                        className={order === 'asc' ? 'active' : ''}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => { setOrder('asc'); setOpenMenu(false); }}
+                      >
+                        Más antigua → más reciente
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
+
 
           {/* Listado */}
           <div className="mt-6">
