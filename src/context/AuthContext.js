@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
         throw err;
       }
       console.error(err);
-      throw new Error('Error de conexión, intenta más tarde');
+      throw new Error('Credenciales inválidas.');
     }
   };
 
