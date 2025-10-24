@@ -86,8 +86,38 @@ export default function Artista() {
         }
     };
 
-    if (loading) return <div className="text-center mt-20">Cargando artista...</div>;
-    if (error) return <div className="text-center mt-20 text-red-600">{error}</div>;
+    // if (loading) return <div className="text-center mt-20">Cargando artista...</div>;
+    // if (error) return <div className="text-center mt-20 text-red-600">{error}</div>;
+    // Loading state con spinner bonito centrado en la pantalla
+    if (loading) {
+        return (
+            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+                <NavBar />
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-gray-600">Cargando artista...</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+                <NavBar />
+                <div className="flex flex-1 items-center justify-center px-4 py-20">
+                    <div className="text-center">
+                        <p className="text-red-500 font-semibold">Hubo un error al cargar el artista.</p>
+                        <p className="text-sm text-gray-500 mt-2">{error}</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     const { nombre, socials, bio, idArtista } = artista;
     const instagramUrl = socials?.mdInstagram;

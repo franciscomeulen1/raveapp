@@ -119,7 +119,12 @@ const EventosAValidar = () => {
 
                     {/* Cargando */}
                     {isLoading ? (
-                        <p className="text-center text-gray-600 mt-10">Cargando eventos...</p>
+                        <div className="flex-grow flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                                <p className="text-gray-600">Cargando eventos a validar...</p>
+                            </div>
+                        </div>
                     ) : eventosFiltrados.length === 0 ? (
                         <p className="text-center text-gray-500 mt-10">No se encontraron eventos que coincidan con la búsqueda.</p>
                     ) : (

@@ -82,10 +82,12 @@ export default function EventosFavoritos() {
                 </h1>
                 <div className="mx-3 sm:mx-9 md:mx-14 lg:mx-24">
                     {loading ? (
-                        <div className="flex justify-center items-center my-10">
-                            <span className="loading loading-spinner loading-lg text-primary"></span>
-                            <span className="ml-3 text-lg">Cargando tus eventos favoritos...</span>
-                        </div>
+                        <div className="flex-grow flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-gray-600">Cargando tus eventos favoritos...</p>
+                    </div>
+                </div>
                     ) : eventos.length === 0 ? (
                         <div className="text-center my-10">
                             <p className="text-xl font-semibold">Todavía no marcaste eventos como favoritos.</p>

@@ -11,7 +11,11 @@ const MisEventos = () => {
   const [orden, setOrden] = useState('asc');
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState('todos');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const { user } = useContext(AuthContext);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +47,9 @@ const MisEventos = () => {
         setEstadosEvento(estadosRes.data || []);
       } catch (error) {
         console.error('Error al cargar los eventos o estados:', error);
+        setError(error.message);
+      } finally {
+          setLoading(false);
       }
     };
 
@@ -76,6 +83,37 @@ const MisEventos = () => {
     }),
     orden
   );
+
+  // Loading state con spinner bonito centrado en la pantalla
+    if (loading) {
+        return (
+            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+                <NavBar />
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-gray-600">Cargando tus eventos creados...</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+                <NavBar />
+                <div className="flex flex-1 items-center justify-center px-4 py-20">
+                    <div className="text-center">
+                        <p className="text-red-500 font-semibold">Hubo un error al cargar los eventos.</p>
+                        <p className="text-sm text-gray-500 mt-2">{error}</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
   return (
     <div className="flex flex-col min-h-screen sm:px-10">

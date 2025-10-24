@@ -121,7 +121,20 @@ export default function MiPerfil() {
         }
     };
 
-    if (!userData) return <p className="p-10 animate-pulse text-center text-lg">Cargando datos...</p>;
+    if (!userData) {
+        return (
+            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+                <NavBar />
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-gray-600">Cargando datos...</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     // ✅ Detectamos si el usuario es Organizador (rol 2)
     const esOrganizador = userData?.roles?.some(r => r.cdRol === 2);
