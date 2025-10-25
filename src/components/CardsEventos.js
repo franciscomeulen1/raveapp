@@ -3,7 +3,17 @@ import CardEvento from './CardEvento';
 
 export default function CardsEventos({ eventos, user }) {
     return (
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+        <div
+            className="
+                grid 
+                gap-6 
+                justify-center
+                [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]
+                sm:[grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]
+                lg:[grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]
+                xl:[grid-template-columns:repeat(auto-fit,minmax(340px,1fr))]
+            "
+        >
             {eventos.map(evento => {
                 const fechaDisplay = evento.dias.length === 1
                     ? evento.dias[0].fecha
@@ -19,12 +29,10 @@ export default function CardsEventos({ eventos, user }) {
                         lgbt={evento.lgbt}
                         after={evento.after}
                         isFavorito={evento.isFavorito}
-                        eventoCompleto={evento} // si querés pasar todo el objeto
+                        eventoCompleto={evento}
                         user={user}
                     />
-
                 );
-
             })}
         </div>
     );
@@ -32,42 +40,32 @@ export default function CardsEventos({ eventos, user }) {
 
 
 // import React from 'react';
-// import Card from './Card';
-// import { useNavigate } from "react-router-dom";
+// import CardEvento from './CardEvento';
 
-// export default function Cards({ eventos }) {
-//     const navigate = useNavigate();
-
-//     // Obtiene una representación de la fecha:
-//     // Si es un día, muestra ese día; si es múltiple, muestra el rango.
-//     const obtenerFechaDisplay = (evento) => {
-//         if (evento.dias.length === 1) {
-//             return evento.dias[0].fecha;
-//         } else {
-//             const primeraFecha = evento.dias[0].fecha;
-//             const ultimaFecha = evento.dias[evento.dias.length - 1].fecha;
-//             return `${primeraFecha} - ${ultimaFecha}`;
-//         }
-//     };
-
-//     const handleCardClick = (evento) => {
-//         navigate(`/evento/${evento.id}`, { state: { evento } });
-//     };
-
+// export default function CardsEventos({ eventos, user }) {
 //     return (
-//         <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+//         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
 //             {eventos.map(evento => {
-//                 const fechaDisplay = obtenerFechaDisplay(evento);
+//                 const fechaDisplay = evento.dias.length === 1
+//                     ? evento.dias[0].fecha
+//                     : `${evento.dias[0].fecha} - ${evento.dias[evento.dias.length - 1].fecha}`;
+
 //                 return (
-//                     <Card key={evento.id}
+//                     <CardEvento
+//                         key={evento.id}
+//                         id={evento.id}
 //                         nombre={evento.nombreEvento}
 //                         fecha={fechaDisplay}
 //                         generos={evento.generos}
 //                         lgbt={evento.lgbt}
 //                         after={evento.after}
-//                         onClick={() => handleCardClick(evento)}
+//                         isFavorito={evento.isFavorito}
+//                         eventoCompleto={evento} // si querés pasar todo el objeto
+//                         user={user}
 //                     />
+
 //                 );
+
 //             })}
 //         </div>
 //     );

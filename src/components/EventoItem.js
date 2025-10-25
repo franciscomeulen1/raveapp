@@ -25,6 +25,53 @@ const EventoItem = ({ evento, estadoTexto }) => {
     "Borrado": "text-gray-500"
   };
 
+  // --- Imagen optimizada ---
+  // Nota importante:
+  // - loading="lazy": sí, porque en MisEventos hay una lista scrollable. No necesitamos cargar TODAS las fotos arriba de todo.
+  // - width/height: pista para el navegador para reservar el rectángulo.
+  // - aspect-[4/3]: mantiene una relación linda para flyers sin saltos.
+  // - bg-gray-200: placeholder consistente mientras baja la imagen grande.
+
+  const renderImagen = () => {
+    const fallback = (
+      <div
+        className="
+          w-full h-full
+          flex items-center justify-center
+          text-sm text-gray-700
+          bg-gray-300
+          rounded-md
+        "
+      >
+        Sin imagen
+      </div>
+    );
+
+    if (!evento.imagenUrl) {
+        return fallback;
+    }
+
+    return (
+      <img
+        src={evento.imagenUrl}
+        alt={`Imagen de ${evento.nombre}`}
+        loading="lazy"          // ✅ diferido para rendimiento en lista
+        width={240}             // pista de layout (~w-60 = 15rem = 240px)
+        height={180}            // 240 * 3/4 = 180
+        className="
+          block
+          w-full h-full
+          object-cover object-center
+          rounded-md
+        "
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.replaceWith(fallback);
+        }}
+      />
+    );
+  };
+
   const renderBotones = () => {
     switch (estadoTexto) {
       case "En venta":
@@ -65,50 +112,61 @@ const EventoItem = ({ evento, estadoTexto }) => {
     }
   };
 
-  const renderImagen = () => {
-    if (evento.imagenUrl) {
-      return (
-        <img
-          src={evento.imagenUrl}
-          alt={`Imagen de ${evento.nombre}`}
-          className="w-full h-full object-cover rounded-md"
-        />
-      );
-    }
-    return (
-      <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-md text-sm text-gray-700">
-        Sin imagen
-      </div>
-    );
-  };
-
-
-
-
-
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border rounded-lg shadow-sm bg-white space-y-4 lg:space-y-0 lg:space-x-4">
-
+    <div
+      className="
+        flex flex-col lg:flex-row lg:items-center
+        justify-between
+        p-4 border rounded-lg shadow-sm bg-white
+        space-y-4 lg:space-y-0 lg:space-x-4
+      "
+    >
       {/* Estado + Imagen */}
-      <div className="flex items-center justify-start md:justify-start space-x-4">
+      <div className="flex items-start space-x-4">
         {/* Estado */}
-        <span className={`font-semibold text-md ${estadoColor[estadoTexto] || 'text-gray-600'}`}>
+        <span
+          className={`font-semibold text-md ${
+            estadoColor[estadoTexto] || 'text-gray-600'
+          }`}
+        >
           {estadoTexto}
         </span>
 
-        {/* Imagen */}
-        <div className="w-60 h-40 lg:w-44 lg:h-32 shrink-0">
+        {/* Imagen en contenedor estable */}
+        <div
+          className="
+            w-60 h-40
+            lg:w-44 lg:h-32
+            shrink-0
+            rounded-md
+            overflow-hidden
+            bg-gray-200
+            flex items-center justify-center
+          "
+        >
           {renderImagen()}
         </div>
       </div>
 
-
       {/* Info del evento */}
       <div className="flex-1">
         <p className="text-lg font-bold">{evento.nombre}</p>
+
         {evento.fechas.map((f, index) => (
-          <p key={index} className="text-sm text-gray-600">
-            {new Date(f.inicio).toLocaleDateString('es-AR')} | {new Date(f.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })} - {new Date(f.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+          <p
+            key={index}
+            className="text-sm text-gray-600"
+          >
+            {new Date(f.inicio).toLocaleDateString('es-AR')} |{" "}
+            {new Date(f.inicio).toLocaleTimeString('es-AR', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}{" "}
+            -{" "}
+            {new Date(f.fin).toLocaleTimeString('es-AR', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
           </p>
         ))}
       </div>
@@ -192,42 +250,55 @@ export default EventoItem;
 //   };
 
 //   const renderImagen = () => {
-//     if (evento.media?.url) {
+//     if (evento.imagenUrl) {
 //       return (
 //         <img
-//           src={evento.media.url}
+//           src={evento.imagenUrl}
 //           alt={`Imagen de ${evento.nombre}`}
-//           className="w-16 h-16 object-cover rounded-md"
+//           className="w-full h-full object-cover rounded-md"
 //         />
 //       );
 //     }
 //     return (
-//       <div className="w-16 h-16 bg-gray-300 flex items-center justify-center rounded-md text-sm text-gray-700">
+//       <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-md text-sm text-gray-700">
 //         Sin imagen
 //       </div>
 //     );
 //   };
 
+
+
+
+
 //   return (
-//     <div className="flex items-center justify-between p-4 border-b border-gray-200">
-//       <div className="flex items-center">
-//         <div>
-//           <span className={`font-semibold text-xl mr-6 ${estadoColor[estadoTexto] || 'text-gray-600'}`}>
-//             {estadoTexto}
-//           </span>
-//         </div>
-//         {renderImagen()}
-//         <div className="ml-4">
-//           <p className="text-lg font-semibold">{evento.nombre}</p>
-//           {evento.fechas.map((f, index) => (
-//             <p key={index} className="text-gray-600">
-//               {new Date(f.inicio).toLocaleDateString('es-AR')} | {new Date(f.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })} - {new Date(f.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-//             </p>
-//           ))}
+//     <div className="flex flex-col lg:flex-row lg:items-center justify-between p-4 border rounded-lg shadow-sm bg-white space-y-4 lg:space-y-0 lg:space-x-4">
+
+//       {/* Estado + Imagen */}
+//       <div className="flex items-center justify-start md:justify-start space-x-4">
+//         {/* Estado */}
+//         <span className={`font-semibold text-md ${estadoColor[estadoTexto] || 'text-gray-600'}`}>
+//           {estadoTexto}
+//         </span>
+
+//         {/* Imagen */}
+//         <div className="w-60 h-40 lg:w-44 lg:h-32 shrink-0">
+//           {renderImagen()}
 //         </div>
 //       </div>
 
-//       <div className="flex flex-col md:flex-row items-center md:space-x-4 space-y-2 md:space-y-0">
+
+//       {/* Info del evento */}
+//       <div className="flex-1">
+//         <p className="text-lg font-bold">{evento.nombre}</p>
+//         {evento.fechas.map((f, index) => (
+//           <p key={index} className="text-sm text-gray-600">
+//             {new Date(f.inicio).toLocaleDateString('es-AR')} | {new Date(f.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })} - {new Date(f.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+//           </p>
+//         ))}
+//       </div>
+
+//       {/* Botones */}
+//       <div className="flex flex-col space-y-2 lg:space-y-0 lg:flex-row lg:space-x-2 w-full lg:w-auto">
 //         {renderBotones()}
 //       </div>
 //     </div>

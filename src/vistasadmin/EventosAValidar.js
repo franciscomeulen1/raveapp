@@ -128,36 +128,79 @@ const EventosAValidar = () => {
                     ) : eventosFiltrados.length === 0 ? (
                         <p className="text-center text-gray-500 mt-10">No se encontraron eventos que coincidan con la búsqueda.</p>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {eventosFiltrados.map((evento) => (
-                                <div key={evento.idEvento} className="bg-white shadow-md rounded-xl flex flex-col overflow-hidden">
-                                    {evento.imagen ? (
-                                        <img
-                                            src={evento.imagen}
-                                            alt="Imagen del evento"
-                                            className="w-full h-48 object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-48 bg-gray-300 flex items-center justify-center text-gray-600">
-                                            Sin imagen
-                                        </div>
-                                    )}
+                                <div
+                                    key={evento.idEvento}
+                                    className="
+                                     bg-white shadow-md rounded-xl flex flex-col overflow-hidden
+                                     w-full
+                                     max-w-[380px] sm:max-w-[420px] md:max-w-[480px]
+                                     mx-auto
+                                   "
+                                >
+                                    {/* Imagen del evento con lazy y placeholder estable */}
+                                    <div
+                                        className="
+                                            w-full
+                                            h-48
+                                            bg-gray-200
+                                            overflow-hidden
+                                            flex items-center justify-center
+                                          "
+                                    >
+                                        {evento.imagen ? (
+                                            <img
+                                                src={evento.imagen}
+                                                alt={`Imagen del evento ${evento.nombre}`}
+                                                loading="lazy"
+                                                width={400}
+                                                height={192}
+                                                className="
+                                                    block
+                                                    w-full h-full
+                                                    object-cover object-center
+                                                  "
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    const fallbackDiv = document.createElement('div');
+                                                    fallbackDiv.className =
+                                                        'w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm';
+                                                    fallbackDiv.textContent = 'Sin imagen';
+                                                    e.target.replaceWith(fallbackDiv);
+                                                }}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm">
+                                                Sin imagen
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Contenido */}
                                     <div className="p-5 flex flex-col flex-grow justify-between">
                                         <div className="mb-4">
                                             <h2 className="text-xl font-semibold mb-2">{evento.nombre}</h2>
+
                                             <p className="text-sm mb-1">
-                                                <strong>Fecha(s):</strong>{' '}
-                                                {evento.fechas.map(f => new Date(f.inicio).toLocaleDateString()).join(', ')}
+                                                <strong>Fecha(s):</strong>{" "}
+                                                {evento.fechas
+                                                    .map((f) => new Date(f.inicio).toLocaleDateString())
+                                                    .join(", ")}
                                             </p>
+
                                             <p className="text-sm mb-1">
                                                 <strong>Género(s):</strong> {obtenerGenerosTexto(evento.genero)}
                                             </p>
+
                                             <p className="text-sm">
-                                                <strong>Propietario:</strong> {evento.propietario.nombre} {evento.propietario.apellido}
+                                                <strong>Propietario:</strong> {evento.propietario.nombre}{" "}
+                                                {evento.propietario.apellido}
                                                 <br />
                                                 <span className="text-gray-600">{evento.propietario.correo}</span>
                                             </p>
                                         </div>
+
                                         <Link
                                             to={`/eventoavalidar/${evento.idEvento}`}
                                             className="btn btn-primary bg-purple-500 hover:bg-purple-600 text-white text-center"
@@ -168,6 +211,7 @@ const EventosAValidar = () => {
                                 </div>
                             ))}
                         </div>
+
                     )}
                 </main>
             </div>

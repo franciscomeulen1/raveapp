@@ -188,6 +188,9 @@ const ModificarEliminarArtistas = () => {
                         src={artista.imagen}
                         alt={artista.nombre}
                         className="w-16 h-16 rounded-full object-cover border border-base-300 flex-shrink-0"
+                        width={64}
+                        height={64}
+                        loading="lazy"
                       />
                       <span className="font-medium">{artista.nombre}</span>
                     </div>

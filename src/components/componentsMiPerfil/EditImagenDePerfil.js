@@ -41,6 +41,8 @@ export default function EditImagenDePerfil({ user, setUser }) {
                         src={newImagePreview || profileImage}
                         alt="Foto de perfil"
                         className="w-full h-full object-cover"
+                        width={128}
+                        height={128}
                     />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">Sin imagen</div>

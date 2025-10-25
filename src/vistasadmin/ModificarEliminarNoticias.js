@@ -180,6 +180,9 @@ const ModificarEliminarNoticias = () => {
                         src={noticia.imagen}
                         alt={noticia.titulo}
                         className="w-16 h-16 rounded-full object-cover border border-base-300 flex-shrink-0"
+                        width={64}
+                        height={64}
+                        loading="lazy"
                       />
                       <span className="font-medium break-words">{noticia.titulo}</span>
                     </div>
