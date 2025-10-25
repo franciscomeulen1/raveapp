@@ -50,7 +50,7 @@ const BotonGoogleLogin = ({ setError }) => {
           cbu: '',
           dni: '',
           telefono: '',
-          bio: '',
+          bio: '1',
           password: generateRandomPassword(),
           socials: { idSocial: '', mdInstagram: '', mdSpotify: '', mdSoundcloud: '' },
           dtNacimiento: null,
