@@ -7,6 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 // import ProtectedLink from './componentsCrearEvento/ProtectedLink';
 import defaultAvatar from '../iconos/profile-user.png';
 import api from '../componenteapi/api';
+import LogoRA from '../iconos/logoRA.png'
 
 function NavLink({ to, children }) {
   return (
@@ -112,7 +113,7 @@ export default function NavBar({ onFilter }) {
         <li key="o-eventos"><Link to="/mis-eventos-creados">Mis eventos creados</Link></li>,
         <li key="o-recurrentes"><Link to="/mis-fiestas-recurrentes">Mis fiestas recurrentes</Link></li>,
         <li key="o-usuarioscontrol"><Link to="/crear-usuario-controlador">Usuarios para controlar entradas</Link></li>
-        
+
       );
     }
 
@@ -168,9 +169,14 @@ export default function NavBar({ onFilter }) {
           </div>
 
           {/* Logo / título */}
-          <Link className="btn btn-ghost normal-case text-xl" to="/">
+          {/* <Link className="btn btn-ghost normal-case text-xl" to="/">
             RaveApp
+          </Link> */}
+          <Link to="/" className="btn btn-ghost normal-case text-xl flex items-center gap-2">
+            <img src={LogoRA} alt="RaveApp logo" className="w-10 h-10 object-contain" />
+            <span>RaveApp</span>
           </Link>
+
 
           {/* Links horizontales (solo en md/lg en adelante) */}
           <div className="hidden lg:flex gap-2">
