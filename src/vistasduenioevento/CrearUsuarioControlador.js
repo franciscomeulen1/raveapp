@@ -52,6 +52,14 @@ function CrearUsuarioControlador() {
         setUsuariosControl(Array.isArray(resp.data) ? resp.data : []);
       } catch (err) {
         console.error('Error al obtener usuarios controladores', err);
+
+        // Si la respuesta del backend tiene código 404, no mostramos mensaje de error
+        if (err.response && err.response.status === 404) {
+          setUsuariosControl([]); // aseguramos lista vacía
+          return;
+        }
+
+        // Para cualquier otro error, mostramos mensaje
         setErrMsg('No se pudieron cargar los usuarios controladores.');
       } finally {
         setLoadingLista(false);
@@ -276,10 +284,9 @@ function CrearUsuarioControlador() {
                   type="submit"
                   disabled={submitting}
                   className={`btn w-full sm:w-auto rounded-xl shadow-lg font-semibold border-0 text-white
-                    ${
-                      submitting
-                        ? 'bg-indigo-600/40 cursor-not-allowed'
-                        : 'bg-indigo-500 hover:bg-indigo-400'
+                    ${submitting
+                      ? 'bg-indigo-600/40 cursor-not-allowed'
+                      : 'bg-indigo-500 hover:bg-indigo-400'
                     }`}
                 >
                   <FontAwesomeIcon
@@ -312,11 +319,10 @@ function CrearUsuarioControlador() {
                 <div className="text-[11px] text-slate-400">
                   {loadingLista
                     ? 'Cargando...'
-                    : `${usuariosControl.length} usuario${
-                        usuariosControl.length === 1
-                          ? ''
-                          : 's'
-                      }`}
+                    : `${usuariosControl.length} usuario${usuariosControl.length === 1
+                      ? ''
+                      : 's'
+                    }`}
                 </div>
               </div>
 
@@ -416,11 +422,10 @@ function CrearUsuarioControlador() {
                   </button>
 
                   <button
-                    className={`btn rounded-xl border-0 text-white font-semibold flex-1 sm:flex-none ${
-                      deleting
+                    className={`btn rounded-xl border-0 text-white font-semibold flex-1 sm:flex-none ${deleting
                         ? 'bg-red-700/60 cursor-not-allowed'
                         : 'bg-red-600 hover:bg-red-500'
-                    }`}
+                      }`}
                     disabled={deleting}
                     onClick={confirmarEliminarUsuarioControlador}
                   >
