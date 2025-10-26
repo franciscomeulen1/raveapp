@@ -191,7 +191,7 @@ function CrearEvento() {
       fechaFin: dia.fin,
       fechaIncioVenta: configFechasVenta[index]?.inicioVenta || '',
       fechaFinVenta: configFechasVenta[index]?.finVentaGeneralVip || '',
-      estado: 1
+      estado: 0
     }));
 
     return {
