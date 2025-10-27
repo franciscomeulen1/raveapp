@@ -5,40 +5,53 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
-import { AiFillSound } from "react-icons/ai";
-import { FaCalendarAlt } from "react-icons/fa";
-import { BsGeoAltFill } from "react-icons/bs";
+import { AiFillSound } from 'react-icons/ai';
+import { FaCalendarAlt } from 'react-icons/fa';
+import { BsGeoAltFill } from 'react-icons/bs';
 import DescargarEntradasPDF from '../components/DescargarEntradasPDF';
 import iconCalendar from '../iconos/calendar.png';
 import iconLocation from '../iconos/location.png';
 import iconMusic from '../iconos/music.png';
 import logo from '../iconos/logoRA.png';
 
-
 /* =========================
    Utils
    ========================= */
-const capitalize = (str) => (str ? str.charAt(0).toUpperCase() + str.slice(1) : '');
 
+// Capitaliza solo primera letra
+const capitalize = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+
+// "Jueves, 11 de diciembre..., 23:59 — 07:00"
 const formatDateTimeRange = (inicioISO, finISO) => {
     try {
         const inicio = new Date(inicioISO);
         const fin = new Date(finISO);
+
         const fecha = inicio.toLocaleDateString('es-AR', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
         });
-        const horaInicio = inicio.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-        const horaFin = fin.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+
+        const horaInicio = inicio.toLocaleTimeString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
+        const horaFin = fin.toLocaleTimeString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
         return `${capitalize(fecha)}, ${horaInicio} — ${horaFin}`;
     } catch {
         return '';
     }
 };
 
-// Obtiene nombre desde varias formas comunes
+// Devuelve string de localidad/municipio/provincia desde estructuras variadas
 const placeName = (obj) => {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
@@ -53,43 +66,64 @@ const placeName = (obj) => {
     );
 };
 
-// Elige imagen de /Media
+// Busca una imagen válida dentro del array de /Media
 const pickMediaImageUrl = (mediaArr) => {
     const arr = Array.isArray(mediaArr) ? mediaArr : [];
     let img = arr.find(
-        (m) => m?.url && String(m.url).trim() !== '' && (!m.mdVideo || String(m.mdVideo).trim() === '')
+        (m) =>
+            m?.url &&
+            m.url.trim() !== '' &&
+            (!m.mdVideo || m.mdVideo.trim() === '')
     );
-    if (!img) img = arr.find((m) => m?.url && String(m.url).trim() !== '');
+    if (!img) img = arr.find((m) => m?.url && m.url.trim() !== '');
     return img?.url || null;
 };
 
-// Crea un QR genérico
-const buildQRUrl = (entrada) => {
-    const payload = encodeURIComponent(
-        JSON.stringify({
-            idEntrada: entrada.idEntrada || entrada?.id || 's/e',
-            idCompra: entrada.idCompra,
-            numCompra: entrada.numCompra,
-            idEvento: entrada.idEvento,
-            idFecha: entrada.idFecha,
-        })
-    );
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${payload}`;
-};
+// Trae una imagen remota y la convierte en dataURL base64, devolviendo { dataUrl, format }
+async function fetchImageAsDataURL(url) {
+    try {
+        const res = await fetch(url, { cache: 'no-store' });
+        const blob = await res.blob();
 
-/* =========================
-   Componente
-   ========================= */
+        const mime = blob.type || '';
+        let format = 'PNG';
+        if (mime.toLowerCase().includes('jpeg') || mime.toLowerCase().includes('jpg')) {
+            format = 'JPEG';
+        } else if (mime.toLowerCase().includes('png')) {
+            format = 'PNG';
+        } else if (mime.toLowerCase().includes('webp')) {
+            // algunas builds de jsPDF no soportan webp,
+            // lo forzamos como JPEG para mayor compatibilidad
+            format = 'JPEG';
+        }
+
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result); // "data:image/...;base64,AAAA"
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+
+        return { dataUrl, format };
+    } catch (e) {
+        console.error('No se pudo convertir QR a base64:', e);
+        return { dataUrl: null, format: null };
+    }
+}
+
 export default function EntradaAdquirida() {
     const navigate = useNavigate();
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const { user } = useContext(AuthContext);
 
+    // IDs pueden llegar por state o por query params
     const stateIds = location.state || {};
     const idCompra = stateIds?.idCompra || searchParams.get('idCompra') || null;
-    const numCompra = stateIds?.numCompra || Number(searchParams.get('numCompra')) || null;
-    const idEvento = stateIds?.idEvento || searchParams.get('idEvento') || null;
+    const numCompra =
+        stateIds?.numCompra || Number(searchParams.get('numCompra')) || null;
+    const idEvento =
+        stateIds?.idEvento || searchParams.get('idEvento') || null;
     const idFecha = stateIds?.idFecha || searchParams.get('idFecha') || null;
 
     const [loading, setLoading] = useState(true);
@@ -98,21 +132,27 @@ export default function EntradaAdquirida() {
     const [imagenUrl, setImagenUrl] = useState(null);
     const [entradasCompra, setEntradasCompra] = useState([]);
 
+    // "Entrada a: NombreEvento" / "Entradas a: NombreEvento"
     const titulo = useMemo(() => {
-        const nombre = evento?.nombre || 'Evento';
+        const nombreEvento = evento?.nombre || 'Evento';
         const cant = entradasCompra.length;
-        return `${cant === 1 ? 'Entrada' : 'Entradas'} a: ${nombre}`;
+        return `${cant === 1 ? 'Entrada' : 'Entradas'} a: ${nombreEvento}`;
     }, [evento?.nombre, entradasCompra.length]);
 
+    // Texto de fecha y hora
     const fechaTexto = useMemo(() => {
         if (!evento) return '';
-        const fechaMatch = evento?.fechas?.find((f) => String(f.idFecha) === String(idFecha));
+        const fechaMatch = evento?.fechas?.find(
+            (f) => String(f.idFecha) === String(idFecha)
+        );
         const inicio = fechaMatch?.inicio || evento?.inicioEvento;
         const fin = fechaMatch?.fin || evento?.finEvento;
-        return inicio && fin ? formatDateTimeRange(inicio, fin) : 'Fecha a confirmar';
+        return inicio && fin
+            ? formatDateTimeRange(inicio, fin)
+            : 'Fecha a confirmar';
     }, [evento, idFecha]);
 
-    // Dirección formateada con localidad/municipio/provincia
+    // Dirección legible
     const ubicacionFormateada = useMemo(() => {
         if (!evento?.domicilio) return '';
         const d = evento.domicilio;
@@ -122,34 +162,46 @@ export default function EntradaAdquirida() {
         const provincia = placeName(d.provincia);
 
         const partes = [];
-        if (localidad && localidad !== municipio && localidad !== provincia) partes.push(localidad);
-        if (municipio && municipio !== provincia && municipio !== localidad) partes.push(municipio);
+        if (localidad && localidad !== municipio && localidad !== provincia)
+            partes.push(localidad);
+        if (municipio && municipio !== provincia && municipio !== localidad)
+            partes.push(municipio);
         if (provincia) partes.push(provincia);
 
         return [direccion, partes.join(', ')].filter(Boolean).join(', ');
     }, [evento]);
 
+    // Lista de artistas "A - B - C"
     const artistasStr = useMemo(() => {
         const arts = Array.isArray(evento?.artistas) ? evento.artistas : [];
-        const nombres = arts.map(a => (typeof a === 'string' ? a : a?.nombre)).filter(Boolean);
+        const nombres = arts
+            .map((a) => (typeof a === 'string' ? a : a?.nombre))
+            .filter(Boolean);
         return nombres.length ? nombres.join(' - ') : '—';
     }, [evento]);
 
-    const descripcionEvento = useMemo(() => evento?.descripcion || '', [evento]);
+    const descripcionEvento = useMemo(
+        () => evento?.descripcion || '',
+        [evento]
+    );
 
+    // scroll arriba al montar
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
     useEffect(() => {
         const load = async () => {
+            // validaciones mínimas
             if (!user?.id) {
                 setError('Debes iniciar sesión para ver esta compra.');
                 setLoading(false);
                 return;
             }
             if (!idCompra || !numCompra || !idEvento || !idFecha) {
-                setError('Faltan datos de la compra. Vuelve a Mis Entradas y selecciona la compra nuevamente.');
+                setError(
+                    'Faltan datos de la compra. Vuelve a Mis Entradas y selecciona la compra nuevamente.'
+                );
                 setLoading(false);
                 return;
             }
@@ -158,37 +210,96 @@ export default function EntradaAdquirida() {
             setError('');
 
             try {
-                const entRes = await api.get('/Usuario/GetEntradas', { params: { idUsuario: user.id } });
-                const all = Array.isArray(entRes.data) ? entRes.data : [];
-                const filtered = all.filter((e) =>
-                    String(e.idCompra) === String(idCompra) &&
-                    Number(e.numCompra) === Number(numCompra) &&
-                    String(e.idEvento) === String(idEvento) &&
-                    String(e.idFecha) === String(idFecha)
+                // 1. Todas las entradas del usuario
+                const entRes = await api.get('/Usuario/GetEntradas', {
+                    params: { idUsuario: user.id },
+                });
+                const allEntradas = Array.isArray(entRes.data)
+                    ? entRes.data
+                    : [];
+
+                // 2. Filtrar solo esta compra/evento/fecha
+                const entradasDeEstaCompra = allEntradas.filter(
+                    (e) =>
+                        String(e.idCompra) === String(idCompra) &&
+                        Number(e.numCompra) === Number(numCompra) &&
+                        String(e.idEvento) === String(idEvento) &&
+                        String(e.idFecha) === String(idFecha)
                 );
 
-                setEntradasCompra(
-                    filtered.map((e) => ({
-                        ...e,
-                        qrUrl: buildQRUrl({
-                            ...e,
-                            idCompra,
-                            numCompra,
-                            idEvento,
-                            idFecha
-                        }),
-                    }))
+                // 3. Para cada entrada filtrada, busco su QR en /Media
+                const entradasConQr = await Promise.all(
+                    entradasDeEstaCompra.map(async (entradaOriginal) => {
+                        try {
+                            const idEntradaReal =
+                                entradaOriginal.idEntrada ||
+                                entradaOriginal.id;
+
+                            const qrResp = await api.get('/Media', {
+                                params: { idEntidadMedia: idEntradaReal },
+                            });
+
+                            const qrMediaArr = qrResp.data?.media || [];
+                            const qrObj = qrMediaArr.find(
+                                (m) =>
+                                    m?.url &&
+                                    m.url.trim() !== ''
+                            );
+
+                            const qrUrlReal = qrObj ? qrObj.url : null;
+
+                            // También preparo base64 para el PDF
+                            let qrDataUrl = null;
+                            let qrFormat = 'PNG';
+
+                            if (qrUrlReal) {
+                                const { dataUrl, format } =
+                                    await fetchImageAsDataURL(qrUrlReal);
+                                qrDataUrl = dataUrl;
+                                qrFormat = format || 'PNG';
+                            }
+
+                            return {
+                                ...entradaOriginal,
+                                qrUrl: qrUrlReal || null, // para mostrar <img />
+                                qrDataUrl: qrDataUrl || null, // para jsPDF
+                                qrFormat, // para jsPDF.addImage
+                            };
+                        } catch (errQr) {
+                            console.error(
+                                'Error cargando QR de entrada',
+                                entradaOriginal.idEntrada,
+                                errQr
+                            );
+                            return {
+                                ...entradaOriginal,
+                                qrUrl: null,
+                                qrDataUrl: null,
+                                qrFormat: 'PNG',
+                            };
+                        }
+                    })
                 );
 
-                const evRes = await api.get('/Evento/GetEventos', { params: { IdEvento: idEvento } });
+                setEntradasCompra(entradasConQr);
+
+                // 4. Info del evento
+                const evRes = await api.get('/Evento/GetEventos', {
+                    params: { IdEvento: idEvento },
+                });
                 const ev = evRes.data?.eventos?.[0] || null;
                 setEvento(ev);
 
-                const mediaRes = await api.get('/Media', { params: { idEntidadMedia: idEvento } });
+                // 5. Imagen del evento
+                const mediaRes = await api.get('/Media', {
+                    params: { idEntidadMedia: idEvento },
+                });
                 setImagenUrl(pickMediaImageUrl(mediaRes.data?.media));
             } catch (err) {
                 console.error(err);
-                setError('Ocurrió un error al cargar la compra. Intenta más tarde.');
+                setError(
+                    'Ocurrió un error al cargar la compra. Intenta más tarde.'
+                );
             } finally {
                 setLoading(false);
             }
@@ -203,7 +314,9 @@ export default function EntradaAdquirida() {
             <NavBar />
 
             <div className="flex-grow px-6 sm:px-10 md:px-16 mb-14">
-                <h1 className="mb-4 mt-4 text-xl sm:text-2xl font-bold">{titulo}</h1>
+                <h1 className="mb-4 mt-4 text-xl sm:text-2xl font-bold">
+                    {titulo}
+                </h1>
 
                 {loading && (
                     <div className="animate-pulse space-y-4">
@@ -222,16 +335,21 @@ export default function EntradaAdquirida() {
                     <div className="space-y-8">
                         {/* Fila 1: Imagen + Datos */}
                         <div className="grid md:grid-cols-5 gap-6">
-                            {/* Imagen más pequeña en pantallas grandes */}
-                            {/* Imagen — mantiene proporción, no se estira */}
+                            {/* Imagen evento */}
                             <div className="md:col-span-2">
                                 <div className="rounded-2xl bg-base-200 p-2">
                                     {imagenUrl ? (
                                         <img
                                             src={imagenUrl}
-                                            alt={evento?.nombre || 'Imagen del evento'}
+                                            alt={
+                                                evento?.nombre ||
+                                                'Imagen del evento'
+                                            }
                                             className="w-full h-auto max-h-72 md:max-h-80 lg:max-h-64 xl:max-h-60 object-contain rounded-xl"
-                                            onError={(e) => { e.currentTarget.src = ''; }}
+                                            loading="lazy"
+                                            onError={(e) => {
+                                                e.currentTarget.src = '';
+                                            }}
                                         />
                                     ) : (
                                         <div className="w-full h-48 grid place-items-center opacity-70">
@@ -241,23 +359,28 @@ export default function EntradaAdquirida() {
                                 </div>
                             </div>
 
-
                             {/* Datos */}
                             <div className="md:col-span-3 flex flex-col justify-center gap-4">
                                 <div className="flex items-start gap-3">
                                     <FaCalendarAlt className="mt-1 size-5 opacity-80" />
                                     <div>
-                                        <div className="text-sm opacity-70 font-semibold">Fecha y hora</div>
-                                        <div className="text-base">{fechaTexto || '—'}</div>
+                                        <div className="text-sm opacity-70 font-semibold">
+                                            Fecha y hora
+                                        </div>
+                                        <div className="text-base">
+                                            {fechaTexto || '—'}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between gap-3 flex-wrap">
-                                    <div className="flex items-start gap-3">
-                                        <BsGeoAltFill className="mt-1 size-5 opacity-80" />
-                                        <div>
-                                            <div className="text-sm opacity-70 font-semibold">Dirección</div>
-                                            <div className="text-base font-semibold">{ubicacionFormateada || '—'}</div>
+                                <div className="flex items-start gap-3">
+                                    <BsGeoAltFill className="mt-1 size-5 opacity-80" />
+                                    <div>
+                                        <div className="text-sm opacity-70 font-semibold">
+                                            Dirección
+                                        </div>
+                                        <div className="text-base font-semibold">
+                                            {ubicacionFormateada || '—'}
                                         </div>
                                     </div>
                                 </div>
@@ -265,44 +388,81 @@ export default function EntradaAdquirida() {
                                 <div className="flex items-start gap-3">
                                     <AiFillSound className="mt-1 size-6 opacity-80" />
                                     <div>
-                                        <div className="text-sm opacity-70 font-semibold">Artistas</div>
-                                        <div className="text-base">{artistasStr}</div>
-                                    </div>
-                                </div>
-
-                                {/* Descripción */}
-                                <div className="flex items-start gap-3">
-                                    <div>
-                                        <div className="text-base leading-relaxed whitespace-pre-line">
-                                            {descripcionEvento || '—'}
+                                        <div className="text-sm opacity-70 font-semibold">
+                                            Artistas
+                                        </div>
+                                        <div className="text-base">
+                                            {artistasStr}
                                         </div>
                                     </div>
                                 </div>
 
+                                <div className="flex items-start gap-3">
+                                    <div className="text-base leading-relaxed whitespace-pre-line">
+                                        {descripcionEvento || '—'}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         {/* Fila 2: QRs */}
                         <div className="rounded-2xl bg-base-200/70 p-5">
-                            <h2 className="text-xl font-bold mb-4">Tus códigos QR</h2>
+                            <h2 className="text-xl font-bold mb-4">
+                                Tus códigos QR
+                            </h2>
 
                             {entradasCompra.length === 0 && (
-                                <div className="text-sm opacity-70">No se encontraron entradas para esta compra.</div>
+                                <div className="text-sm opacity-70">
+                                    No se encontraron entradas para esta compra.
+                                </div>
                             )}
 
                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {entradasCompra.map((ent) => (
-                                    <div
-                                        key={`${ent.idCompra}-${ent.numCompra}-${ent.idEntrada || ent.id}-${ent.cdEstado || 'e'}`}
-                                        className="border border-base-300 rounded-2xl bg-base-100 p-4 flex flex-col items-center"
-                                    >
-                                        <img src={ent.qrUrl} alt="Código QR" className="w-48 h-48 rounded-xl mb-3" />
-                                        <div className="text-xs opacity-70 text-center">
-                                            <div><span className="font-semibold">Tipo:</span> {ent.dsTipo || ent.tipo || '—'}</div>
-                                            <div><span className="font-semibold">Precio:</span> {typeof ent.precio === 'number' ? `$${ent.precio}` : (ent.precio || '—')}</div>
+                                {entradasCompra.map((ent) => {
+                                    const qrDisponible =
+                                        ent.qrUrl &&
+                                        ent.qrUrl.trim() !== '';
+
+                                    return (
+                                        <div
+                                            key={`${ent.idCompra}-${ent.numCompra}-${ent.idEntrada || ent.id}-${ent.cdEstado || 'e'}`}
+                                            className="border border-base-300 rounded-2xl bg-base-100 p-4 flex flex-col items-center"
+                                        >
+                                            {qrDisponible ? (
+                                                <img
+                                                    src={ent.qrUrl}
+                                                    alt="Código QR"
+                                                    className="w-48 h-48 rounded-xl mb-3 object-contain"
+                                                    loading="lazy"
+                                                />
+                                            ) : (
+                                                <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
+                                                    QR no disponible
+                                                </div>
+                                            )}
+
+                                            <div className="text-xs opacity-70 text-center">
+                                                <div>
+                                                    <span className="font-semibold">
+                                                        Tipo:
+                                                    </span>{' '}
+                                                    {ent.dsTipo ||
+                                                        ent.tipo ||
+                                                        '—'}
+                                                </div>
+                                                <div>
+                                                    <span className="font-semibold">
+                                                        Precio:
+                                                    </span>{' '}
+                                                    {typeof ent.precio ===
+                                                    'number'
+                                                        ? `$${ent.precio}`
+                                                        : ent.precio || '—'}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                             <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -322,11 +482,11 @@ export default function EntradaAdquirida() {
                                     logoUrl={logo}
                                     watermarkText="RaveApp"
                                     watermarkOptions={{
-                                        angle: 30,          // inclinación
-                                        fontSize: 50,       // tamaño del texto
-                                        colorRGB: [235, 235, 235], // más clarito
-                                        gapX: 70,           // distancia horizontal entre repeticiones
-                                        gapY: 85,           // distancia vertical
+                                        angle: 30,
+                                        fontSize: 50,
+                                        colorRGB: [235, 235, 235],
+                                        gapX: 70,
+                                        gapY: 85,
                                     }}
                                 />
 
@@ -334,8 +494,15 @@ export default function EntradaAdquirida() {
                                     type="button"
                                     className="btn bg-cyan-600 rounded-full"
                                     onClick={() => {
-                                        const q = encodeURIComponent(ubicacionFormateada || (evento?.nombre || 'Evento'));
-                                        window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank');
+                                        const q = encodeURIComponent(
+                                            ubicacionFormateada ||
+                                                evento?.nombre ||
+                                                'Evento'
+                                        );
+                                        window.open(
+                                            `https://www.google.com/maps/search/?api=1&query=${q}`,
+                                            '_blank'
+                                        );
                                     }}
                                 >
                                     Cómo llegar
