@@ -51,7 +51,7 @@ export default function Artistas() {
     // Loading state con spinner bonito centrado en la pantalla
     if (loading) {
         return (
-            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+            <div className="flex flex-col min-h-screen text-base-content">
                 <NavBar />
                 <div className="flex-grow flex items-center justify-center">
                     <div className="text-center">
@@ -66,7 +66,7 @@ export default function Artistas() {
 
     if (error) {
         return (
-            <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+            <div className="flex flex-col min-h-screen text-base-content">
                 <NavBar />
                 <div className="flex flex-1 items-center justify-center px-4 py-20">
                     <div className="text-center">
@@ -93,7 +93,7 @@ export default function Artistas() {
     );
 
     return (
-        <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+        <div className="flex flex-col min-h-screen">
             <div className="px-4 sm:px-10 mb-11 flex-1">
                 <NavBar />
                 <h1 className="px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8">

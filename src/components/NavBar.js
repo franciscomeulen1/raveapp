@@ -123,7 +123,7 @@ export default function NavBar({ onFilter }) {
   return (
     <div>
       {/* Navbar principal */}
-      <div className="navbar bg-base-100 sticky top-0 z-10 mx-auto px-4 w-full">
+      <div className="navbar sticky top-0 z-10 mx-auto px-4 w-full">
         <div className="flex-1">
           {/* Menú hamburguesa (LG en adelante lo oculta) */}
           <div className="dropdown">
@@ -148,7 +148,7 @@ export default function NavBar({ onFilter }) {
             {isDropdownOpen && (
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-white rounded-box w-52"
               >
                 {location.pathname === '/' ? <FiltrosButton /> : (
                   <li>
@@ -214,7 +214,7 @@ export default function NavBar({ onFilter }) {
               </label>
               <ul
                 tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-white rounded-box w-52"
               >
                 {renderUserMenu()}
                 <li>

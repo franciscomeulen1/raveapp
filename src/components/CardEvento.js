@@ -43,7 +43,7 @@ export default function CardEvento(props) {
                 w-full
             "
         >
-            <div className="card w-full bg-base-100 shadow-xl rounded-xl overflow-hidden">
+            <div className="card w-full shadow-xl rounded-xl overflow-hidden">
                 {/* Imagen arriba */}
                 <div className="w-full h-48 md:h-56 overflow-hidden bg-black flex items-center justify-center">
                     <img
