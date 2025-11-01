@@ -132,11 +132,30 @@ export default function EntradaAdquirida() {
   const [imagenUrl, setImagenUrl] = useState(null);
   const [entradasCompra, setEntradasCompra] = useState([]);
 
-  // 👈 NUEVO: estado derivado para saber si TODAS las entradas están anuladas
+  // 👇 NUEVO: banderas por estado (todas las entradas de la compra con ese estado)
   const allAnuladas = useMemo(() => {
     if (!entradasCompra.length) return false;
     return entradasCompra.every((e) => Number(e.cdEstado) === 3);
   }, [entradasCompra]);
+
+  const allControladas = useMemo(() => {
+    if (!entradasCompra.length) return false;
+    return entradasCompra.every((e) => Number(e.cdEstado) === 2);
+  }, [entradasCompra]); // 👈 NUEVO
+
+  const allPendientePago = useMemo(() => {
+    if (!entradasCompra.length) return false;
+    return entradasCompra.every((e) => Number(e.cdEstado) === 5);
+  }, [entradasCompra]); // 👈 NUEVO
+
+  const allNoUtilizadas = useMemo(() => {
+    if (!entradasCompra.length) return false;
+    return entradasCompra.every((e) => Number(e.cdEstado) === 6);
+  }, [entradasCompra]); // 👈 NUEVO
+
+  // 👇 NUEVO: si está en cualquiera de estos estados, no se puede descargar PDF
+  const disableDownload =
+    allAnuladas || allControladas || allPendientePago || allNoUtilizadas;
 
   // "Entrada a: NombreEvento" / "Entradas a: NombreEvento"
   const titulo = useMemo(() => {
@@ -236,7 +255,7 @@ export default function EntradaAdquirida() {
         // 3. Para cada entrada filtrada, busco su QR en /Media
         const entradasConQr = await Promise.all(
           entradasDeEstaCompra.map(async (entradaOriginal) => {
-            const esAnulada = Number(entradaOriginal.cdEstado) === 3; // 👈 NUEVO
+            const esAnulada = Number(entradaOriginal.cdEstado) === 3;
             if (esAnulada) {
               // si está anulada, no buscamos el QR
               return {
@@ -247,6 +266,8 @@ export default function EntradaAdquirida() {
               };
             }
 
+            // ⚠️ Para controlada / pendiente / no utilizada
+            // dejamos el comportamiento de QR tal cual estaba
             try {
               const idEntradaReal =
                 entradaOriginal.idEntrada ||
@@ -335,12 +356,36 @@ export default function EntradaAdquirida() {
           {titulo}
         </h1>
 
-        {/* 👈 NUEVO: aviso si TODAS las entradas están anuladas */}
+        {/* 👇 Mensajes de estado (solo uno a la vez) */}
         {!loading && !error && allAnuladas && (
-          <p className="mb-4 font-bold text-red-700 text-lg">
+          <p className="mb-4 font-bold text-red-600 text-lg">
             {entradasCompra.length === 1
-              ? 'Entrada anulada'
-              : 'Entradas anuladas'}
+              ? 'ENTRADA ANULADA'
+              : 'ENTRADAS ANULADS'}
+          </p>
+        )}
+
+        {!loading && !error && !allAnuladas && allControladas && (
+          <p className="mb-4 font-bold text-green-600 text-lg">
+            {entradasCompra.length === 1
+              ? 'ENTRADA UTILIZADA'
+              : 'ENTRADAS UTILIZADAS'}
+          </p>
+        )}
+
+        {!loading && !error && !allAnuladas && !allControladas && allPendientePago && (
+          <p className="mb-4 font-bold text-pink-600 text-lg">
+            {entradasCompra.length === 1
+              ? 'ENTRADA PENDIENTE DE PAGO'
+              : 'ENTRADAS PENDIENTES DE PAGO'}
+          </p>
+        )}
+
+        {!loading && !error && !allAnuladas && !allControladas && !allPendientePago && allNoUtilizadas && (
+          <p className="mb-4 font-bold text-purple-600 text-lg">
+            {entradasCompra.length === 1
+              ? 'ENTRADA NO UTILIZADA'
+              : 'ENTRADAS NO UTILIZADAS'}
           </p>
         )}
 
@@ -388,45 +433,45 @@ export default function EntradaAdquirida() {
               {/* Datos */}
               <div className="md:col-span-3 flex flex-col justify-center gap-4">
                 <div className="flex items-start gap-3">
-                    <FaCalendarAlt className="mt-1 size-5 opacity-80" />
-                    <div>
-                        <div className="text-sm opacity-70 font-semibold">
-                            Fecha y hora
-                        </div>
-                        <div className="text-base">
-                            {fechaTexto || '—'}
-                        </div>
+                  <FaCalendarAlt className="mt-1 size-5 opacity-80" />
+                  <div>
+                    <div className="text-sm opacity-70 font-semibold">
+                      Fecha y hora
                     </div>
+                    <div className="text-base">
+                      {fechaTexto || '—'}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                    <BsGeoAltFill className="mt-1 size-5 opacity-80" />
-                    <div>
-                        <div className="text-sm opacity-70 font-semibold">
-                            Dirección
-                        </div>
-                        <div className="text-base font-semibold">
-                            {ubicacionFormateada || '—'}
-                        </div>
+                  <BsGeoAltFill className="mt-1 size-5 opacity-80" />
+                  <div>
+                    <div className="text-sm opacity-70 font-semibold">
+                      Dirección
                     </div>
+                    <div className="text-base font-semibold">
+                      {ubicacionFormateada || '—'}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                    <AiFillSound className="mt-1 size-6 opacity-80" />
-                    <div>
-                        <div className="text-sm opacity-70 font-semibold">
-                            Artistas
-                        </div>
-                        <div className="text-base">
-                            {artistasStr}
-                        </div>
+                  <AiFillSound className="mt-1 size-6 opacity-80" />
+                  <div>
+                    <div className="text-sm opacity-70 font-semibold">
+                      Artistas
                     </div>
+                    <div className="text-base">
+                      {artistasStr}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                    <div className="text-base leading-relaxed whitespace-pre-line">
-                        {descripcionEvento || '—'}
-                    </div>
+                  <div className="text-base leading-relaxed whitespace-pre-line">
+                    {descripcionEvento || '—'}
+                  </div>
                 </div>
               </div>
             </div>
@@ -448,14 +493,14 @@ export default function EntradaAdquirida() {
                   const qrDisponible =
                     ent.qrUrl &&
                     ent.qrUrl.trim() !== '';
-                  const esAnulada = Number(ent.cdEstado) === 3; // 👈 NUEVO
+                  const esAnulada = Number(ent.cdEstado) === 3;
 
                   return (
                     <div
                       key={`${ent.idCompra}-${ent.numCompra}-${ent.idEntrada || ent.id}-${ent.cdEstado || 'e'}`}
                       className="border border-base-300 rounded-2xl bg-base-100 p-4 flex flex-col items-center"
                     >
-                      {/* 👇 NUEVO comportamiento por entrada anulada */}
+                      {/* 👇 Anulada: cuadro gris especial */}
                       {esAnulada ? (
                         <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
                           QR no disponible<br />Entrada anulada
@@ -498,8 +543,8 @@ export default function EntradaAdquirida() {
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                {/* 👇 NUEVO: si todas están anuladas, botón grisado */}
-                {allAnuladas ? (
+                {/* 👇 ahora se deshabilita también para controlada, pendiente y no utilizada */}
+                {disableDownload ? (
                   <button
                     type="button"
                     className="btn btn-disabled rounded-full cursor-not-allowed"
@@ -568,6 +613,7 @@ export default function EntradaAdquirida() {
     </div>
   );
 }
+
 
 
 // // src/vistas/EntradaAdquirida.js
