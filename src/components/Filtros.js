@@ -96,7 +96,7 @@ const Filtros = ({ onFilter }) => {
           {/* Checkboxes para After y LGBT */}
           <div className="form-control mb-4">
             <label className="cursor-pointer label justify-start">
-              <span className="label-text">After</span>
+              <span className="label-text mr-2">After</span>
               <input
                 type="checkbox"
                 checked={after}
@@ -105,7 +105,7 @@ const Filtros = ({ onFilter }) => {
               />
             </label>
             <label className="cursor-pointer label justify-start">
-              <span className="label-text">LGBT</span>
+              <span className="label-text mr-2">LGBT</span>
               <input
                 type="checkbox"
                 checked={lgbt}
