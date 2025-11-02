@@ -14,6 +14,9 @@ import iconLocation from '../iconos/location.png';
 import iconMusic from '../iconos/music.png';
 import logo from '../iconos/logoRA.png';
 
+// 👇 NUEVO: import del modal
+import BotonDeArrepentimiento from '../components/BotonDeArrepentimiento';
+
 /* =========================
    Utils
    ========================= */
@@ -132,7 +135,10 @@ export default function EntradaAdquirida() {
   const [imagenUrl, setImagenUrl] = useState(null);
   const [entradasCompra, setEntradasCompra] = useState([]);
 
-  // 👇 NUEVO: fecha de compra (solo fecha)
+  // 👇 NUEVO: para abrir/cerrar el modal
+  const [showArrepentimiento, setShowArrepentimiento] = useState(false);
+
+  // 👇 NUEVO: fecha de compra (solo fecha visible)
   const fechaCompra = useMemo(() => {
     if (!entradasCompra.length) return '';
     const dt = entradasCompra[0]?.dtInsert;
@@ -146,7 +152,13 @@ export default function EntradaAdquirida() {
     });
   }, [entradasCompra]);
 
-  // 👇 NUEVO: banderas por estado (todas las entradas de la compra con ese estado)
+  // 👇 NUEVO: ISO sin formatear (la que viene en la entrada) para mandarla al mail
+  const fechaCompraISO = useMemo(() => {
+    if (!entradasCompra.length) return null;
+    return entradasCompra[0]?.dtInsert || null;
+  }, [entradasCompra]);
+
+  // 👇 banderas por estado
   const allAnuladas = useMemo(() => {
     if (!entradasCompra.length) return false;
     return entradasCompra.every((e) => Number(e.cdEstado) === 3);
@@ -165,6 +177,12 @@ export default function EntradaAdquirida() {
   const allNoUtilizadas = useMemo(() => {
     if (!entradasCompra.length) return false;
     return entradasCompra.every((e) => Number(e.cdEstado) === 6);
+  }, [entradasCompra]);
+
+  // 👇 NUEVO: todas las entradas PAGA (cdEstado === 4)
+  const allPagas = useMemo(() => {
+    if (!entradasCompra.length) return false;
+    return entradasCompra.every((e) => Number(e.cdEstado) === 4);
   }, [entradasCompra]);
 
   // 👇 si está en cualquiera de estos estados, no se puede descargar PDF
@@ -483,7 +501,7 @@ export default function EntradaAdquirida() {
 
             {/* Fila 2: QRs */}
             <div className="rounded-2xl bg-base-200/70 p-5">
-              {/* 👇 NUEVO: fecha de compra */}
+              {/* fecha de compra */}
               {fechaCompra && (
                 <p className="text-sm mb-3 text-base-content/70">
                   <span className="font-semibold">Fecha de compra:</span> {fechaCompra}
@@ -542,8 +560,7 @@ export default function EntradaAdquirida() {
                           <span className="font-semibold">
                             Precio:
                           </span>{' '}
-                          {typeof ent.precio ===
-                          'number'
+                          {typeof ent.precio === 'number'
                             ? `$${ent.precio}`
                             : ent.precio || '—'}
                         </div>
@@ -553,71 +570,97 @@ export default function EntradaAdquirida() {
                 })}
               </div>
 
-              <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                {disableDownload ? (
+              <div className="mt-6 flex flex-col gap-3 xl:flex-row xl:items-center">
+                {/* 🟣 izquierda: los 3 botones que ya tenías */}
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  {/* 👇 Descargar (o deshabilitado) */}
+                  {disableDownload ? (
+                    <button
+                      type="button"
+                      className="btn btn-disabled rounded-full cursor-not-allowed"
+                      disabled
+                    >
+                      Descargar entrada
+                    </button>
+                  ) : (
+                    <DescargarEntradasPDF
+                      entradas={entradasCompra}
+                      user={user}
+                      evento={evento}
+                      fechaTexto={fechaTexto}
+                      ubicacionFormateada={ubicacionFormateada}
+                      idCompra={idCompra}
+                      numCompra={numCompra}
+                      icons={{
+                        calendarUrl: iconCalendar,
+                        locationUrl: iconLocation,
+                        musicUrl: iconMusic,
+                      }}
+                      logoUrl={logo}
+                      watermarkText="RaveApp"
+                      watermarkOptions={{
+                        angle: 30,
+                        fontSize: 50,
+                        colorRGB: [235, 235, 235],
+                        gapX: 70,
+                        gapY: 85,
+                      }}
+                    />
+                  )}
+
                   <button
                     type="button"
-                    className="btn btn-disabled rounded-full cursor-not-allowed"
-                    disabled
+                    className="btn bg-cyan-600 rounded-full"
+                    onClick={() => {
+                      const q = encodeURIComponent(
+                        ubicacionFormateada || evento?.nombre || 'Evento'
+                      );
+                      window.open(
+                        `https://www.google.com/maps/search/?api=1&query=${q}`,
+                        '_blank'
+                      );
+                    }}
                   >
-                    Descargar entrada
+                    Cómo llegar
                   </button>
-                ) : (
-                  <DescargarEntradasPDF
-                    entradas={entradasCompra}
-                    user={user}
-                    evento={evento}
-                    fechaTexto={fechaTexto}
-                    ubicacionFormateada={ubicacionFormateada}
-                    idCompra={idCompra}
-                    numCompra={numCompra}
-                    icons={{
-                      calendarUrl: iconCalendar,
-                      locationUrl: iconLocation,
-                      musicUrl: iconMusic,
-                    }}
-                    logoUrl={logo}
-                    watermarkText="RaveApp"
-                    watermarkOptions={{
-                      angle: 30,
-                      fontSize: 50,
-                      colorRGB: [235, 235, 235],
-                      gapX: 70,
-                      gapY: 85,
-                    }}
-                  />
+
+                  <button
+                    type="button"
+                    className="btn btn-ghost rounded-full"
+                    onClick={() => navigate(-1)}
+                  >
+                    Volver
+                  </button>
+                </div>
+
+                {/* 🟣 derecha: botón de arrepentimiento, con el comportamiento responsive que pediste */}
+                {allPagas && (
+                  <div className="flex w-full sm:justify-end xl:justify-end xl:ml-auto">
+                    <button
+                      type="button"
+                      onClick={() => setShowArrepentimiento(true)}
+                      className="btn btn-outline w-full sm:w-auto"
+                    >
+                      Botón de arrepentimiento
+                    </button>
+                  </div>
                 )}
-
-                <button
-                  type="button"
-                  className="btn bg-cyan-600 rounded-full"
-                  onClick={() => {
-                    const q = encodeURIComponent(
-                      ubicacionFormateada ||
-                      evento?.nombre ||
-                      'Evento'
-                    );
-                    window.open(
-                      `https://www.google.com/maps/search/?api=1&query=${q}`,
-                      '_blank'
-                    );
-                  }}
-                >
-                  Cómo llegar
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-ghost rounded-full"
-                  onClick={() => navigate(-1)}
-                >
-                  Volver
-                </button>
               </div>
+
             </div>
           </div>
         )}
       </div>
+
+      {/* Modal de botón de arrepentimiento */}
+      <BotonDeArrepentimiento
+        open={showArrepentimiento}
+        onClose={() => setShowArrepentimiento(false)}
+        idCompra={idCompra}
+        idUsuario={user?.id}
+        evento={evento}
+        fechaCompraISO={fechaCompraISO}
+      />
 
       <Footer />
     </div>
@@ -759,6 +802,20 @@ export default function EntradaAdquirida() {
 //   const [imagenUrl, setImagenUrl] = useState(null);
 //   const [entradasCompra, setEntradasCompra] = useState([]);
 
+//   // 👇 NUEVO: fecha de compra (solo fecha)
+//   const fechaCompra = useMemo(() => {
+//     if (!entradasCompra.length) return '';
+//     const dt = entradasCompra[0]?.dtInsert;
+//     if (!dt) return '';
+//     const d = new Date(dt);
+//     if (Number.isNaN(d.getTime())) return '';
+//     return d.toLocaleDateString('es-AR', {
+//       day: '2-digit',
+//       month: '2-digit',
+//       year: 'numeric',
+//     });
+//   }, [entradasCompra]);
+
 //   // 👇 NUEVO: banderas por estado (todas las entradas de la compra con ese estado)
 //   const allAnuladas = useMemo(() => {
 //     if (!entradasCompra.length) return false;
@@ -768,19 +825,19 @@ export default function EntradaAdquirida() {
 //   const allControladas = useMemo(() => {
 //     if (!entradasCompra.length) return false;
 //     return entradasCompra.every((e) => Number(e.cdEstado) === 2);
-//   }, [entradasCompra]); // 👈 NUEVO
+//   }, [entradasCompra]);
 
 //   const allPendientePago = useMemo(() => {
 //     if (!entradasCompra.length) return false;
 //     return entradasCompra.every((e) => Number(e.cdEstado) === 5);
-//   }, [entradasCompra]); // 👈 NUEVO
+//   }, [entradasCompra]);
 
 //   const allNoUtilizadas = useMemo(() => {
 //     if (!entradasCompra.length) return false;
 //     return entradasCompra.every((e) => Number(e.cdEstado) === 6);
-//   }, [entradasCompra]); // 👈 NUEVO
+//   }, [entradasCompra]);
 
-//   // 👇 NUEVO: si está en cualquiera de estos estados, no se puede descargar PDF
+//   // 👇 si está en cualquiera de estos estados, no se puede descargar PDF
 //   const disableDownload =
 //     allAnuladas || allControladas || allPendientePago || allNoUtilizadas;
 
@@ -844,7 +901,6 @@ export default function EntradaAdquirida() {
 
 //   useEffect(() => {
 //     const load = async () => {
-//       // validaciones mínimas
 //       if (!user?.id) {
 //         setError('Debes iniciar sesión para ver esta compra.');
 //         setLoading(false);
@@ -884,7 +940,6 @@ export default function EntradaAdquirida() {
 //           entradasDeEstaCompra.map(async (entradaOriginal) => {
 //             const esAnulada = Number(entradaOriginal.cdEstado) === 3;
 //             if (esAnulada) {
-//               // si está anulada, no buscamos el QR
 //               return {
 //                 ...entradaOriginal,
 //                 qrUrl: null,
@@ -893,8 +948,6 @@ export default function EntradaAdquirida() {
 //               };
 //             }
 
-//             // ⚠️ Para controlada / pendiente / no utilizada
-//             // dejamos el comportamiento de QR tal cual estaba
 //             try {
 //               const idEntradaReal =
 //                 entradaOriginal.idEntrada ||
@@ -913,7 +966,6 @@ export default function EntradaAdquirida() {
 
 //               const qrUrlReal = qrObj ? qrObj.url : null;
 
-//               // También preparo base64 para el PDF
 //               let qrDataUrl = null;
 //               let qrFormat = 'PNG';
 
@@ -926,9 +978,9 @@ export default function EntradaAdquirida() {
 
 //               return {
 //                 ...entradaOriginal,
-//                 qrUrl: qrUrlReal || null, // para mostrar <img />
-//                 qrDataUrl: qrDataUrl || null, // para jsPDF
-//                 qrFormat, // para jsPDF.addImage
+//                 qrUrl: qrUrlReal || null,
+//                 qrDataUrl: qrDataUrl || null,
+//                 qrFormat,
 //               };
 //             } catch (errQr) {
 //               console.error(
@@ -971,7 +1023,6 @@ export default function EntradaAdquirida() {
 //     };
 
 //     load();
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
 //   }, [user?.id, idCompra, numCompra, idEvento, idFecha]);
 
 //   return (
@@ -983,7 +1034,7 @@ export default function EntradaAdquirida() {
 //           {titulo}
 //         </h1>
 
-//         {/* 👇 Mensajes de estado (solo uno a la vez) */}
+//         {/* 👇 Mensajes de estado */}
 //         {!loading && !error && allAnuladas && (
 //           <p className="mb-4 font-bold text-red-600 text-lg">
 //             {entradasCompra.length === 1
@@ -1039,10 +1090,7 @@ export default function EntradaAdquirida() {
 //                   {imagenUrl ? (
 //                     <img
 //                       src={imagenUrl}
-//                       alt={
-//                         evento?.nombre ||
-//                         'Imagen del evento'
-//                       }
+//                       alt={evento?.nombre || 'Imagen del evento'}
 //                       className="w-full h-auto max-h-72 md:max-h-80 lg:max-h-64 xl:max-h-60 object-contain rounded-xl"
 //                       loading="lazy"
 //                       onError={(e) => {
@@ -1105,6 +1153,13 @@ export default function EntradaAdquirida() {
 
 //             {/* Fila 2: QRs */}
 //             <div className="rounded-2xl bg-base-200/70 p-5">
+//               {/* 👇 NUEVO: fecha de compra */}
+//               {fechaCompra && (
+//                 <p className="text-sm mb-3 text-base-content/70">
+//                   <span className="font-semibold">Fecha de compra:</span> {fechaCompra}
+//                 </p>
+//               )}
+
 //               <h2 className="text-xl font-bold mb-4">
 //                 Tus códigos QR
 //               </h2>
@@ -1127,7 +1182,6 @@ export default function EntradaAdquirida() {
 //                       key={`${ent.idCompra}-${ent.numCompra}-${ent.idEntrada || ent.id}-${ent.cdEstado || 'e'}`}
 //                       className="border border-base-300 rounded-2xl bg-base-100 p-4 flex flex-col items-center"
 //                     >
-//                       {/* 👇 Anulada: cuadro gris especial */}
 //                       {esAnulada ? (
 //                         <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
 //                           QR no disponible<br />Entrada anulada
@@ -1170,7 +1224,6 @@ export default function EntradaAdquirida() {
 //               </div>
 
 //               <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
-//                 {/* 👇 ahora se deshabilita también para controlada, pendiente y no utilizada */}
 //                 {disableDownload ? (
 //                   <button
 //                     type="button"
