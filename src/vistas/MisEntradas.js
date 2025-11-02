@@ -184,18 +184,33 @@ export default function MisEntradas() {
           setLoading(false);
           return;
         }
+
+        // agrupamos como antes
         const grupos = groupByCompraEstado(entradas);
+
+        const now = Date.now(); // 👈 referencia para "más cercano al día de hoy"
 
         const enriched = await Promise.all(
           grupos.map(async (g) => {
             const evento = await getEventoCached(g.idEvento);
             const imagenUrl = await fetchImagenEvento(g.idEvento, { force: false });
             const nombre = evento?.nombre || 'Evento';
+
+            // buscamos la fecha específica de esa compra
             const fechaMatch = evento?.fechas?.find((f) => f.idFecha === g.idFecha);
             const inicio = fechaMatch?.inicio || evento?.inicioEvento;
             const fin = fechaMatch?.fin || evento?.finEvento;
-            const fechaTexto = inicio && fin ? formatDateTimeRange(inicio, fin) : 'Fecha a confirmar';
 
+            const fechaTexto =
+              inicio && fin
+                ? formatDateTimeRange(inicio, fin)
+                : 'Fecha a confirmar';
+
+            // 👇 calculamos timestamp para ordenar
+            const inicioDate = inicio ? new Date(inicio) : null;
+            const inicioTs = inicioDate ? inicioDate.getTime() : null;
+
+            // fiesta
             const idFiesta = evento?.idFiesta ?? null;
             const hasFiesta = !!(idFiesta && String(idFiesta).trim() !== '');
             let fiestaIsActiva = false;
@@ -223,11 +238,32 @@ export default function MisEntradas() {
               imagenUrl,
               cantidadEntradas: g.entradas?.length || 0,
               _imgRefreshed: false,
+
+              // 👇 campos nuevos para ordenar
+              inicioISO: inicio || null,
+              inicioTs,
             };
           })
         );
 
-        const ordenadas = enriched.sort((a, b) => b.numCompra - a.numCompra);
+        // 👇 ORDEN NUEVO: primero la fecha más cercana a hoy
+        const ordenadas = enriched.sort((a, b) => {
+          const da =
+            typeof a.inicioTs === 'number'
+              ? Math.abs(a.inicioTs - now)
+              : Number.POSITIVE_INFINITY;
+          const db =
+            typeof b.inicioTs === 'number'
+              ? Math.abs(b.inicioTs - now)
+              : Number.POSITIVE_INFINITY;
+
+          // primero por cercanía de fecha
+          if (da !== db) return da - db;
+
+          // si están igual de cerca, mantenemos tu criterio anterior
+          return b.numCompra - a.numCompra;
+        });
+
         setCompras(ordenadas);
       } catch (err) {
         console.error(err);
@@ -239,6 +275,7 @@ export default function MisEntradas() {
 
     fetchData();
   }, [user?.id]);
+
 
   const isLogged = useMemo(() => Boolean(user?.id), [user?.id]);
 
