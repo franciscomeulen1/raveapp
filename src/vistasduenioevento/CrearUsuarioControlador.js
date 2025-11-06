@@ -164,29 +164,29 @@ function CrearUsuarioControlador() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       {/* NAV */}
       <div className="flex-1">
-        <div className="sm:px-10">
+        <div className="sm:px-10 bg-white">
           <NavBar />
         </div>
 
-        <main className="px-4 py-6 sm:px-10 sm:py-10 max-w-5xl mx-auto w-full bg-slate-900 text-white rounded-xl relative">
+        <main className="px-4 py-6 sm:px-10 sm:py-10 max-w-5xl mx-auto w-full bg-white rounded-xl shadow-sm border border-gray-200 mt-6">
           {/* Título + descripción */}
           <header className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-slate-900">
                   <FontAwesomeIcon
                     icon={faUserShield}
-                    className="text-indigo-300"
+                    className="text-indigo-500"
                   />
                   Usuarios controladores
                 </h1>
-                <p className="text-sm text-indigo-200/80 max-w-lg mt-1">
-                  Creá credenciales para el personal que controla entradas en
-                  la puerta. Podés generar tantos usuarios como necesites para
-                  tu equipo.
+                <p className="text-sm text-slate-500 max-w-lg mt-1">
+                  Creá credenciales para el personal que controla entradas en la
+                  puerta. Podés generar tantos usuarios como necesites para tu
+                  equipo.
                 </p>
               </div>
             </div>
@@ -194,14 +194,14 @@ function CrearUsuarioControlador() {
 
           {/* Mensajes globales */}
           {(errMsg || okMsg) && (
-            <div className="mb-6">
+            <div className="mb-6 space-y-3">
               {errMsg && (
-                <div className="bg-red-600/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl text-sm font-medium">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">
                   {errMsg}
                 </div>
               )}
               {okMsg && (
-                <div className="bg-emerald-600/20 border border-emerald-500/50 text-emerald-200 px-4 py-3 rounded-xl text-sm font-medium">
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-sm font-medium">
                   {okMsg}
                 </div>
               )}
@@ -211,30 +211,27 @@ function CrearUsuarioControlador() {
           {/* Grid responsive: izquierda form / derecha lista */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Card crear usuario */}
-            <div className="bg-slate-800/60 backdrop-blur rounded-2xl shadow-xl border border-white/10 p-6 flex flex-col">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-4">
-                <FontAwesomeIcon
-                  icon={faPlus}
-                  className="text-indigo-300"
-                />
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
+              <h2 className="text-xl font-semibold text-slate-900 flex items-center gap-2 mb-4">
+                <FontAwesomeIcon icon={faPlus} className="text-indigo-500" />
                 Crear nuevo usuario controlador
               </h2>
 
               <form onSubmit={handleCrear} className="flex flex-col gap-5">
                 {/* Campo nombreUsuario */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium text-indigo-200 mb-1">
+                  <label className="text-sm font-medium text-slate-700 mb-1">
                     Nombre de usuario (login)
                   </label>
                   <input
                     type="text"
-                    className="input input-bordered w-full bg-slate-900/60 text-white placeholder-slate-400 border-slate-600 focus:border-indigo-400 focus:outline-none rounded-xl"
+                    className="input input-bordered w-full bg-white text-slate-900 placeholder-slate-400 border-gray-300 focus:border-indigo-400 focus:outline-none rounded-xl"
                     placeholder="Ej: PuertaSala1"
                     value={nombreUsuario}
                     onChange={(e) => setNombreUsuario(e.target.value)}
                     disabled={submitting}
                   />
-                  <p className="text-[11px] text-slate-400 mt-1">
+                  <p className="text-[11px] text-slate-500 mt-1">
                     Este es el usuario que van a escribir en la app de control
                     de entrada.
                   </p>
@@ -242,14 +239,14 @@ function CrearUsuarioControlador() {
 
                 {/* Campo password con ojito */}
                 <div className="flex flex-col">
-                  <label className="text-sm font-medium text-indigo-200 mb-1">
+                  <label className="text-sm font-medium text-slate-700 mb-1">
                     Contraseña
                   </label>
 
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      className="input input-bordered w-full bg-slate-900/60 text-white placeholder-slate-400 border-slate-600 focus:border-indigo-400 focus:outline-none rounded-xl pr-10"
+                      className="input input-bordered w-full bg-white text-slate-900 placeholder-slate-400 border-gray-300 focus:border-indigo-400 focus:outline-none rounded-xl pr-10"
                       placeholder="Ej: fiesta2025!"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -258,14 +255,10 @@ function CrearUsuarioControlador() {
 
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                      onClick={() =>
-                        setShowPassword((prev) => !prev)
-                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      onClick={() => setShowPassword((prev) => !prev)}
                       aria-label={
-                        showPassword
-                          ? 'Ocultar contraseña'
-                          : 'Mostrar contraseña'
+                        showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
                       }
                     >
                       <FontAwesomeIcon
@@ -274,7 +267,7 @@ function CrearUsuarioControlador() {
                     </button>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 mt-1">
+                  <p className="text-[11px] text-slate-500 mt-1">
                     Guardala. No se puede recuperar más tarde.
                   </p>
                 </div>
@@ -283,26 +276,22 @@ function CrearUsuarioControlador() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`btn w-full sm:w-auto rounded-xl shadow-lg font-semibold border-0 text-white
-                    ${submitting
-                      ? 'bg-indigo-600/40 cursor-not-allowed'
-                      : 'bg-indigo-500 hover:bg-indigo-400'
+                  className={`btn w-full sm:w-auto rounded-xl shadow-md font-semibold border-0 text-white
+                    ${
+                      submitting
+                        ? 'bg-indigo-300 cursor-not-allowed'
+                        : 'bg-indigo-500 hover:bg-indigo-400'
                     }`}
                 >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="mr-2"
-                  />
-                  {submitting
-                    ? 'Creando...'
-                    : 'Crear usuario controlador'}
+                  <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                  {submitting ? 'Creando...' : 'Crear usuario controlador'}
                 </button>
               </form>
 
               {/* Nota de seguridad */}
-              <div className="mt-6 text-[11px] leading-relaxed text-slate-400 bg-slate-900/40 rounded-lg p-3 border border-white/5">
+              <div className="mt-6 text-[11px] leading-relaxed text-slate-500 bg-slate-50 rounded-lg p-3 border border-slate-100">
                 Recordá: si alguien olvida la contraseña, tenés que
-                <span className="text-white font-medium">
+                <span className="text-slate-900 font-medium">
                   {' '}
                   eliminar ese usuario{' '}
                 </span>
@@ -311,59 +300,52 @@ function CrearUsuarioControlador() {
             </div>
 
             {/* Card lista usuarios */}
-            <div className="bg-slate-800/60 backdrop-blur rounded-2xl shadow-xl border border-white/10 p-6 flex flex-col">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-slate-900">
                   Tus usuarios controladores
                 </h2>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-slate-500">
                   {loadingLista
                     ? 'Cargando...'
-                    : `${usuariosControl.length} usuario${usuariosControl.length === 1
-                      ? ''
-                      : 's'
-                    }`}
+                    : `${usuariosControl.length} usuario${
+                        usuariosControl.length === 1 ? '' : 's'
+                      }`}
                 </div>
               </div>
 
               <div className="flex-1 overflow-x-auto">
                 {loadingLista ? (
-                  <div className="text-slate-400 text-sm">
-                    Cargando lista...
-                  </div>
+                  <div className="text-slate-500 text-sm">Cargando lista...</div>
                 ) : usuariosControl.length === 0 ? (
-                  <div className="text-slate-400 text-sm italic">
+                  <div className="text-slate-500 text-sm italic">
                     Todavía no creaste usuarios controladores.
                   </div>
                 ) : (
-                  <ul className="divide-y divide-slate-700/60">
+                  <ul className="divide-y divide-gray-200">
                     {usuariosControl.map((u) => (
                       <li
                         key={u.idUsuarioControl}
                         className="flex flex-col sm:flex-row sm:items-center justify-between py-4"
                       >
                         <div className="flex-1 min-w-0">
-                          <div className="text-white font-medium break-all">
+                          <div className="text-slate-900 font-medium break-all">
                             {u.nombreUsuario}
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3 mt-3 sm:mt-0">
                           <button
-                            className="btn btn-sm rounded-lg bg-red-600 hover:bg-red-500 border-0 text-white font-semibold shadow-md"
+                            className="btn btn-sm rounded-lg bg-red-500 hover:bg-red-400 border-0 text-white font-semibold shadow-sm"
                             onClick={() => {
                               setUsuarioAEliminar({
-                                idUsuarioControl:
-                                  u.idUsuarioControl,
+                                idUsuarioControl: u.idUsuarioControl,
                                 nombreUsuario: u.nombreUsuario,
                               });
                               setShowDeleteModal(true);
                             }}
                           >
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              className="mr-1"
-                            />
+                            <FontAwesomeIcon icon={faTrash} className="mr-1" />
                             Eliminar
                           </button>
                         </div>
@@ -375,8 +357,8 @@ function CrearUsuarioControlador() {
 
               <p className="text-[11px] text-slate-500 mt-4 leading-relaxed">
                 Si alguien se queda sin acceso, simplemente{' '}
-                <span className="text-white">eliminalo</span> y creá
-                otro usuario nuevo con otra contraseña.
+                <span className="text-slate-900">eliminalo</span> y creá otro
+                usuario nuevo con otra contraseña.
               </p>
             </div>
           </section>
@@ -386,7 +368,7 @@ function CrearUsuarioControlador() {
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               {/* Fondo oscuro */}
               <div
-                className="absolute inset-0 bg-black/70"
+                className="absolute inset-0 bg-black/60"
                 onClick={() => {
                   if (!deleting) {
                     setShowDeleteModal(false);
@@ -396,14 +378,14 @@ function CrearUsuarioControlador() {
               ></div>
 
               {/* Caja modal */}
-              <div className="relative bg-slate-800 text-white rounded-2xl shadow-2xl border border-white/10 w-[90%] max-w-sm p-6 z-10">
-                <h3 className="text-lg font-semibold text-white mb-2">
+              <div className="relative bg-white text-slate-900 rounded-2xl shadow-2xl border border-gray-200 w-[90%] max-w-sm p-6 z-10">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
                   Eliminar usuario controlador
                 </h3>
 
-                <p className="text-sm text-slate-300 mb-4">
+                <p className="text-sm text-slate-600 mb-4">
                   ¿Seguro que querés eliminar{' '}
-                  <span className="text-white font-semibold">
+                  <span className="text-slate-900 font-semibold">
                     {usuarioAEliminar?.nombreUsuario}
                   </span>
                   ? Esta acción no se puede deshacer.
@@ -411,7 +393,7 @@ function CrearUsuarioControlador() {
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
                   <button
-                    className="btn rounded-xl border-0 bg-slate-600 hover:bg-slate-500 text-white font-semibold flex-1 sm:flex-none"
+                    className="btn rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-slate-700 font-semibold flex-1 sm:flex-none"
                     disabled={deleting}
                     onClick={() => {
                       setShowDeleteModal(false);
@@ -422,16 +404,15 @@ function CrearUsuarioControlador() {
                   </button>
 
                   <button
-                    className={`btn rounded-xl border-0 text-white font-semibold flex-1 sm:flex-none ${deleting
-                        ? 'bg-red-700/60 cursor-not-allowed'
-                        : 'bg-red-600 hover:bg-red-500'
-                      }`}
+                    className={`btn rounded-xl border-0 text-white font-semibold flex-1 sm:flex-none ${
+                      deleting
+                        ? 'bg-red-400 cursor-not-allowed'
+                        : 'bg-red-500 hover:bg-red-400'
+                    }`}
                     disabled={deleting}
                     onClick={confirmarEliminarUsuarioControlador}
                   >
-                    {deleting
-                      ? 'Eliminando...'
-                      : 'Eliminar definitivamente'}
+                    {deleting ? 'Eliminando...' : 'Eliminar definitivamente'}
                   </button>
                 </div>
               </div>

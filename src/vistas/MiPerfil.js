@@ -21,6 +21,10 @@ export default function MiPerfil() {
     const [selectedMunicipio, setSelectedMunicipio] = useState(null);
     const [selectedLocalidad, setSelectedLocalidad] = useState(null);
 
+    const [showEmailModal, setShowEmailModal] = useState(false);
+    const [isSendingEmail, setIsSendingEmail] = useState(false);
+
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -87,6 +91,13 @@ export default function MiPerfil() {
             };
         }
 
+        // Si el usuario cambió su correo, bio pasa a "0" para obligar verificación
+        let bioActualizada = userData.bio || '';
+        if (formData.correo && formData.correo !== userData.correo) {
+            bioActualizada = '0';
+        }
+
+
         const payload = {
             idUsuario: user.id,
             nombre: formData.nombre,
@@ -97,7 +108,7 @@ export default function MiPerfil() {
             dni: formData.dni,
             telefono: formData.telefono,
             dtNacimiento: formData.dtNacimiento ? new Date(formData.dtNacimiento).toISOString() : null,
-            bio: userData.bio || '',
+            bio: bioActualizada,
             cdRoles: userData.roles ? userData.roles.map(r => r.cdRol) : [],
             socials: socialsSafe,
             domicilio: {
@@ -121,6 +132,36 @@ export default function MiPerfil() {
         }
     };
 
+    const handleSendVerificationEmail = async () => {
+        // tomamos correo y nombre actuales (si el usuario los editó pero no guardó, tomamos del form)
+        const correo = formData.correo || userData.correo;
+        const nombre = formData.nombre || userData.nombre;
+
+        if (!correo) return;
+
+        setIsSendingEmail(true);
+        try {
+            const emailBody = {
+                to: correo,
+                templateData: {
+                    name: nombre,
+                    confirmationUrl: 'http://raveapp.com.ar/confirmacion-mail',
+                },
+            };
+
+            await api.post('/Email/EnviarConfirmarEmail', emailBody);
+
+            // mostramos modal de "te lo mandé"
+            setShowEmailModal(true);
+        } catch (err) {
+            console.error('Fallo al enviar email de confirmación:', err);
+            alert('No se pudo enviar el correo de verificación. Intentá de nuevo más tarde.');
+        } finally {
+            setIsSendingEmail(false);
+        }
+    };
+
+
     if (!userData) {
         return (
             <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
@@ -143,23 +184,90 @@ export default function MiPerfil() {
         <div className="flex flex-col min-h-screen bg-gray-50">
             <div className="flex-1 sm:px-10 mb-11">
                 <NavBar />
-                <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-8 mt-6">
+                <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-8 mt-3">
                     <h1 className="text-3xl font-bold mb-6 text-center">Mi Perfil</h1>
 
                     <EditImagenDePerfil user={user} setUser={setUser} />
 
+                    <p className='text-xs mb-5 text-cyan-600'>Si modificas algun dato personal tuyo, debes clicar el botón 'Confirmar cambios' que se encuentra al final de esta página, para que queden tus cambios registrados.</p>
+
                     {/* Datos personales */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                        {['nombre', 'apellido', 'dni', 'telefono', 'correo'].map(field => (
-                            <EditableField
-                                key={field}
-                                label={field.charAt(0).toUpperCase() + field.slice(1)}
-                                value={formData[field] || ''}
-                                onChange={value => handleChange(field, value)}
-                            />
-                        ))}
+                        {/* Nombre */}
+                        <EditableField
+                            label="Nombre"
+                            value={formData.nombre || ''}
+                            onChange={value => handleChange('nombre', value)}
+                        />
 
-                        {/* Fecha de nacimiento -> derecha, misma fila que 'correo' en md+ */}
+                        {/* Apellido */}
+                        <EditableField
+                            label="Apellido"
+                            value={formData.apellido || ''}
+                            onChange={value => handleChange('apellido', value)}
+                        />
+
+                        {/* DNI */}
+                        <EditableField
+                            label="DNI"
+                            value={formData.dni || ''}
+                            onChange={value => handleChange('dni', value)}
+                        />
+
+                        {/* Teléfono */}
+                        <EditableField
+                            label="Teléfono"
+                            value={formData.telefono || ''}
+                            onChange={value => handleChange('telefono', value)}
+                        />
+
+                        {/* Correo + estado de verificación */}
+                        <div className="flex flex-col gap-1">
+                            <EditableField
+                                label="Correo"
+                                value={formData.correo || ''}
+                                onChange={value => handleChange('correo', value)}
+                                type="email"
+                            />
+
+                            {/* chequeamos el bio */}
+                            {userData.bio === '1' ? (
+                                <p className="flex items-center gap-1 text-sm text-green-600 mt-1">
+                                    {/* tilde */}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-4 w-4"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    Correo verificado
+                                </p>
+                            ) : (
+                                <div className="flex flex-wrap items-center gap-3 mt-1">
+                                    <p className="text-sm text-red-600">
+                                        Correo aun no verificado
+                                    </p>
+                                    <button
+                                        onClick={handleSendVerificationEmail}
+                                        disabled={isSendingEmail}
+                                        className={`px-3 py-1 rounded-md text-xs font-medium transition ${isSendingEmail
+                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                            : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                                            }`}
+                                    >
+                                        {isSendingEmail ? 'Enviando...' : 'Verificar correo'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Fecha de nacimiento */}
                         <div className="md:col-start-2 md:row-start-3">
                             <EditableField
                                 label="Fecha de Nacimiento"
@@ -169,7 +277,7 @@ export default function MiPerfil() {
                             />
                         </div>
 
-                        {/* CBU -> debajo de Correo en md+, y después de Fecha en mobile por orden del DOM */}
+                        {/* CBU si es organizador */}
                         {esOrganizador && (
                             <div className="md:col-start-1 md:row-start-4">
                                 <EditableField
@@ -181,11 +289,12 @@ export default function MiPerfil() {
                             </div>
                         )}
 
-                        {/* Botón cambiar contraseña -> derecha, debajo de Fecha en md+ */}
+                        {/* Botón cambiar contraseña */}
                         <div className="md:col-start-2 md:row-start-4">
                             <BotonCambiarContrasena userData={userData} />
                         </div>
                     </div>
+
 
 
                     <div className="mt-8">
@@ -238,12 +347,29 @@ export default function MiPerfil() {
                     </div>
                 </div>
             )}
+
+            {showEmailModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
+                        <h2 className="text-indigo-600 text-2xl font-bold mb-3">Correo enviado</h2>
+                        <p className="mb-4 text-gray-700">
+                            Te enviamos un correo electrónico para que puedas verificar tu dirección.
+                        </p>
+                        <button
+                            onClick={() => setShowEmailModal(false)}
+                            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+                        >
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
 
-
-// // MiPerfil.js con modal de éxito tras PUT exitoso
+// // MiPerfil.js con campo CBU condicional para rol Organizador (cdRol === 2)
 // import { useState, useEffect, useContext } from 'react';
 // import NavBar from '../components/NavBar';
 // import Footer from '../components/Footer';
@@ -292,6 +418,8 @@ export default function MiPerfil() {
 //                     correo: data.correo || '',
 //                     dtNacimiento: data.dtNacimiento ? data.dtNacimiento.split('T')[0] : '',
 //                     direccion: data.domicilio?.direccion || '',
+//                     // ➕ Inicializamos CBU en el form
+//                     cbu: data.cbu || '',
 //                 });
 //                 setSelectedProvincia({ nombre: data.domicilio?.provincia?.nombre || '', id: data.domicilio?.provincia?.codigo || '' });
 //                 setSelectedMunicipio({ nombre: data.domicilio?.municipio?.nombre || '', id: data.domicilio?.municipio?.codigo || '' });
@@ -322,7 +450,7 @@ export default function MiPerfil() {
 //         let municipioPayload = { nombre: selectedMunicipio?.nombre || '', codigo: selectedMunicipio?.id || '' };
 //         let localidadPayload = { nombre: selectedLocalidad?.nombre || '', codigo: selectedLocalidad?.id || '' };
 
-//         // 🚨 Si la provincia es CABA, forzamos que todo tenga ese valor
+//         // 🚨 Regla CABA
 //         if (selectedProvincia?.nombre === 'Ciudad Autónoma de Buenos Aires') {
 //             provinciaPayload = municipioPayload = localidadPayload = {
 //                 nombre: 'Ciudad Autónoma de Buenos Aires',
@@ -335,7 +463,8 @@ export default function MiPerfil() {
 //             nombre: formData.nombre,
 //             apellido: formData.apellido,
 //             correo: formData.correo,
-//             cbu: userData.cbu || '',
+//             // 🔁 Tomamos CBU del form (no de userData)
+//             cbu: formData.cbu || '',
 //             dni: formData.dni,
 //             telefono: formData.telefono,
 //             dtNacimiento: formData.dtNacimiento ? new Date(formData.dtNacimiento).toISOString() : null,
@@ -363,7 +492,23 @@ export default function MiPerfil() {
 //         }
 //     };
 
-//     if (!userData) return <p className="p-10 animate-pulse text-center text-lg">Cargando datos...</p>;
+//     if (!userData) {
+//         return (
+//             <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+//                 <NavBar />
+//                 <div className="flex-grow flex items-center justify-center">
+//                     <div className="text-center">
+//                         <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+//                         <p className="text-gray-600">Cargando datos...</p>
+//                     </div>
+//                 </div>
+//                 <Footer />
+//             </div>
+//         );
+//     }
+
+//     // ✅ Detectamos si el usuario es Organizador (rol 2)
+//     const esOrganizador = userData?.roles?.some(r => r.cdRol === 2);
 
 //     return (
 //         <div className="flex flex-col min-h-screen bg-gray-50">
@@ -374,7 +519,8 @@ export default function MiPerfil() {
 
 //                     <EditImagenDePerfil user={user} setUser={setUser} />
 
-//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                     {/* Datos personales */}
+//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 //                         {['nombre', 'apellido', 'dni', 'telefono', 'correo'].map(field => (
 //                             <EditableField
 //                                 key={field}
@@ -383,16 +529,35 @@ export default function MiPerfil() {
 //                                 onChange={value => handleChange(field, value)}
 //                             />
 //                         ))}
-//                         <div className="flex flex-col">
+
+//                         {/* Fecha de nacimiento -> derecha, misma fila que 'correo' en md+ */}
+//                         <div className="md:col-start-2 md:row-start-3">
 //                             <EditableField
 //                                 label="Fecha de Nacimiento"
 //                                 value={formData.dtNacimiento || ''}
 //                                 onChange={value => handleChange('dtNacimiento', value)}
 //                                 type="date"
 //                             />
+//                         </div>
+
+//                         {/* CBU -> debajo de Correo en md+, y después de Fecha en mobile por orden del DOM */}
+//                         {esOrganizador && (
+//                             <div className="md:col-start-1 md:row-start-4">
+//                                 <EditableField
+//                                     label="CBU"
+//                                     value={formData.cbu || ''}
+//                                     onChange={value => handleChange('cbu', value)}
+//                                     type="text"
+//                                 />
+//                             </div>
+//                         )}
+
+//                         {/* Botón cambiar contraseña -> derecha, debajo de Fecha en md+ */}
+//                         <div className="md:col-start-2 md:row-start-4">
 //                             <BotonCambiarContrasena userData={userData} />
 //                         </div>
 //                     </div>
+
 
 //                     <div className="mt-8">
 //                         <h2 className="text-xl font-semibold mb-2">Tu domicilio:</h2>
@@ -423,9 +588,11 @@ export default function MiPerfil() {
 //                             Confirmar cambios
 //                         </button>
 //                     </div>
+
 //                     <BotonEliminarCuenta />
 //                 </div>
 //             </div>
+
 //             <Footer />
 
 //             {showSuccessModal && (

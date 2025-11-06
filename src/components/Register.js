@@ -93,7 +93,7 @@ const Register = () => {
         to: formData.correo,
         templateData: {
           name: formData.nombre,
-          confirmationUrl: 'http://localhost:3000/confirmacion-mail',
+          confirmationUrl: 'http://raveapp.com.ar/confirmacion-mail',
         },
       };
       try {
