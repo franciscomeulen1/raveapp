@@ -616,7 +616,7 @@ export default function EntradaAdquirida() {
                         ubicacionFormateada || evento?.nombre || 'Evento'
                       );
                       window.open(
-                        `https://www.google.com/maps/search/?api=1&query=${q}`,
+                        `https://www.google.com/maps/search/?api=1&query=${q}&hl=es&gl=AR`,
                         '_blank'
                       );
                     }}
