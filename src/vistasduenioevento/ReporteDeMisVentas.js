@@ -27,7 +27,7 @@ export default function ReporteDeMisVentas() {
   const [eventos, setEventos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [busqueda, setBusqueda] = useState('');
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState(4); // por defecto: Finalizado
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState(2); // por defecto: En Venta
   const [abierto, setAbierto] = useState(false);
   const dropdownRef = useRef(null);
 
