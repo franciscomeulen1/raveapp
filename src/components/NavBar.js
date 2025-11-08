@@ -83,6 +83,7 @@ export default function NavBar({ onFilter }) {
       return (
         <>
           <li className="menu-title"><span>Administrador</span></li>
+          <li key="u-datos"><Link to="/miperfil">Mi perfil</Link></li>
           <li><Link to="/eventosavalidar">Validar eventos</Link></li>
           <li><Link to="/ver-reporte-de-ventas">Ver reporte de ventas</Link></li>
           <li><Link to="/crear-artista">Crear artista</Link></li>

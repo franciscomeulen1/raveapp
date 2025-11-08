@@ -86,37 +86,37 @@ function App() {
           />
 
           <Route path="/mis-entradas" element={
-                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                <ProtectedRoutePorRol rolesPermitidos={[0, 2]}>
                   <MisEntradas />
                 </ProtectedRoutePorRol>
                 } />
           
           <Route path="/eventos-favoritos" element={
-                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                <ProtectedRoutePorRol rolesPermitidos={[0, 2]}>
                   <EventosFavoritos />
                 </ProtectedRoutePorRol>
                 } />
           
           <Route path="/miperfil" element={
-                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                <ProtectedRoutePorRol rolesPermitidos={[0, 2, 1]}>
                   <MiPerfil />
                 </ProtectedRoutePorRol>
                 } />
           
           <Route path="/entrada-adquirida" element={
-                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                <ProtectedRoutePorRol rolesPermitidos={[0, 2]}>
                   <EntradaAdquirida />
                 </ProtectedRoutePorRol>
                 } />
 
           <Route path="/comprar" element={
-                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                <ProtectedRoutePorRol rolesPermitidos={[0, 2]}>
                   <Comprar />
                 </ProtectedRoutePorRol>
                 } />
 
           <Route path="/gracias-por-tu-compra" element={
-                <ProtectedRoutePorRol rolesPermitidos={[0]}>
+                <ProtectedRoutePorRol rolesPermitidos={[0, 2]}>
                   <GraciasPorTuCompra />
                 </ProtectedRoutePorRol>
                 } />
