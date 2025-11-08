@@ -20,12 +20,6 @@ export default function Comprar() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  // Vienen desde Evento.js
-  // const {
-  //   evento: eventoInicial,
-  //   purchaseItems: purchaseItemsIniciales,
-  //   subtotal: subtotalInicial,
-  // } = location.state;
   const state = location.state || {};
   const {
     evento: eventoInicial = null,
@@ -33,17 +27,21 @@ export default function Comprar() {
     subtotal: subtotalInicial = 0,
   } = state;
 
-  // Estado principal de la compra que se muestra en la vista
   const [evento, setEvento] = useState(eventoInicial);
   const [purchaseItems, setPurchaseItems] = useState(purchaseItemsIniciales || []);
   const [subtotal, setSubtotal] = useState(subtotalInicial || 0);
 
-  const serviceFee = useMemo(() => Math.round(subtotal * 0.10), [subtotal]);
+  // porcentaje que viene de la API (por ejemplo 10)
+  const [pctCargoServicio, setPctCargoServicio] = useState(10);
+
+  const serviceFee = useMemo(
+    () => Math.round(subtotal * (pctCargoServicio / 100)),
+    [subtotal, pctCargoServicio]
+  );
   const total = useMemo(() => subtotal + serviceFee, [subtotal, serviceFee]);
 
   const [imagenEvento, setImagenEvento] = useState(null);
 
-  // Usuario y formulario
   const [usuarioData, setUsuarioData] = useState(null);
   const [form, setForm] = useState({
     nombre: '',
@@ -56,63 +54,73 @@ export default function Comprar() {
   });
   const [errors, setErrors] = useState({});
 
-  // Ubicación facturación
   const [selectedProvincia, setSelectedProvincia] = useState(null);
   const [selectedMunicipio, setSelectedMunicipio] = useState(null);
   const [selectedLocalidad, setSelectedLocalidad] = useState(null);
   const [direccion, setDireccion] = useState('');
 
-  // Timer 10 minutos
   const [remainingSec, setRemainingSec] = useState(600);
   const timerRef = useRef(null);
 
-  // Pago / compra
   const [compraId, setCompraId] = useState(null);
   const [creandoPago, setCreandoPago] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // modal de confirmación de pago
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // Reserva pendiente (único idCompra)
   const [pendienteModalOpen, setPendienteModalOpen] = useState(false);
-  const [reservaActiva, setReservaActiva] = useState(null);      // array del GET
+  const [reservaActiva, setReservaActiva] = useState(null);
   const [idCompraPendiente, setIdCompraPendiente] = useState(null);
   const [accionandoReservaPendiente, setAccionandoReservaPendiente] = useState(false);
 
-  // Preview para el modal
   const [loadingPreview, setLoadingPreview] = useState(false);
   const [previewPendiente, setPreviewPendiente] = useState(null);
 
-  // NUEVO: modal al expirar y banderas
   const [expiredModalOpen, setExpiredModalOpen] = useState(false);
   const [cancelandoPorExpirar, setCancelandoPorExpirar] = useState(false);
-  const expiroRef = useRef(false); // previene dobles ejecuciones al llegar a 0
+  const expiroRef = useRef(false);
 
-  // Helpers
   const isEditable = (campo) => !usuarioData?.[campo];
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // --------- traer porcentaje de la API ---------
+  useEffect(() => {
+    const fetchPct = async () => {
+      try {
+        const res = await api.get('/Sistema/GetParametro', {
+          params: { parametro: 'PctCargoServicio' },
+        });
+        // el backend devuelve "10" (string o number)
+        const valor = Number(res.data);
+        if (!isNaN(valor) && valor >= 0) {
+          setPctCargoServicio(valor);
+        }
+      } catch (err) {
+        console.error('No se pudo obtener PctCargoServicio, uso 10% por defecto:', err);
+      }
+    };
+    fetchPct();
+  }, []);
+
   // ---------- Timer ----------
   useEffect(() => {
     timerRef.current = setInterval(() => setRemainingSec((s) => s - 1), 1000);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, []);
 
-  // Al expirar el tiempo: cancelar y mostrar modal
   useEffect(() => {
     if (remainingSec > 0) return;
     if (expiroRef.current) return;
     expiroRef.current = true;
 
-    // detener el timer
     if (timerRef.current) clearInterval(timerRef.current);
 
-    // cerrar otros modales si estaban abiertos
     setModalVisible(false);
     setPendienteModalOpen(false);
 
-    // cancelar si tenemos un idCompra (puede venir de la reserva actual o de la pendiente confirmada)
     const idAEliminar = compraId || idCompraPendiente;
     if (!idAEliminar) {
       setExpiredModalOpen(true);
@@ -192,39 +200,36 @@ export default function Comprar() {
       if (!arr || arr.length === 0) return;
 
       const idEventoPend = arr[0].idEvento;
-
-      // Evento para nombre y fecha legible
       const resEv = await api.get(`/Evento/GetEventos`, { params: { IdEvento: idEventoPend } });
       const eventoData = resEv.data.eventos?.[0];
       const eventoNombre = eventoData?.nombre || 'Evento';
 
       const mapaFechaLegible = {};
-      (eventoData?.fechas || []).forEach(f => {
+      (eventoData?.fechas || []).forEach((f) => {
         const legible = new Date(f.inicio).toLocaleDateString('es-AR');
         mapaFechaLegible[f.idFecha] = legible;
       });
 
-      // Tipos
       const resTipos = await api.get(`/Entrada/GetTiposEntrada`);
       const tiposMap = {};
-      (resTipos.data || []).forEach(t => { tiposMap[t.cdTipo] = t.dsTipo; });
+      (resTipos.data || []).forEach((t) => {
+        tiposMap[t.cdTipo] = t.dsTipo;
+      });
 
-      // Precios por fecha/tipo
-      const idsFecha = [...new Set(arr.map(i => i.idFecha))];
+      const idsFecha = [...new Set(arr.map((i) => i.idFecha))];
       const preciosPorFecha = {};
       for (const idF of idsFecha) {
         const r = await api.get(`/Entrada/GetEntradasFecha`, { params: { IdFecha: idF } });
-        const lista = Array.isArray(r.data) ? r.data : (r.data?.entradas || []);
+        const lista = Array.isArray(r.data) ? r.data : r.data?.entradas || [];
         preciosPorFecha[idF] = {};
-        lista.forEach(e => {
+        lista.forEach((e) => {
           const cd = e.tipo?.cdTipo ?? e.cdTipo;
           preciosPorFecha[idF][cd] = e.precio;
         });
       }
 
-      // Líneas y subtotal
       let subtotalLocal = 0;
-      const items = arr.map(it => {
+      const items = arr.map((it) => {
         const cantidad = Number(it.cantidad || 0);
         const cdTipo = Number(it.tipoEntrada);
         const precio = preciosPorFecha?.[it.idFecha]?.[cdTipo] ?? 0;
@@ -246,7 +251,6 @@ export default function Comprar() {
     }
   };
 
-  // ---------- Check de reserva activa ANTES de reservar la compra actual ----------
   const [readyToReserveCurrent, setReadyToReserveCurrent] = useState(false);
 
   useEffect(() => {
@@ -258,17 +262,14 @@ export default function Comprar() {
         const arr = Array.isArray(res.data) ? res.data : [];
 
         if (arr.length === 0) {
-          // No hay reserva activa
           setReadyToReserveCurrent(true);
           return;
         }
 
-        // Único idCompra en todo el array
         const idCompraUnique = arr[0]?.idCompra || null;
         setReservaActiva(arr);
         setIdCompraPendiente(idCompraUnique);
 
-        // Abrir modal y cargar preview
         setLoadingPreview(true);
         setPendienteModalOpen(true);
         await cargarPreviewReservaPendiente(arr);
@@ -286,7 +287,6 @@ export default function Comprar() {
     checkReservaActiva();
   }, [user]);
 
-  // ---------- Reservar entradas de la compra ACTUAL (si corresponde) ----------
   useEffect(() => {
     if (!user || !readyToReserveCurrent) return;
     if (!Array.isArray(purchaseItems) || purchaseItems.length === 0) return;
@@ -318,7 +318,7 @@ export default function Comprar() {
         try {
           const res = await api.put('/Entrada/ReservarEntradas', payload);
           const nuevoIdCompra = res?.data?.idCompra || res?.data?.id || res?.data;
-          if (nuevoIdCompra) setCompraId(prev => prev || nuevoIdCompra);
+          if (nuevoIdCompra) setCompraId((prev) => prev || nuevoIdCompra);
         } catch (err) {
           console.error('[Reserva ERROR]', {
             idFecha,
@@ -332,7 +332,6 @@ export default function Comprar() {
     })();
   }, [user, readyToReserveCurrent, purchaseItems]);
 
-  // ---------- Modal reserva pendiente: Confirmar (usar la pendiente) ----------
   const handleConfirmarReservaPendiente = async () => {
     if (!reservaActiva || reservaActiva.length === 0 || !idCompraPendiente) {
       setPendienteModalOpen(false);
@@ -342,10 +341,8 @@ export default function Comprar() {
 
     setAccionandoReservaPendiente(true);
     try {
-      // Mismo idEvento para todas las filas
       const idEventoPend = reservaActiva[0].idEvento;
 
-      // Evento completo para setear en la vista
       const resEv = await api.get(`/Evento/GetEventos`, { params: { IdEvento: idEventoPend } });
       const eventoData = resEv.data.eventos?.[0];
       if (!eventoData) throw new Error('No se pudo obtener el evento de la reserva pendiente');
@@ -353,12 +350,12 @@ export default function Comprar() {
       const eventoProcesado = {
         id: eventoData.idEvento,
         nombreEvento: eventoData.nombre,
-        dias: (eventoData.fechas || []).map(fecha => ({
+        dias: (eventoData.fechas || []).map((fecha) => ({
           idFecha: fecha.idFecha,
           fecha: new Date(fecha.inicio).toLocaleDateString('es-AR'),
           horaInicio: new Date(fecha.inicio).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
           horaFin: new Date(fecha.fin).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-          estado: fecha.estado
+          estado: fecha.estado,
         })),
         generos: eventoData.genero || [],
         artistas: eventoData.artistas || [],
@@ -371,44 +368,44 @@ export default function Comprar() {
         descripcion: eventoData.descripcion,
         soundcloud: eventoData.soundCloud,
         imagen: null,
-        youtube: null
+        youtube: null,
       };
 
-      // Media (imagen)
       try {
         const resMedia = await api.get(`/Media`, { params: { idEntidadMedia: eventoData.idEvento } });
         const mediaArr = resMedia.data.media || [];
-        const img = mediaArr.find(m => m.url && !m.mdVideo);
-        const vid = mediaArr.find(m => m.mdVideo && !m.url);
+        const img = mediaArr.find((m) => m.url && !m.mdVideo);
+        const vid = mediaArr.find((m) => m.mdVideo && !m.url);
         eventoProcesado.imagen = img?.url || null;
         eventoProcesado.youtube = vid?.mdVideo || null;
         setImagenEvento(img?.url || null);
       } catch {}
 
-      // Tipos y precios para armar purchaseItems con importes correctos
       const resTipos = await api.get(`/Entrada/GetTiposEntrada`);
       const tiposMap = {};
-      (resTipos.data || []).forEach(t => { tiposMap[t.cdTipo] = t.dsTipo; });
+      (resTipos.data || []).forEach((t) => {
+        tiposMap[t.cdTipo] = t.dsTipo;
+      });
 
-      const idsFechaInvolucradas = [...new Set(reservaActiva.map(i => i.idFecha))];
+      const idsFechaInvolucradas = [...new Set(reservaActiva.map((i) => i.idFecha))];
       const preciosPorFecha = {};
       for (const idF of idsFechaInvolucradas) {
         const r = await api.get(`/Entrada/GetEntradasFecha`, { params: { IdFecha: idF } });
-        const lista = Array.isArray(r.data) ? r.data : (r.data?.entradas || []);
+        const lista = Array.isArray(r.data) ? r.data : r.data?.entradas || [];
         preciosPorFecha[idF] = {};
-        lista.forEach(e => {
+        lista.forEach((e) => {
           const cd = e.tipo?.cdTipo ?? e.cdTipo;
           preciosPorFecha[idF][cd] = e.precio;
         });
       }
 
-      const purchasePend = reservaActiva.map(it => {
+      const purchasePend = reservaActiva.map((it) => {
         const cdTipoEntrada = Number(it.tipoEntrada);
         const idFecha = it.idFecha;
         const cantidad = Number(it.cantidad || 0);
         const precio = preciosPorFecha?.[idFecha]?.[cdTipoEntrada] ?? 0;
         const dsTipo = tiposMap[cdTipoEntrada] || 'Sin nombre';
-        const dia = eventoProcesado.dias.find(d => d.idFecha === idFecha)?.fecha || '';
+        const dia = eventoProcesado.dias.find((d) => d.idFecha === idFecha)?.fecha || '';
         const itemSubtotal = precio * cantidad;
         return {
           idFecha,
@@ -418,24 +415,21 @@ export default function Comprar() {
           dsTipo,
           tipo: dsTipo,
           precio,
-          itemSubtotal
+          itemSubtotal,
         };
       });
 
       const nuevoSubtotal = purchasePend.reduce((acc, it) => acc + (it.itemSubtotal || 0), 0);
 
-      // Setear vista con la PENDIENTE y su idCompra
       setEvento(eventoProcesado);
       setPurchaseItems(purchasePend);
       setSubtotal(nuevoSubtotal);
       setCompraId(idCompraPendiente);
 
-      // Cerrar modal e impedir reservar la compra actual
       setPendienteModalOpen(false);
       setReadyToReserveCurrent(false);
     } catch (err) {
       console.error('Error armando resumen de reserva pendiente:', err?.response?.data || err?.message);
-      // Si falla, permitir seguir con la compra actual
       setPendienteModalOpen(false);
       setReadyToReserveCurrent(true);
     } finally {
@@ -443,7 +437,6 @@ export default function Comprar() {
     }
   };
 
-  // ---------- Modal reserva pendiente: Cancelar (cancelar la reserva y seguir con la actual) ----------
   const handleContinuarCompraActual = async () => {
     if (!idCompraPendiente) {
       setPendienteModalOpen(false);
@@ -455,17 +448,15 @@ export default function Comprar() {
       await api.put('/Entrada/CancelarReserva', null, { params: { idCompra: idCompraPendiente } });
     } catch (err) {
       console.error('Error cancelando reserva pendiente:', err?.response?.data || err?.message);
-      // Igual seguimos
     } finally {
       setPendienteModalOpen(false);
       setReservaActiva(null);
       setIdCompraPendiente(null);
-      setReadyToReserveCurrent(true); // ahora sí, reservar la compra actual
+      setReadyToReserveCurrent(true);
       setAccionandoReservaPendiente(false);
     }
   };
 
-  // ---------- Submit datos + modal para ir a MP ----------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -495,7 +486,6 @@ export default function Comprar() {
     setErrors(currentErrors);
     if (Object.keys(currentErrors).length > 0) return;
 
-    // Completar datos faltantes del usuario si fuera necesario
     const camposACompletar = [
       !usuarioData?.telefono && form.telefono,
       !usuarioData?.dni && form.numeroId,
@@ -588,7 +578,6 @@ export default function Comprar() {
     }
   };
 
-  // ---------- Navegar de vuelta al evento tras expirar ----------
   const handleOkExpirado = () => {
     navigate(`/evento/${evento?.id || eventoInicial?.id}`);
   };
@@ -616,12 +605,7 @@ export default function Comprar() {
         <h2 className="mx-6 sm:px-10 mt-4 mb-3 text-2xl font-bold">Tus datos:</h2>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-16">
-          <DatosUsuario
-            form={form}
-            errors={errors}
-            isEditable={isEditable}
-            onChange={handleChange}
-          />
+          <DatosUsuario form={form} errors={errors} isEditable={isEditable} onChange={handleChange} />
 
           <DomicilioFacturacion
             selectedProvincia={selectedProvincia}
@@ -637,7 +621,7 @@ export default function Comprar() {
             onDireccionChange={setDireccion}
           />
 
-        <TyCPrivacidad />
+          <TyCPrivacidad />
 
           <div className="col-span-1 sm:col-span-2 lg:col-span-3">
             <p className="text-sm">
@@ -646,14 +630,15 @@ export default function Comprar() {
           </div>
 
           <div className="col-span-1">
-            <button type="submit" className="btn btn-secondary rounded-xl">Comprar</button>
+            <button type="submit" className="btn btn-secondary rounded-xl">
+              Comprar
+            </button>
           </div>
         </form>
       </div>
 
       <Footer />
 
-      {/* Modal confirmación antes de ir a MP */}
       <ModalRedireccion
         open={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -661,7 +646,6 @@ export default function Comprar() {
         confirmDisabled={creandoPago}
       />
 
-      {/* Modal de reserva pendiente con preview */}
       <ModalReservaPendiente
         open={pendienteModalOpen}
         onConfirm={handleConfirmarReservaPendiente}
@@ -671,12 +655,7 @@ export default function Comprar() {
         preview={previewPendiente}
       />
 
-      {/* NUEVO: Modal de tiempo expirado */}
-      <ModalTiempoExpirado
-        open={expiredModalOpen}
-        onOk={handleOkExpirado}
-        disabled={cancelandoPorExpirar}
-      />
+      <ModalTiempoExpirado open={expiredModalOpen} onOk={handleOkExpirado} disabled={cancelandoPorExpirar} />
     </div>
   );
 }
