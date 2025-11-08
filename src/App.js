@@ -45,10 +45,11 @@ import GraciasPorTuCompra from "./vistas/GraciasPorTuCompra";
 import OlvideContrasena from "./vistas/OlvideContrasena";
 import RestablecerContrasena from "./vistas/RestablecerContrasena";
 import ConfirmacionMail from "./vistas/ConfirmacionMail";
-import VerReporteDeVentas from "./vistasadmin/VerReporteDeVentas";
-import ReporteVentasEvento from "./vistasadmin/ReporteVentasEvento";
+import ListadoReporteVentasAdmin from "./vistasadmin/ListadoReporteVentasAdmin";
+import ReporteVentasEventoAdmin from "./vistasadmin/ReporteVentasEventoAdmin";
 import RequireAuthCrearEvento from "./components/componentsCrearEvento/RequireAuthCrearEvento";
 import CrearUsuarioControlador from "./vistasduenioevento/CrearUsuarioControlador";
+import ReporteDeMisVentas from "./vistasduenioevento/ReporteDeMisVentas";
 
 
 
@@ -164,6 +165,12 @@ function App() {
                   <CrearUsuarioControlador />
                 </ProtectedRoutePorRol>
                 } />
+
+          <Route path="/reporte-mis-ventas" element={
+                <ProtectedRoutePorRol rolesPermitidos={[2]}>
+                  <ReporteDeMisVentas />
+                </ProtectedRoutePorRol>
+                } />
           
 
           {/* Rutas para administrador (cdRol = 1) */}
@@ -229,13 +236,13 @@ function App() {
                 
           <Route path="/ver-reporte-de-ventas" element={
                 <ProtectedRoutePorRol rolesPermitidos={[1]}>
-                   <VerReporteDeVentas />
+                   <ListadoReporteVentasAdmin />
                 </ProtectedRoutePorRol>
                 } />
                 
           <Route path="/reporte-ventas/:id" element={
                 <ProtectedRoutePorRol rolesPermitidos={[1]}>
-                   <ReporteVentasEvento />
+                   <ReporteVentasEventoAdmin />
                 </ProtectedRoutePorRol>
                 } />
           

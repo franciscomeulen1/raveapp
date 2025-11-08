@@ -113,8 +113,8 @@ export default function NavBar({ onFilter }) {
         <li key="o-title" className="menu-title"><span>Opciones de organizador</span></li>,
         <li key="o-eventos"><Link to="/mis-eventos-creados">Mis eventos creados</Link></li>,
         <li key="o-recurrentes"><Link to="/mis-fiestas-recurrentes">Mis fiestas recurrentes</Link></li>,
-        <li key="o-usuarioscontrol"><Link to="/crear-usuario-controlador">Usuarios para controlar entradas</Link></li>
-
+        <li key="o-usuarioscontrol"><Link to="/crear-usuario-controlador">Usuarios para controlar entradas</Link></li>,
+        <li key="o-reporte"><Link to="/reporte-mis-ventas">Reporte de ventas</Link></li>
       );
     }
 
