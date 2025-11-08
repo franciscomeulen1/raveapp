@@ -1,4 +1,4 @@
-// MiPerfil.js con campo CBU condicional para rol Organizador (cdRol === 2)
+// MiPerfil.js ...
 import { useState, useEffect, useContext } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
@@ -23,7 +23,6 @@ export default function MiPerfil() {
 
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [isSendingEmail, setIsSendingEmail] = useState(false);
-
 
     const navigate = useNavigate();
 
@@ -51,7 +50,6 @@ export default function MiPerfil() {
                     correo: data.correo || '',
                     dtNacimiento: data.dtNacimiento ? data.dtNacimiento.split('T')[0] : '',
                     direccion: data.domicilio?.direccion || '',
-                    // ➕ Inicializamos CBU en el form
                     cbu: data.cbu || '',
                 });
                 setSelectedProvincia({ nombre: data.domicilio?.provincia?.nombre || '', id: data.domicilio?.provincia?.codigo || '' });
@@ -65,8 +63,21 @@ export default function MiPerfil() {
         fetchUserData();
     }, [user]);
 
+    // 👇 agregamos esta función para capitalizar sin perder espacios
+    const toTitleCase = (str) => {
+        return str.replace(/\b\w+/g, (word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        });
+    };
+
+    // 👇 modificamos handleChange para aplicar solo a nombre, apellido y direccion
     const handleChange = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        if (field === 'nombre' || field === 'apellido' || field === 'direccion') {
+            const capitalizado = toTitleCase(value);
+            setFormData(prev => ({ ...prev, [field]: capitalizado }));
+        } else {
+            setFormData(prev => ({ ...prev, [field]: value }));
+        }
     };
 
     const handleSubmit = async () => {
@@ -83,7 +94,7 @@ export default function MiPerfil() {
         let municipioPayload = { nombre: selectedMunicipio?.nombre || '', codigo: selectedMunicipio?.id || '' };
         let localidadPayload = { nombre: selectedLocalidad?.nombre || '', codigo: selectedLocalidad?.id || '' };
 
-        // 🚨 Regla CABA
+        // CABA
         if (selectedProvincia?.nombre === 'Ciudad Autónoma de Buenos Aires') {
             provinciaPayload = municipioPayload = localidadPayload = {
                 nombre: 'Ciudad Autónoma de Buenos Aires',
@@ -91,19 +102,17 @@ export default function MiPerfil() {
             };
         }
 
-        // Si el usuario cambió su correo, bio pasa a "0" para obligar verificación
+        // si cambió correo, bio = 0
         let bioActualizada = userData.bio || '';
         if (formData.correo && formData.correo !== userData.correo) {
             bioActualizada = '0';
         }
-
 
         const payload = {
             idUsuario: user.id,
             nombre: formData.nombre,
             apellido: formData.apellido,
             correo: formData.correo,
-            // 🔁 Tomamos CBU del form (no de userData)
             cbu: formData.cbu || '',
             dni: formData.dni,
             telefono: formData.telefono,
@@ -133,7 +142,6 @@ export default function MiPerfil() {
     };
 
     const handleSendVerificationEmail = async () => {
-        // tomamos correo y nombre actuales (si el usuario los editó pero no guardó, tomamos del form)
         const correo = formData.correo || userData.correo;
         const nombre = formData.nombre || userData.nombre;
 
@@ -150,8 +158,6 @@ export default function MiPerfil() {
             };
 
             await api.post('/Email/EnviarConfirmarEmail', emailBody);
-
-            // mostramos modal de "te lo mandé"
             setShowEmailModal(true);
         } catch (err) {
             console.error('Fallo al enviar email de confirmación:', err);

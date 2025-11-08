@@ -29,8 +29,24 @@ const Register = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [sending, setSending] = useState(false);
 
+  // 🔹 misma función que usamos en dirección, pero acá para nombre/apellido
+  const toTitleCase = (str) => {
+    return str.replace(/\b\w+/g, (word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
+  };
+
+  // 🔹 modificamos el handleChange
   const handleChange = (e) => {
-    setFormData(f => ({ ...f, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+
+    // si es nombre o apellido, capitalizamos cada palabra
+    if (name === 'nombre' || name === 'apellido') {
+      const capitalizado = toTitleCase(value);
+      setFormData((f) => ({ ...f, [name]: capitalizado }));
+    } else {
+      setFormData((f) => ({ ...f, [name]: value }));
+    }
   };
 
   const esPasswordSegura = (password) => {
@@ -85,10 +101,8 @@ const Register = () => {
 
     try {
       setSending(true);
-      // 1) Crear usuario
       await api.post('/Usuario/CreateUsuario', payload);
 
-      // 2) Enviar correo de confirmación
       const emailBody = {
         to: formData.correo,
         templateData: {
@@ -99,11 +113,9 @@ const Register = () => {
       try {
         await api.post('/Email/EnviarConfirmarEmail', emailBody);
       } catch (emailErr) {
-        // No bloqueamos el flujo si falla el envío, pero lo registramos
         console.error('Fallo al enviar email de confirmación:', emailErr);
       }
 
-      // 3) Mostrar modal de éxito
       setShowSuccessModal(true);
     } catch (err) {
       console.error(err);
@@ -258,7 +270,6 @@ const Register = () => {
       </div>
       <Footer />
 
-      {/* Modal de éxito */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
@@ -291,16 +302,12 @@ export default Register;
 // import { useNavigate } from 'react-router-dom';
 // import BotonGoogleLogin from '../components/BotonGoogleLogin';
 
-
 // const Register = () => {
-
-//   const { user } = useContext(AuthContext);
+//   const { user, login } = useContext(AuthContext);
 //   const navigate = useNavigate();
 
 //   useEffect(() => {
-//     if (user) {
-//       navigate('/');
-//     }
+//     if (user) navigate('/');
 //   }, [user, navigate]);
 
 //   const [formData, setFormData] = useState({
@@ -311,20 +318,15 @@ export default Register;
 //     dni: '',
 //     correo: '',
 //     telefono: '',
-//     fechaNacimiento: '', // nuevo campo
+//     fechaNacimiento: '',
 //   });
 
 //   const [error, setError] = useState('');
 //   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-
-//   const { login } = useContext(AuthContext);
+//   const [sending, setSending] = useState(false);
 
 //   const handleChange = (e) => {
-//     setFormData({
-//       ...formData,
-//       [e.target.name]: e.target.value,
-//     });
+//     setFormData(f => ({ ...f, [e.target.name]: e.target.value }));
 //   };
 
 //   const esPasswordSegura = (password) => {
@@ -334,7 +336,6 @@ export default Register;
 //     return tieneLongitud && tieneLetra && tieneNumero;
 //   };
 
-
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 //     setError('');
@@ -343,12 +344,10 @@ export default Register;
 //       setError('Las contraseñas no coinciden');
 //       return;
 //     }
-
 //     if (!esPasswordSegura(formData.password)) {
 //       setError('La contraseña debe tener al menos 8 caracteres, una letra y un número.');
 //       return;
 //     }
-
 //     if (!formData.fechaNacimiento) {
 //       setError('Debes ingresar tu fecha de nacimiento');
 //       return;
@@ -369,7 +368,6 @@ export default Register;
 //       cbu: '',
 //       dni: formData.dni,
 //       telefono: formData.telefono,
-//       // nombreFantasia: formData.nombreFantasia,
 //       bio: '0',
 //       password: formData.password,
 //       socials: {
@@ -378,15 +376,36 @@ export default Register;
 //         mdSpotify: '',
 //         mdSoundcloud: '',
 //       },
-//       dtNacimiento: new Date(formData.fechaNacimiento).toISOString(), // fecha de nacimiento del usuario
+//       dtNacimiento: new Date(formData.fechaNacimiento).toISOString(),
 //     };
 
 //     try {
+//       setSending(true);
+//       // 1) Crear usuario
 //       await api.post('/Usuario/CreateUsuario', payload);
-//       setShowSuccessModal(true); // mostramos el modal de éxito
+
+//       // 2) Enviar correo de confirmación
+//       const emailBody = {
+//         to: formData.correo,
+//         templateData: {
+//           name: formData.nombre,
+//           confirmationUrl: 'http://raveapp.com.ar/confirmacion-mail',
+//         },
+//       };
+//       try {
+//         await api.post('/Email/EnviarConfirmarEmail', emailBody);
+//       } catch (emailErr) {
+//         // No bloqueamos el flujo si falla el envío, pero lo registramos
+//         console.error('Fallo al enviar email de confirmación:', emailErr);
+//       }
+
+//       // 3) Mostrar modal de éxito
+//       setShowSuccessModal(true);
 //     } catch (err) {
 //       console.error(err);
 //       setError('Error al registrarse, intenta más tarde');
+//     } finally {
+//       setSending(false);
 //     }
 //   };
 
@@ -415,7 +434,6 @@ export default Register;
 //           <div className="max-w-md w-full p-6">
 //             <h1 className="text-3xl font-bold mb-4">Registrarse</h1>
 //             <p className="mb-4">Completa tus datos, o regístrate con Google:</p>
-//             {/* <button className="btn btn-outline w-full mb-4">Login with Google</button> */}
 //             <BotonGoogleLogin setError={setError} />
 
 //             {error && <div className="text-red-500 mb-3">{error}</div>}
@@ -527,8 +545,8 @@ export default Register;
 //                 />
 //               </label>
 
-//               <button type="submit" className="btn btn-primary w-full">
-//                 Registrarme
+//               <button type="submit" className="btn btn-primary w-full" disabled={sending}>
+//                 {sending ? 'Procesando...' : 'Registrarme'}
 //               </button>
 //             </form>
 //           </div>
@@ -540,7 +558,11 @@ export default Register;
 //       {showSuccessModal && (
 //         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 //           <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
-//             <h2 className="text-green-600 font-bold text-xl mb-4">¡Registro exitoso!</h2>
+//             <h2 className="text-green-600 font-bold text-xl mb-3">¡Registro exitoso!</h2>
+//             <p className="text-gray-700 mb-6">
+//               Tu registro se realizó con éxito. Te enviamos un correo a <span className="font-semibold">{formData.correo}</span> para
+//               confirmar tu email. Si no lo ves, revisá la carpeta de spam/promociones.
+//             </p>
 //             <button
 //               className="btn btn-success w-full"
 //               onClick={handleAccept}
