@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import Filtros from './Filtros';
 import Login from './Login';
 import { AuthContext } from '../context/AuthContext';
-// import ProtectedLink from './componentsCrearEvento/ProtectedLink';
 import defaultAvatar from '../iconos/profile-user.png';
 import api from '../componenteapi/api';
 import LogoRA from '../iconos/logoRA.png'
@@ -157,7 +156,7 @@ export default function NavBar({ onFilter }) {
           <div className="dropdown">
             <label
               tabIndex={0}
-              className="btn btn-ghost lg:hidden"
+              className="btn btn-ghost lg:hidden pr-2 pl-1"
               onClick={toggleDropdown}
             >
               <svg xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +199,7 @@ export default function NavBar({ onFilter }) {
           {/* <Link className="btn btn-ghost normal-case text-xl" to="/">
             RaveApp
           </Link> */}
-          <Link to="/" className="btn btn-ghost normal-case text-xl flex items-center gap-2">
+          <Link to="/" className="btn btn-ghost normal-case text-xl flex items-center gap-2 pl-2">
             <img src={LogoRA} alt="RaveApp logo" className="w-10 h-10 object-contain" />
             <span>RaveApp</span>
           </Link>
