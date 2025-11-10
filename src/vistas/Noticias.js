@@ -69,6 +69,7 @@ export default function Noticias() {
     };
 
     fetchNoticias();
+    window.scrollTo(0, 0);
   }, []);
 
   const EmptyState = () => (

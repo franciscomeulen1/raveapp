@@ -25,6 +25,13 @@ const CancelarEvento = () => {
   const [error, setError] = useState('');
   const [noOwner, setNoOwner] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [invalidState, setInvalidState] = useState(false); // ⬅︎ nuevo
+
+  // modal
+  const [showModal, setShowModal] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmError, setConfirmError] = useState('');
+  const [cancelSuccess, setCancelSuccess] = useState(false);
 
   // por si vino desde MisEventos
   const nombreFromState = location.state?.nombre;
@@ -35,6 +42,7 @@ const CancelarEvento = () => {
       setError('');
       setNoOwner(false);
       setNotFound(false);
+      setInvalidState(false); // ⬅︎ por las dudas
 
       if (!eventoId) {
         throw new Error('Falta el id del evento en la URL.');
@@ -72,9 +80,20 @@ const CancelarEvento = () => {
         return;
       }
 
+      // 3) Verificar estado permitido (0,1,2)
+      const estadoActual = ev.cdEstado ?? ev.estado ?? null;
+      const estadosPermitidos = [0, 1, 2];
+      if (estadoActual == null || !estadosPermitidos.includes(estadoActual)) {
+        // lo guardo igual para mostrar el nombre
+        setEvento(ev);
+        setInvalidState(true);
+        setLoading(false);
+        return;
+      }
+
       setEvento(ev);
 
-      // 3) Traer reporte de ventas
+      // 4) Traer reporte de ventas
       const repRes = await api.get('/Reporte/ReporteVentasEvento', {
         params: { idEvento: eventoId, idUsuarioOrg },
       });
@@ -126,7 +145,7 @@ const CancelarEvento = () => {
     }
   };
 
-  // ====== agrupamos el reporte por fecha, IGUAL que en EntradasVendidas ======
+  // ====== agrupamos el reporte por fecha ======
   const gruposPorFecha = useMemo(() => {
     const byFecha = new Map();
 
@@ -141,25 +160,22 @@ const CancelarEvento = () => {
       }
       const grupo = byFecha.get(r.idFecha);
       if (r.entrada === 'TOTAL') {
-        grupo.total = r; // viene la fila total de esa fecha
+        grupo.total = r;
       } else {
         grupo.filas.push(r);
       }
     }
 
-    // devolver ordenado por numFecha
     return Array.from(byFecha.values()).sort(
       (a, b) => (a.numFecha ?? 0) - (b.numFecha ?? 0)
     );
   }, [reporte]);
 
-  // ====== dentro de cada fecha, queremos agrupar por (entrada + precio) ======
   const gruposConLineas = useMemo(() => {
     return gruposPorFecha.map((g) => {
       const lineasMap = new Map();
 
       for (const fila of g.filas) {
-        // ignoramos las que no vendieron nada
         const vendidas = fila.cantidadVendida || 0;
         if (vendidas <= 0) continue;
 
@@ -188,18 +204,82 @@ const CancelarEvento = () => {
     });
   }, [gruposPorFecha]);
 
-  // ====== total global ======
   const totalGlobal = useMemo(() => {
     return gruposConLineas.reduce((acc, g) => acc + g.totalFecha, 0);
   }, [gruposConLineas]);
 
+  // === abrir modal ===
   const handleCancel = () => {
-    // después conectamos acá el endpoint real
-    console.log(`Evento ${eventoId} cancelado. Motivo: ${motivo}`);
+    setShowModal(true);
+    setConfirmError('');
+  };
+
+  // === confirmar dentro del modal ===
+  const handleConfirmCancel = async () => {
+    if (!evento) {
+      setConfirmError('No se pudo obtener la información del evento.');
+      return;
+    }
+
+    try {
+      setConfirmLoading(true);
+      setConfirmError('');
+
+      // 1) armar payload igual que el evento, pero estado 5
+      const payload = {
+        idEvento: evento.idEvento,
+        idArtistas: (evento.artistas || []).map((a) => a.idArtista),
+        domicilio: evento.domicilio,
+        nombre: evento.nombre,
+        descripcion: evento.descripcion,
+        genero: evento.genero,
+        isAfter: evento.isAfter,
+        isLgbt: evento.isLgbt,
+        inicioEvento: evento.inicioEvento,
+        finEvento: evento.finEvento,
+        estado: 5,
+        fechas: (evento.fechas || []).map((f) => ({
+          idFecha: f.idFecha,
+          inicio: f.inicio,
+          fin: f.fin,
+          inicioVenta: f.inicioVenta,
+          finVenta: f.finVenta,
+          estado: 5,
+        })),
+        idFiesta: evento.idFiesta,
+        soundCloud: evento.soundCloud,
+      };
+
+      // 2) PUT primero
+      await api.put('/Evento/UpdateEvento', payload);
+
+      // 3) POST reembolso masivo
+      await api.post('/Pago/ReembolsoMasivo', null, {
+        params: { idEvento: eventoId },
+      });
+
+      setCancelSuccess(true);
+    } catch (e) {
+      console.error(e);
+      setConfirmError(
+        e?.response?.data?.message ||
+          'Ocurrió un error al cancelar el evento y/o reembolsar las entradas.'
+      );
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    if (cancelSuccess) return;
+    setShowModal(false);
+  };
+
+  const handleSuccessAccept = () => {
+    navigate('/mis-eventos-creados');
   };
 
   // ====== RENDERS DE ESTADO ======
-
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -232,7 +312,7 @@ const CancelarEvento = () => {
                 No puedes acceder a esta página. Solo puedes cancelar eventos de tu propiedad.
               </p>
               <p className="mb-6">
-                {`Estabas intentando cancelar: `}
+                Estabas intentando cancelar:{' '}
                 <span className="font-bold">
                   {evento?.nombre || nombreFromState || 'Evento desconocido'}
                 </span>
@@ -251,6 +331,40 @@ const CancelarEvento = () => {
     );
   }
 
+  // ⬅︎ nuevo: estado no permitido
+  if (invalidState) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-1">
+          <div className="sm:px-10 mb-11">
+            <NavBar />
+            <div className="container mx-auto px-4 py-10">
+              <h1 className="text-2xl font-bold mb-4">No se puede cancelar este evento.</h1>
+              <p className="text-red-600 font-semibold mb-2">
+                Solo puedes cancelar eventos que estén <strong>por aprobar </strong>,{' '}
+                <strong>aprobados </strong> o <strong>en venta </strong>.
+              </p>
+              <p className="mb-6">
+                Estabas intentando cancelar:{' '}
+                <span className="font-bold">
+                  {evento?.nombre || nombreFromState || 'Evento desconocido'}
+                </span>
+              </p>
+              <button
+                className="btn btn-info"
+                onClick={() => navigate('/mis-eventos-creados')}
+              >
+                Volver a mis eventos
+              </button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // ====== pantalla normal ======
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1">
@@ -279,7 +393,7 @@ const CancelarEvento = () => {
                 </span>
               </p>
 
-              {/* ====== LISTA POR FECHA ====== */}
+              {/* lista por fecha */}
               {gruposConLineas.length === 0 ? (
                 <p className="mt-4 text-gray-600">
                   Este evento no tiene entradas vendidas hasta el momento.
@@ -332,7 +446,6 @@ const CancelarEvento = () => {
                 </div>
               )}
 
-              {/* ====== TOTAL GLOBAL ====== */}
               <p className="mt-6">
                 <strong>Total a devolver (todas las fechas):</strong>{' '}
                 <span className="text-red-600 font-bold text-lg">
@@ -340,7 +453,6 @@ const CancelarEvento = () => {
                 </span>
               </p>
 
-              {/* ====== MOTIVO ====== */}
               <p className="mt-4">
                 <strong>Motivo:</strong>
               </p>
@@ -376,6 +488,77 @@ const CancelarEvento = () => {
         </div>
       </div>
       <Footer />
+
+      {/* MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-lg mx-4 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {!cancelSuccess ? (
+              <>
+                <h2 className="text-xl font-bold mb-4 text-red-600">
+                  ¿Estás seguro de cancelar este evento?
+                </h2>
+                <p className="mb-3">
+                  Se devolverán todas las entradas que se hayan adquirido para este evento.
+                </p>
+                <p className="mb-3 text-red-500 font-semibold">
+                  Esta acción no se puede deshacer.
+                </p>
+
+                {confirmError && (
+                  <div className="alert alert-error mb-3">
+                    <span>{confirmError}</span>
+                  </div>
+                )}
+
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    className="btn btn-ghost"
+                    onClick={handleCloseModal}
+                    disabled={confirmLoading}
+                  >
+                    Volver
+                  </button>
+                  <button
+                    className="btn btn-error"
+                    onClick={handleConfirmCancel}
+                    disabled={confirmLoading}
+                  >
+                    {confirmLoading ? (
+                      <>
+                        <span className="loading loading-spinner loading-sm mr-2" />
+                        Cancelando...
+                      </>
+                    ) : (
+                      'Sí, cancelar evento'
+                    )}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-bold mb-4 text-green-600">
+                  Evento cancelado
+                </h2>
+                <p className="mb-2">Las entradas serán reembolsadas a la brevedad.</p>
+                <p className="mb-4 text-sm text-gray-600">
+                  El dinero se devuelve al mismo medio de pago de MercadoPago con el cual los
+                  clientes hayan realizado la compra, y lo verán reflejado dentro de los 7 días
+                  hábiles.
+                </p>
+                <div className="flex justify-end">
+                  <button className="btn btn-primary" onClick={handleSuccessAccept}>
+                    Aceptar
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
