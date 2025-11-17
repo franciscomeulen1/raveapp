@@ -214,6 +214,7 @@ const CancelarEvento = () => {
     setConfirmError('');
   };
 
+
   // === confirmar dentro del modal ===
   const handleConfirmCancel = async () => {
     if (!evento) {
@@ -231,7 +232,10 @@ const CancelarEvento = () => {
       setConfirmLoading(true);
       setConfirmError('');
 
-      // 1) Armamos primero el mail masivo (incluye motivo)
+      // Flag para saber si NO hay entradas pagas
+      let noHayPagas = false;
+
+      // ==== 1) MAIL MASIVO ====
       const titulo = `Se ha cancelado el evento ${evento.nombre}`;
       const motivoTexto =
         motivo.trim() || 'El organizador no especificó un motivo.';
@@ -252,12 +256,21 @@ Por este motivo, procedemos a realizar el reembolso de tu compra al medio de pag
         botonTexto: '',
       };
 
-      console.log('Payload mail masivo:', payloadMail);
+      try {
+        await api.post('/Email/EnvioMailGenericoMasivo', payloadMail);
+      } catch (mailError) {
+        const status = mailError?.response?.status;
+        if (status === 404) {
+          console.warn(
+            'No hay entradas pagas => no se enviaron mails masivos.'
+          );
+          noHayPagas = true; // 🔥 Este dato lo usamos más adelante
+        } else {
+          throw mailError;
+        }
+      }
 
-      // 1) PRIMERO: enviar mail masivo
-      await api.post('/Email/EnvioMailGenericoMasivo', payloadMail);
-
-      // 2) LUEGO: armar payload del evento con estado 5 (cancelado)
+      // ==== 2) ACTUALIZAR ESTADO DEL EVENTO ====
       const payloadEvento = {
         idEvento: evento.idEvento,
         idArtistas: (evento.artistas || []).map((a) => a.idArtista),
@@ -282,28 +295,42 @@ Por este motivo, procedemos a realizar el reembolso de tu compra al medio de pag
         soundCloud: evento.soundCloud,
       };
 
-      // 2) SEGUNDO: actualizar evento a estado 5
       await api.put('/Evento/UpdateEvento', payloadEvento);
 
-      // 3) TERCERO: reembolso masivo
-      await api.post('/Pago/ReembolsoMasivo', null, {
-        params: { idEvento: evento.idEvento },
-      });
+      // ==== 3) REEMBOLSO MASIVO ====
+      // Si sabemos que NO hay entradas pagas => no llamamos al endpoint
+      if (!noHayPagas) {
+        try {
+          await api.post('/Pago/ReembolsoMasivo', null, {
+            params: { idEvento: evento.idEvento },
+          });
+        } catch (refundError) {
+          const status = refundError?.response?.status;
+          if (status === 404) {
+            console.warn(
+              'No hay pagos para reembolsar => se omite reembolso masivo.'
+            );
+          } else {
+            throw refundError;
+          }
+        }
+      } else {
+        console.log('Skip reembolso: no hay pagas.');
+      }
 
       setCancelSuccess(true);
     } catch (e) {
-      console.error('Error al cancelar evento / enviar mail masivo:', e);
-      console.error('Respuesta backend:', e?.response?.data);
+      console.error('Error:', e);
+      console.error('Backend response:', e?.response?.data);
 
       setConfirmError(
         e?.response?.data?.message ||
-        'Ocurrió un error al cancelar el evento, reembolsar las entradas y/o enviar las notificaciones por mail.'
+        'Ocurrió un error al cancelar el evento, reembolsar o enviar los mails.'
       );
     } finally {
       setConfirmLoading(false);
     }
   };
-
 
 
 
