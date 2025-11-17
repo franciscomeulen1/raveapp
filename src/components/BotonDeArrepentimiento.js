@@ -242,6 +242,11 @@ Dicho importe se te ha reembolsado al medio de pago que hayas utilizado en Merca
               transcurrido 10 días corridos desde su compra, y siempre y cuando no falten menos de 48
               horas para que comience el evento.
               <br />
+              <br />
+              También, en el caso de hayas recibido un mail indicando que hubo modificaciones en el evento, 
+              podrás solicitar el reembolso de las entradas dentro de los 5 días corridos.
+              <br />
+              <br />
               Una vez recibida la solicitud, ejecutaremos el reembolso a la cuenta de MercadoPago de
               dónde salieron los fondos dentro de los 7 días hábiles.
             </p>
