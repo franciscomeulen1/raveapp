@@ -12,6 +12,7 @@ import InputDescripcionEvento from '../components/componentsCrearEvento/InputDes
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
 import InputMultimedia from '../components/componentsCrearEvento/InputMultimedia';
 import AclaracionModifEvento from '../components/componentsModifEvento/AclaracionModifEvento';
+import { enviarMailModifEvento } from '../components/componentsModifEvento/enviarMailModifEvento';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -270,7 +271,7 @@ const ModifDeEvento = () => {
   };
 
   // --- PUT del evento ---
-  const actualizarEvento = async () => {
+    const actualizarEvento = async () => {
     if (!validarFormulario()) return;
 
     try {
@@ -359,16 +360,29 @@ const ModifDeEvento = () => {
 
       console.log('Payload a enviar (FINAL):', payload);
 
+      // 1) Actualizar el evento
       await api.put('/Evento/UpdateEvento', payload);
+
+      // 2) Actualizar multimedia
       await actualizarMultimedia();
+
+      // 3) Actualizar precios de entradas
       await actualizarPreciosEntradas();
 
+      // 4) Enviar mails a compradores (404 esperado si no hay entradas en estado paga)
+      await enviarMailModifEvento({
+        idEvento: evento.idEvento,
+        nombreEvento: nombreEvento,
+      });
+
+      // 5) Mostrar modal de éxito
       setShowSuccessModal(true);
     } catch (err) {
       console.error('Error al actualizar evento:', err);
       alert('Ocurrió un error al actualizar el evento.');
     }
   };
+
 
   // --- PUT precios de entradas ---
   const actualizarPreciosEntradas = async () => {
@@ -688,6 +702,7 @@ export default ModifDeEvento;
 // import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
 // import InputMultimedia from '../components/componentsCrearEvento/InputMultimedia';
 // import AclaracionModifEvento from '../components/componentsModifEvento/AclaracionModifEvento';
+// import { enviarMailModifEvento } from '../components/componentsModifEvento/enviarMailModifEvento';
 // import api from '../componenteapi/api';
 // import { AuthContext } from '../context/AuthContext';
 
@@ -695,11 +710,12 @@ export default ModifDeEvento;
 //   const { id } = useParams();
 //   const location = useLocation();
 //   const navigate = useNavigate();
-//   const { user } = useContext(AuthContext); // <<--- usuario logueado
+//   const { user } = useContext(AuthContext); // usuario logueado
 
 //   // --- estados principales ---
 //   const [evento, setEvento] = useState(location.state?.evento || null);
-//   const [noAutorizado, setNoAutorizado] = useState(false); // <<--- nueva bandera
+//   const [noAutorizado, setNoAutorizado] = useState(false);
+//   const [estadoNoEditable, setEstadoNoEditable] = useState(false); // <<--- NUEVO
 
 //   const [nombreEvento, setNombreEvento] = useState('');
 //   const [descripcionEvento, setDescripcionEvento] = useState('');
@@ -726,7 +742,7 @@ export default ModifDeEvento;
 //   // modal de éxito
 //   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-//   // --- 1. cargar evento (GET directo si entro por URL) y chequear propietario ---
+//   // --- 1. cargar evento (GET directo si entro por URL) y chequear propietario + estado ---
 //   useEffect(() => {
 //     const idEvento = id || location.state?.evento?.idEvento;
 //     if (!idEvento) return;
@@ -737,30 +753,36 @@ export default ModifDeEvento;
 //         const eventoApi = res.data.eventos?.[0];
 
 //         if (!eventoApi) {
-//           // evento no existe
 //           setNoAutorizado(true);
 //           return;
 //         }
 
-//         // chequeo de propietario:
-//         // eventoApi.usuario.idUsuario  vs user.id  (ajustar si tu AuthContext usa otra prop, ej. user.idUsuario)
+//         // chequeo de propietario
 //         const idOwnerEvento = eventoApi.usuario?.idUsuario;
-//         const idUsuarioLogueado = user?.id; // <- si en tu AuthContext la propiedad es distinta, AJUSTAR AQUÍ
+//         const idUsuarioLogueado = user?.id; // tu AuthContext usa user.id
 
 //         if (!idUsuarioLogueado || idOwnerEvento !== idUsuarioLogueado) {
-//           // no es tuyo
 //           setNoAutorizado(true);
 //           return;
 //         }
 
-//         // si es tuyo:
+//         // chequeo de estado permitido (0, 1 o 2)
+//         const estadoEvento = eventoApi.cdEstado ?? eventoApi.estado ?? 0;
+//         const estadosPermitidos = [0, 1, 2];
+//         if (!estadosPermitidos.includes(estadoEvento)) {
+//           // es tuyo, pero no está en un estado que puedas modificar
+//           setEvento(eventoApi); // lo guardo igual para mostrar el nombre en el mensaje
+//           setEstadoNoEditable(true);
+//           return;
+//         }
+
+//         // si es tuyo y está en estado permitido
 //         setEvento(eventoApi);
 //         setNoAutorizado(false);
+//         setEstadoNoEditable(false);
 //         console.log('Evento (refrescado API):', eventoApi);
-
 //       } catch (err) {
 //         console.error('Error al obtener evento:', err);
-//         // error al cargar o sin permisos
 //         setNoAutorizado(true);
 //       }
 //     })();
@@ -945,7 +967,7 @@ export default ModifDeEvento;
 //     try {
 //       const DEFAULT_ESTADO_FECHA_NUEVA = 0; // estado por defecto si se agrega una nueva fecha
 
-//       // Normalizar domicilio para evitar nulls internos al PUT
+//       // Normalizar domicilio
 //       const domicilioNormalizado = ubicacionEvento
 //         ? {
 //             provincia: ubicacionEvento.provincia
@@ -981,7 +1003,6 @@ export default ModifDeEvento;
 //           }
 //         : null;
 
-//       // Fechas payload
 //       const fechasPayload = fechaHoraEvento.map((dia, i) => {
 //         const originalFecha = evento.fechas?.find(f => f.idFecha === dia.idFecha) || {};
 
@@ -1033,9 +1054,7 @@ export default ModifDeEvento;
 //       await actualizarMultimedia();
 //       await actualizarPreciosEntradas();
 
-//       // en vez de alert + navigate directo -> mostramos modal de éxito
 //       setShowSuccessModal(true);
-
 //     } catch (err) {
 //       console.error('Error al actualizar evento:', err);
 //       alert('Ocurrió un error al actualizar el evento.');
@@ -1089,7 +1108,6 @@ export default ModifDeEvento;
 //         const mediaResp = await api.get(`/Media?idEntidadMedia=${evento.idEvento}`);
 //         medias = mediaResp.data.media || [];
 //       } catch (err) {
-//         // si es 404 => no hay multimedia aún, lo ignoramos
 //         if (err.response && err.response.status !== 404) {
 //           throw err;
 //         }
@@ -1098,7 +1116,6 @@ export default ModifDeEvento;
 //       const imagenExistente = medias.find(m => m.url);
 //       const videoExistente = medias.find(m => m.mdVideo);
 
-//       // imagen nueva
 //       if (multimedia.file) {
 //         if (imagenExistente?.idMedia) await api.delete(`/Media/${imagenExistente.idMedia}`);
 
@@ -1111,7 +1128,6 @@ export default ModifDeEvento;
 //         });
 //       }
 
-//       // video nuevo
 //       if (multimedia.videoUrl) {
 //         if (videoExistente?.idMedia) await api.delete(`/Media/${videoExistente.idMedia}`);
 
@@ -1134,8 +1150,7 @@ export default ModifDeEvento;
 //   if (noAutorizado) {
 //     return (
 //       <div className="flex flex-col min-h-screen">
-//       <div className='flex-1'>
-//         <div className="sm:px-10 mb-11">
+//         <div className="flex-1 sm:px-10 mb-11">
 //           <NavBar />
 //           <div className="px-10 py-20 text-center">
 //             <h1 className="text-2xl font-bold text-red-600">
@@ -1149,6 +1164,37 @@ export default ModifDeEvento;
 //             </button>
 //           </div>
 //         </div>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   // --- Render alternativo si el evento es tuyo pero su estado no permite modificar ---
+//   if (estadoNoEditable) {
+//     const nombreFromState = location.state?.evento?.nombre;
+//     return (
+//       <div className="flex flex-col min-h-screen">
+//         <div className="flex-1 sm:px-10 mb-11">
+//           <NavBar />
+//           <div className="container mx-auto px-4 py-10 text-center">
+//             <h1 className="text-2xl font-bold mb-4">No se puede modificar este evento.</h1>
+//             <p className="text-red-600 font-semibold mb-2">
+//               Solo puedes modificar eventos que estén <strong>por aprobar</strong>,{' '}
+//               <strong>aprobados</strong> o <strong>en venta</strong>.
+//             </p>
+//             <p className="mb-6">
+//               Estabas intentando modificar:{' '}
+//               <span className="font-bold">
+//                 {evento?.nombre || nombreFromState || 'Evento desconocido'}
+//               </span>
+//             </p>
+//             <button
+//               className="btn btn-info"
+//               onClick={() => navigate('/mis-eventos-creados')}
+//             >
+//               Volver a mis eventos
+//             </button>
+//           </div>
 //         </div>
 //         <Footer />
 //       </div>
@@ -1159,7 +1205,7 @@ export default ModifDeEvento;
 //   if (!evento) {
 //     return (
 //       <div className="flex flex-col min-h-screen">
-//         <div className="sm:px-10 mb-11">
+//         <div className="flex-1 sm:px-10 mb-11">
 //           <NavBar />
 //           <div className="px-10 py-20 text-center">
 //             <p className="text-lg">Cargando evento...</p>
@@ -1191,28 +1237,28 @@ export default ModifDeEvento;
 //             />
 //           </div>
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputGeneroMusical
 //             onSeleccionGeneros={setGenerosSeleccionados}
 //             valorInicial={evento?.genero || []}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputDeArtistas
 //             onSeleccionarArtistas={setArtistasSeleccionados}
 //             artistasIniciales={artistasSeleccionados}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputUbicacionEvento
 //             onUbicacionChange={setUbicacionEvento}
 //             ubicacionInicial={evento?.domicilio}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputAfterOLbgt
 //             onSeleccion={setAfterOLgbt}
@@ -1222,14 +1268,14 @@ export default ModifDeEvento;
 //             }}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputDescripcionEvento
 //             onDescripcionChange={setDescripcionEvento}
 //             valorInicial={evento?.descripcion || ''}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           {fechaHoraEvento.length > 0 && (
 //             <InputFechaHoraEvento
@@ -1239,7 +1285,7 @@ export default ModifDeEvento;
 //             />
 //           )}
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputEntradasCantPrecio
 //             diasEvento={fechaHoraEvento.length}
@@ -1248,7 +1294,7 @@ export default ModifDeEvento;
 //             soloEditarPrecios={true}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputConfigEntradas
 //             diasEvento={fechaHoraEvento.length}
@@ -1257,7 +1303,7 @@ export default ModifDeEvento;
 //             configInicial={configFechasVenta}
 //           />
 
-//           <hr className='my-4 w-1/2 border-gray-500' style={{ marginLeft: 0 }} />
+//           <hr className="my-4 w-1/2 border-gray-500" style={{ marginLeft: 0 }} />
 
 //           <InputMultimedia
 //             onMultimediaChange={setMultimedia}
@@ -1310,7 +1356,6 @@ export default ModifDeEvento;
 //             </div>
 //           </div>
 //         )}
-
 //       </div>
 //       <Footer />
 //     </div>
