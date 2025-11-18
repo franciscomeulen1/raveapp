@@ -16,9 +16,9 @@ export const enviarMailModifEvento = async ({ idEvento, nombreEvento }) => {
     const payloadMail = {
         idEvento: String(idEvento),
         titulo: `Modificación de evento ${nombreEvento}`,
-        cuerpo: `<p>Estimados: hubo una modificación en los detalles del evento ${nombreEvento}.</p>
-<p>Por dicho motivo, si lo desean, pueden solicitar un reembolso de su entrada dentro de los 5 días corridos desde la percepción de este correo. <br>
-El reembolso de la/s entrada/s se solicita ingreando a RaveApp &gt; Menú &gt; Mis Entradas &gt; Seleccionar la entrada correspondiente al evento &gt; Botón de arrepentimiento.</p> 
+        cuerpo: `<p>Estimados: hubo una modificación en los detalles del evento <strong>${nombreEvento}</strong>.</p>
+<p>Por dicho motivo, si lo desean, pueden solicitar un reembolso de su entrada dentro de los 5 días corridos desde la percepción de este correo. <br><br>
+El reembolso de la/s entrada/s lo puedes solicitar ingresando a la web de RaveApp &gt; Menú &gt; Mis Entradas &gt; Seleccionar la entrada correspondiente al evento &gt; Botón de arrepentimiento.</p> 
 <p>Atentamente,<br>El equipo de <strong>RaveApp</strong></p>`,
         botonUrl: `https://raveapp.com.ar/evento/${idEvento}`,
         botonTexto: 'Ver evento',
