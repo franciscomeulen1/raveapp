@@ -26,6 +26,9 @@ export default function ReseniasDeLaFiesta() {
   const [avg, setAvg] = useState({ avgEstrellas: 0, cantResenias: 0 });
   const [resenias, setResenias] = useState([]);
 
+  // 👇 NUEVO: mapa de avatares por idUsuario
+  const [avatars, setAvatars] = useState({}); // { [idUsuario]: url }
+
   // UI
   const [searchTerm, setSearchTerm] = useState('');
   const [order, setOrder] = useState('desc'); // 'desc' (más reciente primero) o 'asc'
@@ -62,8 +65,6 @@ export default function ReseniasDeLaFiesta() {
 
         if (fiesta.idUsuario !== loggedUser.id) {
           if (!cancelled) setNotOwner(true);
-          // Si prefieres redirigir directamente:
-          // navigate('/misfiestasrecurrentes', { replace: true });
           return;
         }
 
@@ -114,6 +115,75 @@ export default function ReseniasDeLaFiesta() {
     fetchAll();
     return () => { cancelled = true; };
   }, [id, loggedUser?.id, navigate]);
+
+  // 👇 NUEVO: cargar avatares de los usuarios que dejaron reseñas
+  useEffect(() => {
+    if (!resenias || resenias.length === 0) {
+      setAvatars({});
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchAvatars = async () => {
+      try {
+        // ids únicos de usuarios con reseñas
+        const uniqueIds = Array.from(
+          new Set(
+            resenias
+              .map((r) => r.idUsuario)
+              .filter(Boolean)
+          )
+        );
+
+        if (uniqueIds.length === 0) {
+          if (!cancelled) setAvatars({});
+          return;
+        }
+
+        const results = await Promise.all(
+          uniqueIds.map(async (idUsuario) => {
+            try {
+              const res = await api.get('/Media', {
+                params: { idEntidadMedia: idUsuario },
+              });
+
+              const mediaArr = res?.data?.media;
+              const url =
+                Array.isArray(mediaArr) && mediaArr.length > 0
+                  ? mediaArr[0].url
+                  : null;
+
+              return [idUsuario, url];
+            } catch (e) {
+              console.error('Error cargando avatar para usuario', idUsuario, e);
+              return [idUsuario, null];
+            }
+          })
+        );
+
+        if (!cancelled) {
+          const map = {};
+          for (const [idUsuario, url] of results) {
+            if (url) {
+              map[idUsuario] = url;
+            }
+          }
+          setAvatars(map);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          console.error('Error en la carga de avatares', e);
+        }
+      }
+    };
+
+    fetchAvatars();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [resenias]);
 
   const renderAvgStars = (valor) => {
     const full = Math.floor(valor);
@@ -294,7 +364,6 @@ export default function ReseniasDeLaFiesta() {
             </div>
           </div>
 
-
           {/* Listado */}
           <div className="mt-6">
             {noHayResenias ? (
@@ -313,11 +382,27 @@ export default function ReseniasDeLaFiesta() {
               reseniasFiltradasYOrdenadas.map((r) => {
                 const nombreCompleto = `${r.nombreUsuario ?? ''} ${r.apellidoUsuario ?? ''}`.trim() || 'Usuario';
                 const fecha = new Date(r.dtInsert).toLocaleDateString('es-AR');
+
+                // 👇 NUEVO: url de avatar para este usuario
+                const avatarUrl = avatars[r.idUsuario];
+
                 return (
                   <div key={r.idResenia} className="border-b-2 border-gray-200 rounded-lg p-4 mb-4">
                     {/* Mobile */}
                     <div className="sm:hidden">
-                      <span className="text-sm font-bold break-words">{nombreCompleto}</span>
+                      <div className="flex items-center gap-3">
+                        {avatarUrl ? (
+                          <img
+                            src={avatarUrl}
+                            alt={`Foto de perfil de ${nombreCompleto}`}
+                            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0" />
+                        )}
+                        <span className="text-sm font-bold break-words">{nombreCompleto}</span>
+                      </div>
+
                       <div className="mt-1 flex items-center justify-between">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
@@ -334,9 +419,22 @@ export default function ReseniasDeLaFiesta() {
 
                     {/* Desktop / tablet */}
                     <div className="hidden sm:grid sm:grid-cols-12 sm:items-center">
-                      <span className="sm:text-sm xl:text-base font-bold break-words sm:col-span-5">
-                        {nombreCompleto}
-                      </span>
+                      {/* Avatar + Nombre */}
+                      <div className="flex items-center gap-3 sm:col-span-5">
+                        {avatarUrl ? (
+                          <img
+                            src={avatarUrl}
+                            alt={`Foto de perfil de ${nombreCompleto}`}
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0" />
+                        )}
+                        <span className="sm:text-sm xl:text-base font-bold break-words">
+                          {nombreCompleto}
+                        </span>
+                      </div>
+
                       <div className="flex items-center sm:justify-center sm:col-span-4">
                         {[...Array(5)].map((_, i) => (
                           <FontAwesomeIcon
@@ -352,7 +450,9 @@ export default function ReseniasDeLaFiesta() {
                     </div>
 
                     {/* Comentario */}
-                    <p className="text-sm xl:text-base mt-2 whitespace-pre-line break-words">{r.comentario}</p>
+                    <p className="text-sm xl:text-base mt-2 whitespace-pre-line break-words">
+                      {r.comentario}
+                    </p>
                   </div>
                 );
               })

@@ -12,6 +12,9 @@ const Resenias = ({ idFiesta }) => {
     const [order, setOrder] = useState('desc'); // 'desc' (default) o 'asc'
     const [openMenu, setOpenMenu] = useState(false);
 
+    // 👇 NUEVO: mapa de avatares por idUsuario
+    const [avatars, setAvatars] = useState({}); // { [idUsuario]: url }
+
     useEffect(() => {
         let cancelled = false;
 
@@ -48,6 +51,75 @@ const Resenias = ({ idFiesta }) => {
         if (idFiesta) fetchData();
         return () => { cancelled = true; };
     }, [idFiesta]);
+
+    // 👇 NUEVO: cargar avatares de los usuarios que dejaron reseñas
+    useEffect(() => {
+        if (!resenias || resenias.length === 0) {
+            setAvatars({});
+            return;
+        }
+
+        let cancelled = false;
+
+        const fetchAvatars = async () => {
+            try {
+                // ids únicos de usuarios con reseñas
+                const uniqueIds = Array.from(
+                    new Set(
+                        resenias
+                            .map(r => r.idUsuario)
+                            .filter(Boolean)
+                    )
+                );
+
+                if (uniqueIds.length === 0) {
+                    if (!cancelled) setAvatars({});
+                    return;
+                }
+
+                const results = await Promise.all(
+                    uniqueIds.map(async (idUsuario) => {
+                        try {
+                            const res = await api.get('/Media', {
+                                params: { idEntidadMedia: idUsuario }
+                            });
+
+                            const mediaArr = res?.data?.media;
+                            const url =
+                                Array.isArray(mediaArr) && mediaArr.length > 0
+                                    ? mediaArr[0].url
+                                    : null;
+
+                            return [idUsuario, url];
+                        } catch (e) {
+                            console.error('Error cargando avatar para usuario', idUsuario, e);
+                            return [idUsuario, null];
+                        }
+                    })
+                );
+
+                if (!cancelled) {
+                    const map = {};
+                    for (const [idUsuario, url] of results) {
+                        if (url) {
+                            map[idUsuario] = url;
+                        }
+                    }
+                    setAvatars(map);
+                }
+            } catch (e) {
+                if (!cancelled) {
+                    console.error('Error en la carga de avatares', e);
+                }
+            }
+        };
+
+        fetchAvatars();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [resenias]);
 
     const reseniasOrdenadas = useMemo(() => {
         const copiita = [...resenias];
@@ -101,7 +173,6 @@ const Resenias = ({ idFiesta }) => {
     return (
         <div className="p-4">
             {/* Header responsive */}
-            {/* Header: título (fila 1) y, debajo, promedio + ordenar en la misma fila en todas las pantallas */}
             <div className="mb-4">
                 {/* Fila 1: título */}
                 <h2 className="text-xl font-bold underline underline-offset-8">
@@ -159,17 +230,20 @@ const Resenias = ({ idFiesta }) => {
                 </div>
             </div>
 
-
-
             {/* Listado */}
             {reseniasOrdenadas.length === 0 ? (
                 <div className="p-4 border rounded-lg">
-                    <p className="text-gray-600">Aún no hay reseñas para esta fiesta. ¡Sé el primero en opinar luego de comprar una entrada y asistir al evento!</p>
+                    <p className="text-gray-600">
+                        Aún no hay reseñas para esta fiesta. ¡Sé el primero en opinar luego de comprar una entrada y asistir al evento!
+                    </p>
                 </div>
             ) : (
                 reseniasOrdenadas.map((r) => {
                     const nombreCompleto = `${r.nombreUsuario ?? ''} ${r.apellidoUsuario ?? ''}`.trim() || 'Usuario';
                     const fecha = new Date(r.dtInsert).toLocaleDateString('es-AR');
+
+                    // 👇 NUEVO: url del avatar para este usuario
+                    const avatarUrl = avatars[r.idUsuario];
 
                     return (
                         <div
@@ -177,9 +251,20 @@ const Resenias = ({ idFiesta }) => {
                             className="border-b-2 border-gray-200 rounded-lg p-4 mb-4"
                         >
                             {/* Header de cada reseña */}
-                            {/* Mobile (xs) → nombre en 1ra fila; estrellas izquierda + fecha derecha en 2da fila */}
+                            {/* Mobile (xs) → avatar + nombre (1ra fila); estrellas izquierda + fecha derecha (2da fila) */}
                             <div className="sm:hidden">
-                                <span className="text-sm font-bold break-words">{nombreCompleto}</span>
+                                <div className="flex items-center gap-3">
+                                    {avatarUrl ? (
+                                        <img
+                                            src={avatarUrl}
+                                            alt={`Foto de perfil de ${nombreCompleto}`}
+                                            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                                        />
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0" />
+                                    )}
+                                    <span className="text-sm font-bold break-words">{nombreCompleto}</span>
+                                </div>
 
                                 <div className="mt-1 flex items-center justify-between">
                                     <div className="flex items-center">
@@ -195,10 +280,23 @@ const Resenias = ({ idFiesta }) => {
                                 </div>
                             </div>
 
-                            {/* Desktop / tablet (sm+) → grilla como ya la tenías */}
+                            {/* Desktop / tablet (sm+) → grilla con avatar + nombre en la primera columna */}
                             <div className="hidden sm:grid sm:grid-cols-12 sm:items-center">
-                                {/* Nombre */}
-                                <span className="sm:text-sm xl:text-base font-bold break-words sm:col-span-5">{nombreCompleto}</span>
+                                {/* Avatar + Nombre */}
+                                <div className="flex items-center gap-3 sm:col-span-5">
+                                    {avatarUrl ? (
+                                        <img
+                                            src={avatarUrl}
+                                            alt={`Foto de perfil de ${nombreCompleto}`}
+                                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                                        />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0" />
+                                    )}
+                                    <span className="sm:text-sm xl:text-base font-bold break-words">
+                                        {nombreCompleto}
+                                    </span>
+                                </div>
 
                                 {/* Estrellas */}
                                 <div className="flex items-center sm:justify-center sm:col-span-4">
@@ -212,13 +310,15 @@ const Resenias = ({ idFiesta }) => {
                                 </div>
 
                                 {/* Fecha */}
-                                <span className="sm:text-sm xl:text-base text-gray-500 sm:text-right">{fecha}</span>
-
+                                <span className="sm:text-sm xl:text-base text-gray-500 sm:text-right">
+                                    {fecha}
+                                </span>
                             </div>
 
-
                             {/* Comentario */}
-                            <p className="text-sm xl:text-base mt-2 whitespace-pre-line break-words">{r.comentario}</p>
+                            <p className="text-sm xl:text-base mt-2 whitespace-pre-line break-words">
+                                {r.comentario}
+                            </p>
                         </div>
                     );
                 })
@@ -228,88 +328,3 @@ const Resenias = ({ idFiesta }) => {
 };
 
 export default Resenias;
-
-
-
-// import React from 'react';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos de estrella sólida y media desde FontAwesome
-
-// const Resenias = () => {
-//     const resenias = [
-//         {
-//             nombre: 'Carlos Menem',
-//             calificacion: 4,
-//             diasAtras: 3,
-//             comentario: 'Excelente evento, me encantó la música y el ambiente.',
-//         },
-//         {
-//             nombre: 'Teté Coustarot',
-//             calificacion: 3,
-//             diasAtras: 5,
-//             comentario: '¡Increíble experiencia! Sin duda volvería a asistir.',
-//         },
-//         // Agrega más reseñas según necesites
-//     ];
-
-//     // Calcula el promedio de las calificaciones
-//     const promedioCalificaciones = resenias.reduce((total, resenia) => total + resenia.calificacion, 0) / resenias.length;
-
-//     // Obtiene la parte entera y decimal del promedio
-//     const parteEntera = Math.floor(promedioCalificaciones);
-//     const parteDecimal = promedioCalificaciones - parteEntera;
-
-//     // Crea un arreglo con el número de estrellas completas
-//     const estrellasCompletas = Array(parteEntera).fill(faStar);
-
-//     // Si hay parte decimal, agrega una estrella media
-//     if (parteDecimal > 0) {
-//         estrellasCompletas.push(faStarHalfAlt);
-//     }
-
-//     return (
-//         <div className="p-4">
-//             <div className="flex items-center justify-between mb-4 gap-x-1">
-//                 <h2 className="text-xl font-bold underline underline-offset-8">Reseñas del evento</h2>
-//                 <div className="flex items-center">
-//                     <div className="flex items-center">
-//                         {/* Mostrar las estrellas del promedio */}
-//                         {estrellasCompletas.map((icon, index) => (
-//                             <FontAwesomeIcon
-//                                 icon={icon}
-//                                 key={index}
-//                                 className={`h-5 w-5 text-yellow-500`}
-//                             />
-//                         ))}
-//                     </div>
-//                     <span className="text-gray-500 ml-2">{promedioCalificaciones.toFixed(1)}</span>
-//                     <span className="text-gray-500 ml-2">({resenias.length} reseñas)</span>
-//                 </div>
-//             </div>
-//             {resenias.map((resenia, index) => (
-//                 <div key={index} className="border-b-2 border-gray-400 rounded-lg p-4 mb-4">
-//                     <div className="flex items-center justify-between mb-2">
-//                         <span className="font-bold">{resenia.nombre}</span>
-//                         <div className="flex items-center">
-//                             {/* Mostrar las estrellas */}
-//                             {[...Array(5)].map((_, i) => (
-//                                 <FontAwesomeIcon
-//                                     icon={faStar}
-//                                     key={i}
-//                                     className={`h-5 w-5 ${i < resenia.calificacion ? 'text-yellow-500' : 'text-gray-300'
-//                                         }`}
-//                                 />
-//                             ))}
-//                         </div>
-//                         <span className="text-gray-500">{resenia.diasAtras} días atrás</span>
-//                     </div>
-//                     <p>{resenia.comentario}</p>
-//                 </div>
-//             ))}
-//         </div>
-//     );
-// };
-
-// export default Resenias;
-
-

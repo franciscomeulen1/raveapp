@@ -175,10 +175,9 @@ export default function ReporteVentasEvento() {
       ? cbuOrganizador
       : 'CBU aún no informado por el dueño del evento';
 
-  const correoConfirmado =
-    usuarioOrganizador?.bio?.trim() === '1'
-      ? 'confirmado'
-      : 'no-confirmado';
+  const correoConfirmado = Boolean(usuarioOrganizador?.isVerificado)
+  ? 'confirmado'
+  : 'no-confirmado';
 
   // Domicilio formateado (evitando repeticiones)
   let ubicacionFormateada = '';
