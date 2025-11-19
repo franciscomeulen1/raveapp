@@ -29,8 +29,6 @@ function EditarCarousel() {
         fetchImagenes();
     }, []);
 
-
-
     const handleSeleccion = (e, id) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -63,7 +61,6 @@ function EditarCarousel() {
                     await api.delete(`/Media/${mediaActual.idMedia}`);
                 }
             } catch (error) {
-                // Si no existe imagen previa, no hay problema, continuamos
                 console.warn(`No se encontró imagen previa para ${id}, se subirá como nueva.`);
             }
 
@@ -119,8 +116,6 @@ function EditarCarousel() {
         setMensajes(prev => ({ ...prev, [id]: null }));
     };
 
-
-
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-1">
@@ -128,39 +123,68 @@ function EditarCarousel() {
                     <NavBar />
                 </div>
                 <div className="p-4 sm:p-6 max-w-full sm:max-w-4xl mx-auto w-full">
-
                     <h2 className="text-2xl font-bold mb-6 text-center">Editar Carrusel</h2>
+
+                    <p className='text-sm mb-4'><span className='font-semibold text-purple-700'>Recomendación:</span><br />
+                    Usar imágenes en formato 16:9, idealmente 1280 × 720 px.<br />
+                    El carrusel recorta la imagen horizontalmente, por lo que se recomienda usar imagenes panorámicas.</p>
 
                     {idsCarousel.map((id, index) => (
                         <div key={id} className="mb-8 border-b pb-6">
-                            <h3 className="text-lg font-semibold mb-2">Imagen de carrusel {index + 1}</h3>
+                            <h3 className="text-lg font-semibold mb-2">
+                                Imagen de carrusel {index + 1}
+                            </h3>
 
+                            {/* Imagen actual con el mismo "frame" que el carrusel */}
                             {imagenes[id] && (
-                                <div className="mb-2">
-                                    <p className="text-sm text-gray-500">Imagen actual:</p>
-                                    <img
-                                        src={imagenes[id]}
-                                        alt={`carousel-${index + 1}`}
-                                        className="w-full max-h-48 object-cover rounded shadow"
-                                    />
-
+                                <div className="mb-3">
+                                    <p className="text-sm text-gray-500 mb-1">Imagen actual:</p>
+                                    <div
+                                        className="
+                                            w-full
+                                            h-44
+                                            rounded-md
+                                            overflow-hidden
+                                            bg-gray-200
+                                            shadow
+                                        "
+                                    >
+                                        <img
+                                            src={imagenes[id]}
+                                            alt={`carousel-${index + 1}`}
+                                            className="w-full h-full object-cover object-center block"
+                                        />
+                                    </div>
                                 </div>
                             )}
 
+                            {/* Vista previa con el mismo "frame" */}
                             {previews[id] && (
-                                <div className="mb-2">
-                                    <p className="text-sm text-gray-500">Vista previa:</p>
-                                    <img
-                                        src={previews[id]}
-                                        alt={`preview-${id}`}
-                                        className="w-full max-h-48 object-cover rounded border"
-                                    />
-
+                                <div className="mb-3">
+                                    <p className="text-sm text-gray-500 mb-1">Vista previa:</p>
+                                    <div
+                                        className="
+                                            w-full
+                                            h-44
+                                            rounded-md
+                                            overflow-hidden
+                                            bg-gray-200
+                                            border
+                                        "
+                                    >
+                                        <img
+                                            src={previews[id]}
+                                            alt={`preview-${id}`}
+                                            className="w-full h-full object-cover object-center block"
+                                        />
+                                    </div>
                                 </div>
                             )}
 
                             {mensajes[id] && (
-                                <p className="text-green-600 font-semibold mb-2">{mensajes[id]}</p>
+                                <p className="text-green-600 font-semibold mb-2">
+                                    {mensajes[id]}
+                                </p>
                             )}
 
                             <div className="flex flex-col sm:flex-row flex-wrap gap-2 mt-2">
@@ -195,9 +219,6 @@ function EditarCarousel() {
                                     Eliminar imagen actual
                                 </button>
                             </div>
-
-
-
                         </div>
                     ))}
 

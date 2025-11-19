@@ -102,6 +102,9 @@ const InputMultimedia = ({ onMultimediaChange, onErrorChange, imagenInicial, vid
                 <span className="text-sm text-gray-500 mt-1">
                     La imagen debe pesar menos de 2MB y ser JPG, JPEG o PNG.
                 </span>
+                <p className='text-sm mt-2'><span className='font-semibold text-sky-600'>Recomendación:</span><br />
+                    Usar imagen horizontal de 1200 × 600 px (relación 2:1).<br />
+                    La imagen se recortará en formato panorámico para ajustarse a la tarjeta del inicio.</p>
 
                 {/* ✅ Previsualización similar a la card del inicio */}
                 {previewUrl && (
