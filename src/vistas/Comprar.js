@@ -514,6 +514,7 @@ export default function Comprar() {
         telefono: usuarioData?.telefono || form.telefono,
         bio: usuarioData?.bio || '',
         cbu: usuarioData?.cbu || '',
+        isVerificado: usuarioData?.isVerificado,
         dtNacimiento: usuarioData?.dtNacimiento || new Date(form.birthdate).toISOString(),
         cdRoles: usuarioData?.roles?.map((r) => r.cdRol) || [],
         domicilio: {

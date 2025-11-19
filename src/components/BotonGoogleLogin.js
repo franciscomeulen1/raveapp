@@ -50,10 +50,11 @@ const BotonGoogleLogin = ({ setError }) => {
           cbu: '',
           dni: '',
           telefono: '',
-          bio: '1',
+          bio: '',
           password: generateRandomPassword(),
           socials: { idSocial: '', mdInstagram: '', mdSpotify: '', mdSoundcloud: '' },
           dtNacimiento: null,
+          isVerificado: true
         };
 
         try {

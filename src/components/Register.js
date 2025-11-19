@@ -88,7 +88,7 @@ const Register = () => {
       cbu: '',
       dni: formData.dni,
       telefono: formData.telefono,
-      bio: '0',
+      bio: '',
       password: formData.password,
       socials: {
         idSocial: '',
@@ -97,6 +97,7 @@ const Register = () => {
         mdSoundcloud: '',
       },
       dtNacimiento: new Date(formData.fechaNacimiento).toISOString(),
+      isVerificado: false
     };
 
     try {
