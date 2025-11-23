@@ -6,11 +6,30 @@ export default function ResumenCompra({ evento, purchaseItems, subtotal, service
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
         {/* Imagen */}
         <div className="flex justify-center lg:justify-start">
+        <div
+        className="
+          w-full
+          max-w-md        /* ← igual que tu versión original */
+          aspect-[1.4]    /* relación un poco más cuadrada que 1.4, para flyers medianos */
+          bg-gray-100
+          rounded-xl
+          overflow-hidden
+          flex items-center justify-center
+        "
+      >
           <img
             src={imagenEvento}
             alt="Imagen del evento"
-            className="rounded-xl shadow-md object-contain h-40 sm:h-48 md:h-56 lg:h-64 w-[90%] sm:w-80 md:w-96 lg:w-full"
+            className="
+            block
+            w-full h-full
+            object-cover object-center
+            rounded-xl
+          "
+            width={448}
+            height={320}  
           />
+          </div>
         </div>
 
         {/* Items */}

@@ -11,6 +11,7 @@ import InputGeneroMusical from '../components/componentsCrearEvento/InputGeneroM
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
 import InputMultimedia from '../components/componentsCrearEvento/InputMultimedia';
+import CheckTyC from '../components/componentCheckTyC/CheckTyC';
 import AclaracionModifEvento from '../components/componentsModifEvento/AclaracionModifEvento';
 import { enviarMailModifEvento } from '../components/componentsModifEvento/enviarMailModifEvento';
 import api from '../componenteapi/api';
@@ -34,6 +35,7 @@ const ModifDeEvento = () => {
   const [artistasSeleccionados, setArtistasSeleccionados] = useState([]);
   const [afterOLgbt, setAfterOLgbt] = useState({ isAfter: false, isLgbt: false });
   const [fechaHoraEvento, setFechaHoraEvento] = useState([]);
+  const [aceptaTyC, setAceptaTyC] = useState(false);
 
   const setFechaHoraEventoCallback = useCallback((nuevasFechas) => {
     setFechaHoraEvento(nuevasFechas);
@@ -265,6 +267,10 @@ const ModifDeEvento = () => {
     }
     if (!confirmacionModificacion) {
       alert('Debes confirmar que deseas modificar el evento.');
+      return false;
+    }
+    if (!aceptaTyC) {
+      alert('Debes aceptar los términos y condiciones para continuar.');
       return false;
     }
     return true;
@@ -648,6 +654,8 @@ const ModifDeEvento = () => {
             </label>
           </div>
 
+          <CheckTyC onChange={setAceptaTyC} />
+
           <button
             type="button"
             onClick={actualizarEvento}
@@ -655,6 +663,7 @@ const ModifDeEvento = () => {
           >
             Guardar cambios
           </button>
+
         </form>
 
         {/* MODAL DE ÉXITO */}

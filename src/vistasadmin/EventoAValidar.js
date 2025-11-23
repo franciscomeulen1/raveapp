@@ -182,7 +182,7 @@ const EventoAValidar = () => {
             const emailPayload = {
                 to: usuario.correo,
                 titulo: `Evento aprobado: ${evento.nombre}`,
-                cuerpo: 'El evento puede tardar algunos minutos en aparecer en RaveApp.',
+                cuerpo: 'A partir de la fecha y hora que hayas elegido para que comience la venta de entradas, el evento puede tardar algunos minutos en aparecer en RaveApp.',
                 botonUrl: `http://raveapp.com.ar/evento/${evento.idEvento}`,
                 botonTexto: 'Ver evento',
             };

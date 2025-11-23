@@ -9,7 +9,7 @@ import api from '../componenteapi/api';
 import ResumenCompra from '../components/componentsComprar/ResumenCompra';
 import DatosUsuario from '../components/componentsComprar/DatosUsuario';
 import DomicilioFacturacion from '../components/componentsComprar/DomicilioFacturacion';
-import TyCPrivacidad from '../components/componentsComprar/TyCPrivacidad';
+import CheckTyC from '../components/componentCheckTyC/CheckTyC';
 import ModalRedireccion from '../components/componentsComprar/ModalRedireccion';
 import CountdownBar from '../components/componentsComprar/CountdownBar';
 import ModalReservaPendiente from '../components/componentsComprar/ModalReservaPendiente';
@@ -58,6 +58,7 @@ export default function Comprar() {
   const [selectedMunicipio, setSelectedMunicipio] = useState(null);
   const [selectedLocalidad, setSelectedLocalidad] = useState(null);
   const [direccion, setDireccion] = useState('');
+  const [aceptaTyC, setAceptaTyC] = useState(false);
 
   const [remainingSec, setRemainingSec] = useState(600);
   const timerRef = useRef(null);
@@ -486,6 +487,11 @@ export default function Comprar() {
     setErrors(currentErrors);
     if (Object.keys(currentErrors).length > 0) return;
 
+    if (!aceptaTyC) {
+      alert('Debes aceptar los términos y condiciones para continuar.');
+      return false;
+    }
+
     const camposACompletar = [
       !usuarioData?.telefono && form.telefono,
       !usuarioData?.dni && form.numeroId,
@@ -622,7 +628,7 @@ export default function Comprar() {
             onDireccionChange={setDireccion}
           />
 
-          <TyCPrivacidad />
+          <CheckTyC onChange={setAceptaTyC} />
 
           <div className="col-span-1 sm:col-span-2 lg:col-span-3">
             <p className="text-sm">

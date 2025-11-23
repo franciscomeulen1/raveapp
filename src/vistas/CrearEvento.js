@@ -13,7 +13,7 @@ import InputCantDiasEvento from '../components/componentsCrearEvento/InputCantDi
 import InputEsEventoRecurrente from '../components/componentsCrearEvento/InputEsEventoRecurrente';
 import InputDescripcionEvento from '../components/componentsCrearEvento/InputDescripcionEvento';
 import InputAfterOLbgt from '../components/componentsCrearEvento/InputAfterOLgbt';
-import CheckTyC from '../components/componentsCrearEvento/CheckTyC';
+import CheckTyC from '../components/componentCheckTyC/CheckTyC';
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
 
