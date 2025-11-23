@@ -135,7 +135,6 @@ export default function Carousel() {
   );
 }
 
-
 // import React, { useEffect, useRef, useState } from 'react';
 // import api from '../componenteapi/api';
 
@@ -172,9 +171,10 @@ export default function Carousel() {
 //     }
 //   };
 
-//   if (imagenes.every(img => !img.url)) {
+//   // Si no hay ninguna imagen válida
+//   if (imagenes.every((img) => !img.url)) {
 //     return (
-//       <div className="h-48 flex items-center justify-center bg-base-200 text-gray-500">
+//       <div className="h-48 flex items-center justify-center bg-base-200 text-gray-500 rounded-md mx-auto lg:w-5/6 mb-6">
 //         No hay imágenes cargadas en el carrusel.
 //       </div>
 //     );
@@ -184,34 +184,98 @@ export default function Carousel() {
 //     <div>
 //       <div
 //         ref={carouselRef}
-//         className="carousel w-full lg:w-5/6 h-48 mx-auto mb-6"
-//         style={{ overflowX: 'scroll', scrollSnapType: 'x mandatory' }}
+//         className="
+//           carousel
+//           w-full lg:w-5/6
+//           mx-auto mb-6
+//           rounded-md
+//           overflow-hidden
+//           bg-gray-200
+//         "
+//         style={{
+//           overflowX: 'scroll',
+//           scrollSnapType: 'x mandatory',
+//           scrollBehavior: 'smooth',
+//         }}
 //       >
-//         {imagenes.map((img, index) => (
-//           <div key={img.id} id={`slide${index}`} className="carousel-item relative w-full">
-//             {img.url ? (
-//               <img src={img.url} alt={`carousel-${index + 1}`} className="w-full h-auto object-cover" />
-//             ) : (
-//               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
-//                 Imagen no disponible
+//         {imagenes.map((img, index) => {
+//           const isFirst = index === 0;
+
+//           return (
+//             <div
+//               key={img.id}
+//               id={`slide${index}`}
+//               className="
+//                 carousel-item
+//                 relative
+//                 w-full
+//                 flex-shrink-0
+//                 scroll-snap-align-start
+//               "
+//               style={{ scrollSnapAlign: 'start' }}
+//             >
+//               {/* Contenedor panorámico con relación fija */}
+//               <div
+//                 className="
+//                   w-full
+//                   aspect-[6/1]      /* 🔹 banner panorámico, podés probar 3/1, 16/5, etc */
+//                   bg-black
+//                   overflow-hidden
+//                   flex items-center justify-center
+//                 "
+//               >
+//                 {img.url ? (
+//                   <img
+//                     src={img.url}
+//                     alt={`carousel-${index + 1}`}
+//                     loading={isFirst ? 'eager' : 'lazy'}
+//                     width={1280}
+//                     height={720}
+//                     className="
+//                       block
+//                       w-full h-full
+//                       object-cover object-center   /* 🔥 recorta pero NO deforma */
+//                     "
+//                     onError={(e) => {
+//                       e.target.onerror = null;
+//                       e.target.replaceWith(
+//                         (() => {
+//                           const fallbackDiv = document.createElement('div');
+//                           fallbackDiv.className =
+//                             'w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 text-sm';
+//                           fallbackDiv.textContent = 'Imagen no disponible';
+//                           return fallbackDiv;
+//                         })()
+//                       );
+//                     }}
+//                   />
+//                 ) : (
+//                   <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 text-sm">
+//                     Imagen no disponible
+//                   </div>
+//                 )}
 //               </div>
-//             )}
-//             <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-//               <button
-//                 className="btn btn-circle"
-//                 onClick={() => goToSlide((index - 1 + imagenes.length) % imagenes.length)}
-//               >
-//                 ❮
-//               </button>
-//               <button
-//                 className="btn btn-circle"
-//                 onClick={() => goToSlide((index + 1) % imagenes.length)}
-//               >
-//                 ❯
-//               </button>
+
+//               {/* Flechas encima del banner */}
+//               <div className="absolute inset-0 flex justify-between items-center px-3 sm:px-4">
+//                 <button
+//                   className="btn btn-circle btn-sm sm:btn-md shadow-md bg-black/60 text-white border-none hover:bg-black/80"
+//                   onClick={() =>
+//                     goToSlide((index - 1 + imagenes.length) % imagenes.length)
+//                   }
+//                 >
+//                   ❮
+//                 </button>
+//                 <button
+//                   className="btn btn-circle btn-sm sm:btn-md shadow-md bg-black/60 text-white border-none hover:bg-black/80"
+//                   onClick={() => goToSlide((index + 1) % imagenes.length)}
+//                 >
+//                   ❯
+//                 </button>
+//               </div>
 //             </div>
-//           </div>
-//         ))}
+//           );
+//         })}
 //       </div>
 //     </div>
 //   );

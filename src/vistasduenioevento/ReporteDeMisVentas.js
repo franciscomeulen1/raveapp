@@ -212,9 +212,8 @@ export default function ReporteDeMisVentas() {
                     {`Filtrar: ${MAP_ESTADOS[estadoSeleccionado]}`}
                   </span>
                   <FaChevronDown
-                    className={`ml-2 transition-transform ${
-                      abierto ? 'rotate-180' : ''
-                    }`}
+                    className={`ml-2 transition-transform ${abierto ? 'rotate-180' : ''
+                      }`}
                   />
                 </button>
 
@@ -287,16 +286,34 @@ export default function ReporteDeMisVentas() {
                     className="bg-white shadow-md rounded-xl flex flex-col overflow-hidden"
                   >
                     {evento.imagen ? (
-                      <div className="relative w-full pt-[56.25%] bg-gray-100">
+                      <div
+                        className="
+                                   w-full
+                                   max-w-md        /* ← igual que tu versión original */
+                                   aspect-[1.4]    /* relación un poco más cuadrada que 1.4, para flyers medianos */
+                                   bg-gray-100
+                                   rounded-xl
+                                   overflow-hidden
+                                   flex items-center justify-center
+                                 "
+                      >
                         <img
                           src={evento.imagen}
                           alt={`Imagen del evento ${evento.nombre}`}
-                          className="absolute inset-0 w-full h-full object-contain"
+                          className="
+                                   block
+                                   w-full h-full
+                                   object-cover object-center
+                                   rounded-xl
+                                 "
+                          width={448}
+                          height={320}
                           loading="lazy"
                           decoding="async"
                           draggable={false}
                         />
                       </div>
+
                     ) : (
                       <div className="relative w-full pt-[56.25%] bg-gray-300">
                         <div className="absolute inset-0 flex items-center justify-center text-gray-600">
@@ -319,15 +336,15 @@ export default function ReporteDeMisVentas() {
                         <p className="text-sm mt-2">
                           <strong>Fecha(s):</strong>{' '}
                           {Array.isArray(evento.fechas) &&
-                          evento.fechas.length > 0
+                            evento.fechas.length > 0
                             ? evento.fechas
-                                .map((f) =>
-                                  f?.inicio
-                                    ? new Date(f.inicio).toLocaleDateString()
-                                    : ''
-                                )
-                                .filter(Boolean)
-                                .join(', ')
+                              .map((f) =>
+                                f?.inicio
+                                  ? new Date(f.inicio).toLocaleDateString()
+                                  : ''
+                              )
+                              .filter(Boolean)
+                              .join(', ')
                             : '—'}
                         </p>
                       </div>
@@ -351,5 +368,3 @@ export default function ReporteDeMisVentas() {
     </div>
   );
 }
-
-

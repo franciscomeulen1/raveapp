@@ -45,16 +45,30 @@ export default function CardEvento(props) {
         >
             <div className="card w-full shadow-xl rounded-xl overflow-hidden">
                 {/* Imagen arriba */}
-                <div className="w-full h-48 md:h-56 overflow-hidden bg-black flex items-center justify-center">
+
+                <div
+                    className="
+                              w-full
+                              max-w-md
+                              aspect-[1.4]
+                              bg-gray-100
+                              overflow-hidden
+                              flex items-center justify-center
+                            "
+                >
                     <img
                         src={imagenEvento}
                         alt="Evento"
-                        loading="lazy"
-                        className="w-full h-full object-cover object-center block"
-                        width={400}
-                        height={300}
+                        className="
+                               block
+                               w-full h-full
+                               object-cover object-center
+                             "
+                        width={448}
+                        height={320}
                     />
                 </div>
+
 
                 {/* Cuerpo de la card */}
                 <div className="card-body p-5">
