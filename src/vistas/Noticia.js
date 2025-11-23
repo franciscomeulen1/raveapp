@@ -1,3 +1,4 @@
+// src/vistas/Noticia.js
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar';
@@ -8,24 +9,32 @@ export default function Noticia() {
   const location = useLocation();
   const { id } = useParams();
 
-  // Cacheamos SOLO el contenido textual de la noticia, no la imagen
   const cacheNoticiaKey = `noticia-${id}`;
 
-  // Estado de la noticia (titulo / contenido / urlEvento)
+  // Estado de la noticia (titulo / contenido / urlEvento / fecha)
   const [noticiaData, setNoticiaData] = useState(() => {
     const cached = sessionStorage.getItem(cacheNoticiaKey);
-    return cached
-      ? JSON.parse(cached)
-      : location.state?.noticia || null;
+    return cached ? JSON.parse(cached) : location.state?.noticia || null;
   });
 
-  // Imagen: empezamos con fallback (para que el <img> pueda renderizarse YA)
   const imagenFallback =
     'https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp';
   const [imagenUrl, setImagenUrl] = useState(location.state?.noticia?.imagen || null);
 
   const [loadingNoticia, setLoadingNoticia] = useState(!noticiaData);
   const [error, setError] = useState(null);
+
+  // Helper para formatear fecha
+  const formatearFecha = (rawDate) => {
+    if (!rawDate) return '';
+    const d = new Date(rawDate);
+    if (Number.isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('es-AR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
 
   // 1. Traer noticia si no la teníamos
   useEffect(() => {
@@ -70,7 +79,6 @@ export default function Noticia() {
       })
       .catch((err) => {
         console.warn('No se pudo obtener la imagen de la noticia:', err);
-        // si falla, nos quedamos con lo que ya tengamos (imagenUrl o fallback)
       });
 
     return () => {
@@ -78,7 +86,6 @@ export default function Noticia() {
     };
   }, [id]);
 
-  // Pantallas de loading / error
   if (loadingNoticia) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -111,16 +118,19 @@ export default function Noticia() {
     );
   }
 
-  // Render normal
+  // Sacamos la fecha desde dtPublicado o fechaPublicado
+  const fechaRaw = noticiaData.dtPublicado || noticiaData.fechaPublicado;
+  const fechaFormateada = formatearFecha(fechaRaw);
+
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
 
       <div className="flex-1 flex items-start justify-center px-4 sm:px-10 pt-4 sm:pt-6 md:pt-20">
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-8 max-w-6xl w-full">
+        <div className="flex flex-col md:flex-row items-start justify-center gap-8 max-w-6xl w-full">
 
-          {/* Imagen optimizada (sin spinner bloqueante) */}
-          <div className="w-full md:w-auto flex justify-center md:justify-start">
+          {/* Imagen */}
+          <div className="w-full md:w-auto flex justify-start">
             <div
               className="
                 w-full
@@ -134,13 +144,9 @@ export default function Noticia() {
               <img
                 src={imagenUrl || imagenFallback}
                 alt={`Imagen de noticia: ${noticiaData.titulo}`}
-                width={576}   // pista de layout (coincide aprox con lg:max-w-xl)
-                height={480}  // 576 / 1.2 ≈ 480
-                className="
-                  block
-                  w-full h-full
-                  object-cover object-center
-                "
+                width={576}
+                height={480}
+                className="block w-full h-full object-cover object-center"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = imagenFallback;
@@ -149,8 +155,42 @@ export default function Noticia() {
             </div>
           </div>
 
+          {/* Fecha (MOBILE, debajo de la imagen) */}
+          {fechaFormateada && (
+            <div className="w-full md:hidden mt-3 flex items-center gap-2 text-xs text-gray-400">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-4 h-4 flex-shrink-0"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 4a8 8 0 1 0 8 8 8.009 8.009 0 0 0-8-8Zm0-2a10 10 0 1 1-10 10A10.011 10.011 0 0 1 12 2Zm.75 5v4.19l2.25 2.25-1.5 1.5L11 12.31V7h1.75Z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span>{fechaFormateada}</span>
+            </div>
+          )}
+
           {/* Texto */}
-          <div className="w-full text-center md:text-left">
+          <div className="w-full text-left md:pl-2">
+            {/* Fecha (DESKTOP, arriba del título) */}
+            {fechaFormateada && (
+              <div className="hidden md:flex items-center gap-2 text-sm text-gray-400 mb-2">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-4 h-4 flex-shrink-0"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 4a8 8 0 1 0 8 8 8.009 8.009 0 0 0-8-8Zm0-2a10 10 0 1 1-10 10A10.011 10.011 0 0 1 12 2Zm.75 5v4.19l2.25 2.25-1.5 1.5L11 12.31V7h1.75Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span>{fechaFormateada}</span>
+              </div>
+            )}
+
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold mb-4">
               {noticiaData.titulo}
             </h1>
@@ -165,7 +205,7 @@ export default function Noticia() {
                   href={noticiaData.urlEvento}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-4 px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-pink-600 transition"
+                  className="inline-block mt-2 px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-pink-600 transition"
                 >
                   Ir a evento
                 </a>

@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import CardsEventos from '../components/CardsEventos';
 import Footer from '../components/Footer';
 import Carousel from '../components/Carousel';
+import Buscador from "../components/Buscador";
 import api from '../componenteapi/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -10,7 +11,7 @@ function Inicio() {
   const [eventos, setEventos] = useState([]);
   const [filteredEventos, setFilteredEventos] = useState([]);
   const [loading, setLoading] = useState(true);  // <-- Nuevo estado loading
-
+  const [search, setSearch] = useState('');
 
   const { user } = useContext(AuthContext);
 
@@ -106,6 +107,19 @@ function Inicio() {
     fetchData();
     window.scrollTo(0, 0);
   }, [user]);
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredEventos(eventos);
+    } else {
+      const q = search.toLowerCase();
+      const filtrados = eventos.filter(e =>
+        e.nombreEvento.toLowerCase().includes(q)
+      );
+      setFilteredEventos(filtrados);
+    }
+  }, [search, eventos]);
+
 
   const filterEventos = (eventos, filtros = {}) => {
     const {
@@ -217,6 +231,14 @@ function Inicio() {
         </div>
         <div className='mx-3 sm:mx-9 md:mx-14 lg:mx-24'>
           <Carousel />
+
+          {/* 🔍 Buscador de eventos */}
+          <Buscador
+            value={search}
+            onChange={setSearch}
+            placeholder="Buscar eventos..."
+            className="max-w-3xl mx-auto mt-6 mb-1 px-2 sm:px-0"
+          />
 
           {loading ? (
             <div className="flex-grow flex mt-10 items-center justify-center">

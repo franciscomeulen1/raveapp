@@ -1,15 +1,17 @@
 // src/vistas/Noticias.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import api from '../componenteapi/api';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import CardNoticia from '../components/CardNoticia';
+import Buscador from "../components/Buscador";
 
 export default function Noticias() {
   const [noticias, setNoticias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [noNoticias, setNoNoticias] = useState(false);
   const [error, setError] = useState(null);
+  const [busqueda, setBusqueda] = useState(''); // 👈 NUEVO estado para el buscador
 
   useEffect(() => {
     const fetchNoticias = async () => {
@@ -33,7 +35,7 @@ export default function Noticias() {
               const resMedia = await api.get(`/Media?idEntidadMedia=${id}`);
               const media = resMedia?.data?.media || [];
               if (media.length > 0 && media[0].url) {
-                imagenUrl = media[0].url; 
+                imagenUrl = media[0].url;
               }
             } catch (e) {
               if (e.response?.status !== 404) {
@@ -47,6 +49,7 @@ export default function Noticias() {
               contenido: item.contenido,
               urlEvento: item.urlEvento,
               imagen: imagenUrl,
+              fechaPublicado: item.dtPublicado, // 👈 ya lo tenías agregado
             };
           })
         );
@@ -56,7 +59,6 @@ export default function Noticias() {
         setLoading(false);
       } catch (err) {
         if (err.response?.status === 404) {
-          // La API usa 404 cuando no hay noticias
           setNoNoticias(true);
           setNoticias([]);
           setLoading(false);
@@ -71,6 +73,17 @@ export default function Noticias() {
     fetchNoticias();
     window.scrollTo(0, 0);
   }, []);
+
+  // 👇 Filtrado de noticias según la búsqueda (título o contenido)
+  const noticiasFiltradas = useMemo(() => {
+    const q = busqueda.trim().toLowerCase();
+    if (!q) return noticias;
+    return noticias.filter((n) => {
+      const titulo = n.titulo?.toLowerCase() || '';
+      const contenido = n.contenido?.toLowerCase() || '';
+      return titulo.includes(q) || contenido.includes(q);
+    });
+  }, [busqueda, noticias]);
 
   const EmptyState = () => (
     <div className="flex flex-col items-center justify-center text-center px-6 py-16">
@@ -124,130 +137,55 @@ export default function Noticias() {
 
   return (
     <div className="flex flex-col min-h-screen">
-    <div className="px-4 sm:px-10 mb-11 flex-1">
-      <NavBar />
-      <div className="flex-grow mb-11">
-        <h1 className="text-3xl font-bold underline mb-8 text-center">Novedades</h1>
+      <div className="px-4 sm:px-10 mb-11 flex-1">
+        <NavBar />
+        <div className="flex-grow mb-11">
+          <h1 className="text-3xl font-bold underline mb-8 text-center">Novedades</h1>
 
-        {noNoticias || noticias.length === 0 ? (
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="rounded-3xl border border-gray-100 bg-white shadow-sm">
-              <EmptyState />
+          {noNoticias || noticias.length === 0 ? (
+            // 👉 No hay noticias en la API
+            <div className="px-4 sm:px-6 lg:px-8">
+              <div className="rounded-3xl border border-gray-100 bg-white shadow-sm">
+                <EmptyState />
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6 sm:px-12">
-            {noticias.map((noticia) => (
-              <CardNoticia
-                key={noticia.id}
-                id={noticia.id}
-                titulo={noticia.titulo}
-                contenido={noticia.contenido}
-                urlEvento={noticia.urlEvento}
-                imagen={noticia.imagen}
+          ) : (
+            <>
+              {/* 🔍 Buscador responsive */}
+              <Buscador
+                value={busqueda}
+                onChange={setBusqueda}
+                placeholder="Buscar noticias..."
+                className="max-w-3xl mx-auto mb-6 px-2 sm:px-0"
               />
-            ))}
-          </div>
-        )}
-      </div>
+
+              {/* Resultado del filtrado */}
+              {noticiasFiltradas.length === 0 ? (
+                <div className="px-4 sm:px-6 lg:px-8">
+                  <div className="rounded-3xl border border-gray-100 bg-white shadow-sm py-10 text-center text-gray-500">
+                    No se encontraron noticias que coincidan con la búsqueda.
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6 sm:px-12">
+                  {noticiasFiltradas.map((noticia) => (
+                    <CardNoticia
+                      key={noticia.id}
+                      id={noticia.id}
+                      titulo={noticia.titulo}
+                      contenido={noticia.contenido}
+                      urlEvento={noticia.urlEvento}
+                      imagen={noticia.imagen}
+                      fechaPublicado={noticia.fechaPublicado}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
       <Footer />
     </div>
   );
 }
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import api from '../componenteapi/api';
-// import NavBar from '../components/NavBar';
-// import Footer from '../components/Footer';
-// import CardNoticia from '../components/CardNoticia';
-
-// export default function Noticias() {
-//   const [noticias, setNoticias] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     const fetchNoticias = async () => {
-//       const cachedNoticias = sessionStorage.getItem('noticias');
-
-//       if (cachedNoticias) {
-//         const parsed = JSON.parse(cachedNoticias);
-//         setNoticias(parsed);
-//         setLoading(false);
-//         return;
-//       }
-
-//       try {
-//         const response = await api.get('/noticia');
-//         const noticiasCrudas = response.data.noticias;
-
-//         const noticiasConImagen = await Promise.all(
-//           noticiasCrudas.map(async (item) => {
-//             const id = item.idNoticia;
-//             let imagenUrl = sessionStorage.getItem(`noticia-img-${id}`) || null;
-
-//             if (!imagenUrl) {
-//               try {
-//                 const resMedia = await api.get(`/Media?idEntidadMedia=${id}`);
-//                 if (resMedia.data.media.length > 0) {
-//                   imagenUrl = resMedia.data.media[0].url;
-//                   sessionStorage.setItem(`noticia-img-${id}`, imagenUrl);
-//                 }
-//               } catch (e) {
-//                 if (e.response?.status !== 404) {
-//                   console.warn('Error al obtener imagen para noticia:', id, e);
-//                 }
-//               }
-//             }
-
-//             return {
-//               id,
-//               titulo: item.titulo,
-//               contenido: item.contenido,
-//               urlEvento: item.urlEvento,
-//               imagen: imagenUrl,
-//             };
-//           })
-//         );
-
-//         setNoticias(noticiasConImagen);
-//         sessionStorage.setItem('noticias', JSON.stringify(noticiasConImagen));
-//         setLoading(false);
-//       } catch (err) {
-//         console.error('Error al obtener noticias:', err);
-//         setError(err.message);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchNoticias();
-//   }, []);
-
-//   if (loading) return <div>Cargando noticias...</div>;
-//   if (error) return <div>Hubo un error: {error}</div>;
-
-//   return (
-//     <div className="flex flex-col min-h-screen">
-//       <NavBar />
-//       <div className="flex-grow sm:px-10 mb-11">
-//         <h1 className="text-3xl font-bold underline mb-8 text-center">Novedades</h1>
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-10 sm:px-20">
-//           {noticias.map((noticia) => (
-//             <CardNoticia
-//               key={noticia.id}
-//               id={noticia.id}
-//               titulo={noticia.titulo}
-//               contenido={noticia.contenido}
-//               urlEvento={noticia.urlEvento}
-//               imagen={noticia.imagen}
-//             />
-//           ))}
-//         </div>
-//       </div>
-//       <Footer />
-//     </div>
-//   );
-// }
