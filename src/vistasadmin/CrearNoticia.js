@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import api from '../componenteapi/api';
+import { useNavigate } from 'react-router-dom';
 
 const CrearNoticia = () => {
+
+    const navigate = useNavigate();
+
     const [titulo, setTitulo] = useState('');
     const [contenido, setContenido] = useState('');
     const [urlEvento, setUrlEvento] = useState('');
@@ -105,6 +109,13 @@ const CrearNoticia = () => {
         }
     };
 
+    const handleCerrarModal = () => {
+        setIsModalOpen(false);
+        navigate('/modificar-eliminar-noticias'); 
+        // Si querés forzar URL absoluta:
+        // window.location.href = 'https://raveapp.com.ar/modificar-eliminar-noticias';
+    };
+
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-1">
@@ -167,10 +178,28 @@ const CrearNoticia = () => {
 
                             {preview && (
                                 <div className="mt-3">
-                                    <p className="text-sm text-gray-600">Vista previa:</p>
-                                    <img src={preview} alt="preview" className="max-h-64 mt-2 rounded-md border" />
+                                    <p className="text-sm text-gray-600 mb-1">Vista previa (así se verá en Noticias):</p>
+
+                                    <div
+                                        className="
+                                                   w-full
+                                                   max-w-[396px]
+                                                   h-[300px]
+                                                   overflow-hidden
+                                                   rounded-md
+                                                   border
+                                                   bg-gray-200
+                                                "
+                                    >
+                                        <img
+                                            src={preview}
+                                            alt="preview"
+                                            className="w-full h-full object-cover object-center"
+                                        />
+                                    </div>
                                 </div>
                             )}
+
                         </div>
 
 
@@ -225,7 +254,7 @@ const CrearNoticia = () => {
                         <p className="mb-6">La noticia se ha creado correctamente.</p>
                         <div className="flex justify-end gap-4">
                             <button
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={handleCerrarModal}
                                 className="btn btn-secondary"
                             >
                                 Ok

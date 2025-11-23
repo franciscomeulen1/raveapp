@@ -19,6 +19,7 @@ const EditarNoticia = () => {
     const [urlEvento, setUrlEvento] = useState('');
     const [errorUrl, setErrorUrl] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [cargando, setCargando] = useState(false);
 
     useEffect(() => {
         const obtenerNoticia = async () => {
@@ -60,24 +61,27 @@ const EditarNoticia = () => {
     };
 
     const handleEditarNoticia = async () => {
+        setErrorImagen('');
+        setCargando(true);   // ⬅️ activar spinner
 
-        if (!imagen) {
-            setErrorImagen('Debes seleccionar una imagen válida para continuar.');
-            return;
-        } else {
+        // Validar imagen solo si el usuario cargó una nueva
+        if (imagen) {
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!validTypes.includes(imagen.type)) {
                 setErrorImagen('El archivo seleccionado no es una imagen válida (JPG, JPEG o PNG).');
+                setCargando(false);
                 return;
             }
             if (imagen.size > 2 * 1024 * 1024) {
                 setErrorImagen('La imagen excede el tamaño máximo permitido de 2MB.');
+                setCargando(false);
                 return;
             }
         }
 
         if (urlEvento && !esUrlValida(urlEvento)) {
             setErrorUrl('La URL ingresada no es válida. Asegúrate de que comience con http:// o https://');
+            setCargando(false);
             return;
         } else {
             setErrorUrl('');
@@ -88,35 +92,33 @@ const EditarNoticia = () => {
                 idNoticia: id,
                 titulo,
                 contenido,
-                imagen,
                 dtPublicado,
                 urlEvento,
             });
 
-            // Si hay una nueva imagen cargada
             if (imagen) {
-                // Eliminar la imagen anterior si existe
                 if (idMediaActual) {
                     await api.delete(`/Media/${idMediaActual}`);
                 }
 
-                // Subir la nueva imagen
                 const formData = new FormData();
                 formData.append('IdEntidadMedia', id);
                 formData.append('File', imagen);
 
                 await api.post('/Media', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
+                    headers: { 'Content-Type': 'multipart/form-data' },
                 });
             }
 
             setIsModalOpen(true);
         } catch (error) {
             console.error('Error al editar la noticia:', error);
+        } finally {
+            setCargando(false);  // ⬅️ desactivar spinner al terminar
         }
     };
+
+
 
     const handleImagenChange = (e) => {
         const file = e.target.files[0];
@@ -180,11 +182,23 @@ const EditarNoticia = () => {
                         {(preview || imagenUrl) && (
                             <div>
                                 <p className="text-sm text-gray-600">Vista previa:</p>
-                                <img
-                                    src={preview || imagenUrl}
-                                    alt="preview"
-                                    className="max-h-64 mt-2 mb-4 rounded-md border"
-                                />
+                                <div
+                                    className="
+                                                   w-full
+                                                   max-w-[396px]
+                                                   h-[300px]
+                                                   overflow-hidden
+                                                   rounded-md
+                                                   border
+                                                   bg-gray-200
+                                                "
+                                >
+                                    <img
+                                        src={preview || imagenUrl}
+                                        alt="preview"
+                                        className="w-full h-full object-cover object-center"
+                                    />
+                                </div>
                             </div>
                         )}
 
@@ -224,11 +238,21 @@ const EditarNoticia = () => {
             </div>
             <Footer />
 
+            {cargando && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-40">
+                    <div className="flex flex-col items-center">
+                        <span className="loading loading-spinner loading-lg text-purple-600"></span>
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-white">Cargando artistas...</p>
+                    </div>
+                </div>
+            )}
+
             {/* Modal de confirmación */}
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg p-6 w-80">
-                        <h3 className="text-xl font-bold mb-4">Modificación exitosa</h3>
+                        <h3 className="text-xl font-bold mb-4 text-green-600">Modificación exitosa</h3>
                         <p className="mb-6">La modificación se ha realizado con éxito.</p>
                         <div className="flex justify-center">
                             <button
