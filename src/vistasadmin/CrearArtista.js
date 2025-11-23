@@ -179,7 +179,7 @@ const CrearArtista = () => {
                             </div>
                             <div className="w-full">
                                 <label className="block font-semibold">Foto del artista:</label>
-                                <p className="text-sm text-gray-400 mb-2">La foto debe ser en formato jpg, jpeg, o png, y pesar menos de 2MB.</p>
+                                <p className="text-sm text-gray-400 mb-2">Se permiten imágenes JPG, JPEG o PNG. Peso máximo: 2MB.</p>
                                 <input
                                     type="file"
                                     accept="image/*"
