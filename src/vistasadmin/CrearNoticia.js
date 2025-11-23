@@ -54,19 +54,25 @@ const CrearNoticia = () => {
             setErrorUrl('');
         }
 
-        if (!esValido) return;
+        if (!esValido) {
+            setCargando(false);
+            return;
+        }
 
         if (!imagen) {
             setMensajeError('La imagen es obligatoria para crear la noticia.');
+            setCargando(false);
             return;
         } else {
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!validTypes.includes(imagen.type)) {
                 setMensajeError('No se pudo crear la noticia. El archivo debe ser una imagen JPG, JPEG o PNG.');
+                setCargando(false);
                 return;
             }
             if (imagen.size > 2 * 1024 * 1024) {
                 setMensajeError('No se pudo crear la noticia. La imagen excede los 2MB.');
+                setCargando(false);
                 return;
             }
         }
@@ -74,7 +80,6 @@ const CrearNoticia = () => {
         try {
             const fechaActualISO = new Date().toISOString();
 
-            // Paso 1: Crear la noticia
             const res = await api.post('/noticia', {
                 titulo,
                 contenido,
@@ -84,20 +89,16 @@ const CrearNoticia = () => {
 
             const idNoticia = res.data.idNoticia;
 
-            // Paso 2: Si hay imagen, subirla con FormData
             if (imagen) {
                 const formData = new FormData();
-                formData.append('IdEntidadMedia', idNoticia); // O asegúrate que sea string
+                formData.append('IdEntidadMedia', idNoticia);
                 formData.append('File', imagen);
 
                 await api.post('/Media', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
+                    headers: { 'Content-Type': 'multipart/form-data' },
                 });
             }
 
-            // Resetear formulario
             setTitulo('');
             setContenido('');
             setUrlEvento('');
@@ -110,15 +111,14 @@ const CrearNoticia = () => {
             console.error('Error al crear la noticia o subir la imagen:', error);
             setMensajeError('En estos momentos no es posible crear la noticia. Intenta nuevamente más tarde.');
         } finally {
-            setCargando(false);  // ⬅️ desactivar spinner al terminar
+            setCargando(false);
         }
     };
+
 
     const handleCerrarModal = () => {
         setIsModalOpen(false);
         navigate('/modificar-eliminar-noticias');
-        // Si querés forzar URL absoluta:
-        // window.location.href = 'https://raveapp.com.ar/modificar-eliminar-noticias';
     };
 
     return (
@@ -265,7 +265,7 @@ const CrearNoticia = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg p-6 w-80">
-                        <h3 className="text-xl font-bold mb-4">Creación exitosa</h3>
+                        <h3 className="text-xl font-bold mb-4 text-green-600">Creación exitosa</h3>
                         <p className="mb-6">La noticia se ha creado correctamente.</p>
                         <div className="flex justify-end gap-4">
                             <button

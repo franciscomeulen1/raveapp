@@ -3,8 +3,11 @@ import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import api from "../componenteapi/api";
 import { FaFileImage } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const CrearArtista = () => {
+    const navigate = useNavigate();
+
     const [nombre, setNombre] = useState("");
     const [bio, setBio] = useState("");
     const [instagram, setInstagram] = useState("");
@@ -21,6 +24,7 @@ const CrearArtista = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+    const [cargando, setCargando] = useState(false);
 
     const urlRegex = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
 
@@ -48,9 +52,17 @@ const CrearArtista = () => {
         setPreviewImagen(URL.createObjectURL(file));
     };
 
+    /**
+     * handleCreateArtist
+     *
+     * @var [type]
+     */
     const handleCreateArtist = async () => {
+        setCargando(true);
+
         if (!nombre.trim() || !bio.trim()) {
             alert("Los campos 'Nombre' e 'Información sobre el artista' son obligatorios.");
+            setCargando(false);
             return;
         }
 
@@ -71,8 +83,15 @@ const CrearArtista = () => {
             hasError = true;
         } else setErrorSoundcloud("");
 
-        if (errorImagen) return;
-        if (hasError) return;
+        if (errorImagen) {
+        setCargando(false);
+        return;
+        }
+
+        if (hasError) {
+        setCargando(false);
+        return;
+        }
 
         setIsSubmitting(true);
 
@@ -116,7 +135,14 @@ const CrearArtista = () => {
             console.error("Error al crear el artista:", err);
             setIsSubmitting(false);
             setIsErrorModalOpen(true);
+        } finally {
+        setCargando(false);
         }
+    };
+
+    const handleCerrarModal = () => {
+        setIsSuccessModalOpen(false);
+        navigate('/modificar-eliminar-artistas');
     };
 
     return (
@@ -153,6 +179,7 @@ const CrearArtista = () => {
                             </div>
                             <div className="w-full">
                                 <label className="block font-semibold">Foto del artista:</label>
+                                <p className="text-sm text-gray-400 mb-2">La foto debe ser en formato jpg, jpeg, o png, y pesar menos de 2MB.</p>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -228,11 +255,11 @@ const CrearArtista = () => {
             {isSuccessModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-md max-w-sm w-full">
-                        <h2 className="text-xl font-bold mb-4">¡El artista se ha creado correctamente!</h2>
+                        <h2 className="text-xl font-bold mb-4 text-green-600">¡El artista se ha creado correctamente!</h2>
                         <div className="flex justify-end">
                             <button
                                 className="bg-blue-500 text-white px-4 py-2 rounded"
-                                onClick={() => setIsSuccessModalOpen(false)}
+                                onClick={handleCerrarModal}
                             >
                                 Ok
                             </button>
@@ -258,6 +285,17 @@ const CrearArtista = () => {
             )}
 
             <Footer />
+
+            {cargando && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-40">
+                    <div className="flex flex-col items-center">
+                        <span className="loading loading-spinner loading-lg text-purple-600"></span>
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-white">Creando artista...</p>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };
