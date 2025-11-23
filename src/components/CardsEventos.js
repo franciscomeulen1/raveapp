@@ -37,36 +37,3 @@ export default function CardsEventos({ eventos, user }) {
         </div>
     );
 }
-
-
-// import React from 'react';
-// import CardEvento from './CardEvento';
-
-// export default function CardsEventos({ eventos, user }) {
-//     return (
-//         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-//             {eventos.map(evento => {
-//                 const fechaDisplay = evento.dias.length === 1
-//                     ? evento.dias[0].fecha
-//                     : `${evento.dias[0].fecha} - ${evento.dias[evento.dias.length - 1].fecha}`;
-
-//                 return (
-//                     <CardEvento
-//                         key={evento.id}
-//                         id={evento.id}
-//                         nombre={evento.nombreEvento}
-//                         fecha={fechaDisplay}
-//                         generos={evento.generos}
-//                         lgbt={evento.lgbt}
-//                         after={evento.after}
-//                         isFavorito={evento.isFavorito}
-//                         eventoCompleto={evento} // si querés pasar todo el objeto
-//                         user={user}
-//                     />
-
-//                 );
-
-//             })}
-//         </div>
-//     );
-// }
