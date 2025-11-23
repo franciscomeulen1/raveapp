@@ -243,7 +243,7 @@ const EditarNoticia = () => {
                     <div className="flex flex-col items-center">
                         <span className="loading loading-spinner loading-lg text-purple-600"></span>
                         <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
-                        <p className="text-white">Cargando artistas...</p>
+                        <p className="text-white">Actualizando noticia...</p>
                     </div>
                 </div>
             )}

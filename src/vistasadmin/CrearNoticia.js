@@ -20,6 +20,7 @@ const CrearNoticia = () => {
     const [preview, setPreview] = useState(null);
     const [mensajeError, setMensajeError] = useState('');
     const [errorImagen, setErrorImagen] = useState('');
+    const [cargando, setCargando] = useState(false);
 
     const esUrlValida = (url) => {
         const pattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
@@ -27,6 +28,8 @@ const CrearNoticia = () => {
     };
 
     const handleCrearNoticia = async () => {
+        setCargando(true);
+
         setErrorImagen('');
         let esValido = true;
 
@@ -106,12 +109,14 @@ const CrearNoticia = () => {
         } catch (error) {
             console.error('Error al crear la noticia o subir la imagen:', error);
             setMensajeError('En estos momentos no es posible crear la noticia. Intenta nuevamente más tarde.');
+        } finally {
+            setCargando(false);  // ⬅️ desactivar spinner al terminar
         }
     };
 
     const handleCerrarModal = () => {
         setIsModalOpen(false);
-        navigate('/modificar-eliminar-noticias'); 
+        navigate('/modificar-eliminar-noticias');
         // Si querés forzar URL absoluta:
         // window.location.href = 'https://raveapp.com.ar/modificar-eliminar-noticias';
     };
@@ -245,6 +250,16 @@ const CrearNoticia = () => {
             </div>
 
             <Footer />
+
+            {cargando && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-40">
+                    <div className="flex flex-col items-center">
+                        <span className="loading loading-spinner loading-lg text-purple-600"></span>
+                        <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                        <p className="text-white">Creando noticia...</p>
+                    </div>
+                </div>
+            )}
 
             {/* Modal */}
             {isModalOpen && (
