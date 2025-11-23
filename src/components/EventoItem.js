@@ -138,7 +138,6 @@ const EventoItem = ({ evento, estadoTexto }) => {
                    cursor-pointer
                    hover:opacity-90
                    transition-opacity
-                   block
                  "
         >
           {renderImagen()}
