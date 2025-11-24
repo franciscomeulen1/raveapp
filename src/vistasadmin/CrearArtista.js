@@ -197,6 +197,7 @@ const CrearArtista = () => {
                             <textarea
                                 className="w-full border rounded p-2"
                                 placeholder="Espacio para escribir información del artista"
+                                rows="8"
                                 value={bio}
                                 onChange={(e) => setBio(e.target.value)}
                             />

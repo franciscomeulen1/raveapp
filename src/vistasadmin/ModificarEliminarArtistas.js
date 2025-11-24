@@ -140,6 +140,7 @@ const ModificarEliminarArtistas = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-base-100 text-base-content">
+    <div className="flex-1 sm:px-10 mb-11">
       <NavBar />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-10 mb-11">
@@ -258,6 +259,7 @@ const ModificarEliminarArtistas = () => {
           ))}
         </div>
       </main>
+      </div>
 
       <Footer />
 

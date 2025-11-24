@@ -195,7 +195,7 @@ export default function Noticia() {
               {noticiaData.titulo}
             </h1>
 
-            <p className="text-gray-700 leading-relaxed mb-4">
+            <p className="text-gray-700 leading-relaxed mb-4 whitespace-pre-line">
               {noticiaData.contenido}
             </p>
 
@@ -205,7 +205,7 @@ export default function Noticia() {
                   href={noticiaData.urlEvento}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-2 px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-pink-600 transition"
+                  className="inline-block mt-2 mb-5 px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-pink-600 transition"
                 >
                   Ir a evento
                 </a>

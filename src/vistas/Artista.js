@@ -200,8 +200,8 @@ export default function Artista() {
                     </div>
 
 
-                    <div className='md:col-span-2 lg:col-span-2 pl-5 font-medium'>
-                        <p>{bio}</p>
+                    <div className='md:col-span-2 2xl:col-span-1 pl-5 font-medium'>
+                        <p className="whitespace-pre-line">{bio}</p>
                     </div>
                 </div>
             </div>

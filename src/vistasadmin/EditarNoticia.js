@@ -207,7 +207,7 @@ const EditarNoticia = () => {
                         <textarea
                             className="w-full p-2 border rounded-md mb-4"
                             placeholder="Espacio para escribir la noticia"
-                            rows="4"
+                            rows="8"
                             value={contenido}
                             onChange={(e) => setContenido(e.target.value)}
                         />
