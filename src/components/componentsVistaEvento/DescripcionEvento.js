@@ -2,7 +2,7 @@
 export default function DescripcionEvento({ descripcion }) {
   return (
     <div className='mb-6'>
-      <p>{descripcion}</p>
+      <p className="whitespace-pre-line">{descripcion}</p>
     </div>
   );
 }

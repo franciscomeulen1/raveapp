@@ -15,6 +15,7 @@ const InputDescripcionEvento = ({ onDescripcionChange, valorInicial = '' }) => {
       <textarea
         placeholder='La descripción de tu evento va aquí.'
         value={descripcion}
+        rows="6"
         onChange={(e) => setDescripcion(e.target.value)}
         className="textarea textarea-bordered w-full md:w-1/2"
       />
