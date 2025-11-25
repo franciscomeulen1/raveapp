@@ -124,6 +124,7 @@ export default function Noticia() {
 
   return (
     <div className="flex flex-col min-h-screen">
+    <div className="flex-1 sm:px-10 mb-11">
       <NavBar />
 
       <div className="flex-1 flex items-start justify-center px-4 sm:px-10 pt-4 sm:pt-6 md:pt-20">
@@ -212,6 +213,8 @@ export default function Noticia() {
               )}
           </div>
         </div>
+      </div>
+
       </div>
 
       <Footer />
