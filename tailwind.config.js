@@ -7,4 +7,14 @@ module.exports = {
     extend: {},
   },
   plugins: [require("daisyui")],
+  // configuracion para el punto de quiebre de tamanio lg mas pequenio
+  theme: {
+    extend: {
+      screens: {
+        'lg-min': {'min': '1024px', 'max': '1279px'},
+      },
+    },
+  },
+  variants: {},
 }
+

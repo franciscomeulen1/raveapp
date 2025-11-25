@@ -1,51 +1,105 @@
+import { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import BotonGoogleLogin from '../components/BotonGoogleLogin';
+
 function Login() {
-    return (
-        <div>
-            <label htmlFor="my-modal-login" className="btn modal-button btn-primary hover:bg-indigo-400 hover:text-cyan-200 mx-2">Ingresar</label>
+  const { login } = useContext(AuthContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [blocked, setBlocked] = useState(false);
+  const [error, setError] = useState('');
 
-            <input type="checkbox" id="my-modal-login" className="modal-toggle" />
-            <label htmlFor="my-modal-login" className="modal modal-middle">
+  const navigate = useNavigate();
 
-                <form className="modal-box">
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError('');
+    try {
+      await login({
+        email,
+        password,
+        onBlocked: () => setBlocked(true),
+      });
 
-                    <div className="flex justify-center mb-2">
-                        <button className="btn">Iniciar sesion con Google</button>
-                    </div>
+      if (!blocked) {
+        setEmail('');
+        setPassword('');
+        document.getElementById('my-modal-login').checked = false;
 
-                    <h2 className="font-bold text-3xl mt-3 mb-2">Iniciar Sesión</h2>
+        const redirectTo = localStorage.getItem('postLoginRedirect');
+        const shouldRedirect = redirectTo && window.location.pathname === '/precrearevento';
 
-                    <div className='form-control w-full max-w-xs'>
-                        <label className="label">
-                            <span className="label-text">Tu email:</span>
-                        </label>
-                        <input type='email'
-                            placeholder="Tu email"
-                            className="input input-bordered w-full max-w-xs"
-                            autoFocus
-                        />
-                    </div>
+        // limpiar siempre para evitar claves viejas
+        localStorage.removeItem('postLoginRedirect');
 
-                    <div className='form-control w-full max-w-xs'>
-                        <label className="label">
-                            <span className="label-text">Tu constraseña:</span>
-                        </label>
-                        <input type='password'
-                            placeholder="Tu constraseña"
-                            className="input input-bordered w-full max-w-xs"
-                            autoFocus
-                        />
-                    </div>
+        if (shouldRedirect) {
+          navigate(redirectTo, { replace: true });
+        }
+        // si no, NO navegamos: te quedás donde estabas
 
-                        <div className="modal-action justify-between">
-                            <button type="submit" htmlFor="my-modal-1" className="btn">Ingresar</button>
-                            <button htmlFor="my-modal-6" className="text-indigo-900 font-medium">Olvidaste la constraseña?</button>
-                        </div>
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-                </form>
-            </label>
+  const handleOlvideContrasena = () => {
+    navigate(`/olvide-contrasena`);
+  };
 
-        </div>
-    );
+  return (
+    <>
+      <label
+        htmlFor="my-modal-login"
+        className="btn btn-xs sm:btn-sm md:btn-md modal-button btn-primary"
+        onClick={() => {
+          if (window.location.pathname === '/register') {
+            localStorage.setItem('postLoginRedirect', '/');
+          }
+        }}
+      >
+        Ingresar
+      </label>
+
+      <input type="checkbox" id="my-modal-login" className="modal-toggle" />
+      <label htmlFor="my-modal-login" className="modal cursor-pointer">
+        <form className="modal-box" onSubmit={handleSubmit}>
+          <h3 className="font-bold text-lg mb-4">Iniciar Sesión</h3>
+
+          <input
+            type="email"
+            placeholder="Tu email"
+            className="input input-bordered w-full mb-2"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Tu contraseña"
+            className="input input-bordered w-full mb-2"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+
+          {error && <p className="text-red-500 mb-2">{error}</p>}
+          {blocked && (
+            <p className="text-yellow-600 mb-2">
+              Tus credenciales son válidas únicamente para la app de validación de entradas.
+            </p>
+          )}
+
+          <div className="modal-action flex-col gap-3 items-center">
+            <button type="submit" className="btn w-full">Ingresar</button>
+            <BotonGoogleLogin setError={setError} />
+            <button type="button" className="btn btn-ghost" onClick={handleOlvideContrasena}>¿Olvidaste la contraseña?</button>
+          </div>
+        </form>
+      </label>
+    </>
+  );
 }
 
 export default Login;
