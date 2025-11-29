@@ -23,18 +23,3 @@ export default function YoutubeEvento({ url }) {
   );
 }
 
-
-// // components/evento/YoutubeEvento.js
-// export default function YoutubeEvento() {
-//   return (
-//     <iframe
-//       height="315"
-//       src="https://www.youtube.com/embed/zmqS5hEi_QI"
-//       title="YouTube video player"
-//       frameBorder="0"
-//       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-//       allowFullScreen
-//       className='w-full mb-6'
-//     ></iframe>
-//   );
-// }

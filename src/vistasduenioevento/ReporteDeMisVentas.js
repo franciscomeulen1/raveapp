@@ -147,6 +147,8 @@ export default function ReporteDeMisVentas() {
   }, [organizadorId]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     fetchEventos();
   }, [fetchEventos]);
 

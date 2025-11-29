@@ -38,6 +38,8 @@ function CrearUsuarioControlador() {
 
   // Cargar lista inicial
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     const fetchUsuariosControl = async () => {
       if (!idUsuarioOrg) return; // si aún no está cargado el contexto
       try {
@@ -174,7 +176,7 @@ function CrearUsuarioControlador() {
         <main className="px-4 py-6 sm:px-10 sm:py-10 max-w-5xl mx-auto w-full bg-white rounded-xl shadow-sm border border-gray-200 mt-6">
           {/* Título + descripción */}
           <header className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 px-4">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-slate-900">
                   <FontAwesomeIcon

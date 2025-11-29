@@ -26,6 +26,7 @@ export default function Artista() {
     const [refreshAvatars, setRefreshAvatars] = useState(false);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchArtista = async () => {
             try {
                 const url = user
@@ -52,7 +53,6 @@ export default function Artista() {
         };
 
         fetchArtista();
-        window.scrollTo(0, 0);
     }, [id, user]);
 
     useEffect(() => {
@@ -129,7 +129,7 @@ export default function Artista() {
             <div className="flex-1 sm:px-10 mb-11">
                 <NavBar />
 
-                <div className="px-4 mt-2 sm:mt-4 sm:px-10 mb-6 flex flex-wrap items-center gap-4">
+                <div className="px-6 mt-2 sm:mt-4 sm:px-10 mb-6 flex flex-wrap items-center gap-4">
                     <h1 className='text-2xl sm:text-3xl font-bold underline underline-offset-8'>{nombre}</h1>
                     <div className="flex gap-3 flex-wrap">
                         <a href={spotifyUrl || "#"} target="_blank" rel="noreferrer">

@@ -1,3 +1,5 @@
+// COMPONENTE EN DESUSO ACTUALMENTE. Se dejo el codigo para una futura version
+
 import React, { useState } from 'react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';

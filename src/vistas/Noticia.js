@@ -38,6 +38,8 @@ export default function Noticia() {
 
   // 1. Traer noticia si no la teníamos
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     if (!noticiaData) {
       api
         .get(`/noticia?idNoticia=${id}`)
@@ -60,8 +62,6 @@ export default function Noticia() {
     } else {
       setLoadingNoticia(false);
     }
-
-    window.scrollTo(0, 0);
   }, [id, noticiaData, cacheNoticiaKey]);
 
   // 2. Traer SIEMPRE la imagen desde la API (sin cachearla)
@@ -127,8 +127,8 @@ export default function Noticia() {
     <div className="flex-1 sm:px-10 mb-11">
       <NavBar />
 
-      <div className="flex-1 flex items-start justify-center px-4 sm:px-10 pt-4 sm:pt-6 md:pt-20">
-        <div className="flex flex-col md:flex-row items-start justify-center gap-8 max-w-6xl w-full">
+      <div className="flex-1 flex items-start justify-center px-6 sm:px-10 pt-4 sm:pt-6 md:pt-20">
+        <div className="flex flex-col md:flex-row items-start justify-center gap-3 md:gap-8 max-w-6xl w-full">
 
           {/* Imagen */}
           <div className="w-full md:w-auto flex justify-start">
@@ -158,7 +158,7 @@ export default function Noticia() {
 
           {/* Fecha (MOBILE, debajo de la imagen) */}
           {fechaFormateada && (
-            <div className="w-full md:hidden mt-3 flex items-center gap-2 text-xs text-gray-400">
+            <div className="w-full md:hidden flex items-center mt-3 gap-2 text-xs text-gray-400">
               <svg
                 viewBox="0 0 24 24"
                 className="w-4 h-4 flex-shrink-0"

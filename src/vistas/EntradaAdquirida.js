@@ -375,69 +375,70 @@ export default function EntradaAdquirida() {
 
   return (
     <div className="flex flex-col min-h-screen bg-base-100">
-    <div className="px-4 sm:px-10 mb-14 flex-1">
-      <NavBar />
+      <div className="sm:px-10 mb-14 flex-1">
+        <NavBar />
+        <div className="px-6">
 
-        <h1 className="mb-4 mt-4 text-xl sm:text-2xl font-bold">
-          {titulo}
-        </h1>
+          <h1 className="mb-4 mt-4 text-xl sm:text-2xl font-bold">
+            {titulo}
+          </h1>
 
-        {/* 👇 Mensajes de estado */}
-        {!loading && !error && allAnuladas && (
-          <p className="mb-4 font-bold text-red-600 text-lg">
-            {entradasCompra.length === 1
-              ? 'ENTRADA ANULADA'
-              : 'ENTRADAS ANULADS'}
-          </p>
-        )}
+          {/* 👇 Mensajes de estado */}
+          {!loading && !error && allAnuladas && (
+            <p className="mb-4 font-bold text-red-600 text-lg">
+              {entradasCompra.length === 1
+                ? 'ENTRADA ANULADA'
+                : 'ENTRADAS ANULADS'}
+            </p>
+          )}
 
-        {!loading && !error && !allAnuladas && allControladas && (
-          <p className="mb-4 font-bold text-green-600 text-lg">
-            {entradasCompra.length === 1
-              ? 'ENTRADA UTILIZADA'
-              : 'ENTRADAS UTILIZADAS'}
-          </p>
-        )}
+          {!loading && !error && !allAnuladas && allControladas && (
+            <p className="mb-4 font-bold text-green-600 text-lg">
+              {entradasCompra.length === 1
+                ? 'ENTRADA UTILIZADA'
+                : 'ENTRADAS UTILIZADAS'}
+            </p>
+          )}
 
-        {!loading && !error && !allAnuladas && !allControladas && allPendientePago && (
-          <p className="mb-4 font-bold text-pink-600 text-lg">
-            {entradasCompra.length === 1
-              ? 'ENTRADA PENDIENTE DE PAGO'
-              : 'ENTRADAS PENDIENTES DE PAGO'}
-          </p>
-        )}
+          {!loading && !error && !allAnuladas && !allControladas && allPendientePago && (
+            <p className="mb-4 font-bold text-pink-600 text-lg">
+              {entradasCompra.length === 1
+                ? 'ENTRADA PENDIENTE DE PAGO'
+                : 'ENTRADAS PENDIENTES DE PAGO'}
+            </p>
+          )}
 
-        {!loading && !error && !allAnuladas && !allControladas && !allPendientePago && allNoUtilizadas && (
-          <p className="mb-4 font-bold text-purple-600 text-lg">
-            {entradasCompra.length === 1
-              ? 'ENTRADA NO UTILIZADA'
-              : 'ENTRADAS NO UTILIZADAS'}
-          </p>
-        )}
+          {!loading && !error && !allAnuladas && !allControladas && !allPendientePago && allNoUtilizadas && (
+            <p className="mb-4 font-bold text-purple-600 text-lg">
+              {entradasCompra.length === 1
+                ? 'ENTRADA NO UTILIZADA'
+                : 'ENTRADAS NO UTILIZADAS'}
+            </p>
+          )}
 
-        {loading && (
-          <div className="animate-pulse space-y-4">
-            <div className="h-64 bg-base-200 rounded-2xl" />
-            <div className="h-40 bg-base-200 rounded-2xl" />
-          </div>
-        )}
+          {loading && (
+            <div className="animate-pulse space-y-4">
+              <div className="h-64 bg-base-200 rounded-2xl" />
+              <div className="h-40 bg-base-200 rounded-2xl" />
+            </div>
+          )}
 
-        {!loading && error && (
-          <div className="alert alert-error max-w-3xl">
-            <span>{error}</span>
-          </div>
-        )}
+          {!loading && error && (
+            <div className="alert alert-error max-w-3xl">
+              <span>{error}</span>
+            </div>
+          )}
 
-        {!loading && !error && (
-          <div className="space-y-8">
-            {/* Fila 1: Imagen + Datos */}
-            <div className="grid md:grid-cols-4 gap-6 max-w-6xl">
-              {/* Imagen evento */}
-              <div className="md:col-span-2">
-                <div className="rounded-2xl p-2">
-                  {imagenUrl ? (
-                    <div
-                         className="
+          {!loading && !error && (
+            <div className="space-y-8">
+              {/* Fila 1: Imagen + Datos */}
+              <div className="grid md:grid-cols-4 gap-6 max-w-6xl">
+                {/* Imagen evento */}
+                <div className="md:col-span-2">
+                  <div className="rounded-2xl p-2">
+                    {imagenUrl ? (
+                      <div
+                        className="
                            w-full
                            max-w-md        /* ← igual que tu versión original */
                            aspect-[1.4]    /* relación un poco más cuadrada que 1.4, para flyers medianos */
@@ -446,243 +447,245 @@ export default function EntradaAdquirida() {
                            overflow-hidden
                            flex items-center justify-center
                          "
-                       >
-                    <img
-                      src={imagenUrl}
-                      alt={evento?.nombre || 'Imagen del evento'}
-                      className="
+                      >
+                        <img
+                          src={imagenUrl}
+                          alt={evento?.nombre || 'Imagen del evento'}
+                          className="
                                  block
                                  w-full h-full
                                  object-cover object-center
                                  rounded-xl
                                "
-                      width={448}
-                      height={320} 
-                      loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.src = '';
-                      }}
-                    />
-                    </div>
-                  ) : (
-                    <div className="w-full h-48 grid place-items-center opacity-70">
-                      Sin imagen
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Datos */}
-              <div className="md:col-span-2 flex flex-col justify-center gap-4">
-                <div className="flex items-start gap-3">
-                  <FaCalendarAlt className="mt-1 size-5 opacity-80" />
-                  <div>
-                    <div className="text-sm opacity-70 font-semibold">
-                      Fecha y hora
-                    </div>
-                    <div className="text-base">
-                      {fechaTexto || '—'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <BsGeoAltFill className="mt-1 size-5 opacity-80" />
-                  <div>
-                    <div className="text-sm opacity-70 font-semibold">
-                      Dirección
-                    </div>
-                    <div className="text-base font-semibold">
-                      {ubicacionFormateada || '—'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <AiFillSound className="mt-1 size-6 opacity-80" />
-                  <div>
-                    <div className="text-sm opacity-70 font-semibold">
-                      Artistas
-                    </div>
-                    <div className="text-base">
-                      {artistasStr}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="text-base leading-relaxed whitespace-pre-line">
-                    {descripcionEvento || '—'}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Fila 2: QRs */}
-            <div className="rounded-2xl bg-base-200/70 p-5">
-              {/* fecha de compra */}
-              {fechaCompra && (
-                <p className="text-sm mb-3 text-base-content/70">
-                  <span className="font-semibold">Fecha de compra:</span> {fechaCompra}
-                </p>
-              )}
-
-              <h2 className="text-xl font-bold mb-4">
-                Tus códigos QR
-              </h2>
-
-              {entradasCompra.length === 0 && (
-                <div className="text-sm opacity-70">
-                  No se encontraron entradas para esta compra.
-                </div>
-              )}
-
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {entradasCompra.map((ent) => {
-                  const qrDisponible =
-                    ent.qrUrl &&
-                    ent.qrUrl.trim() !== '';
-                  const esAnulada = Number(ent.cdEstado) === 3;
-
-                  return (
-                    <div
-                      key={`${ent.idCompra}-${ent.numCompra}-${ent.idEntrada || ent.id}-${ent.cdEstado || 'e'}`}
-                      className="border border-base-300 rounded-2xl bg-base-100 p-4 flex flex-col items-center"
-                    >
-                      {esAnulada ? (
-                        <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
-                          QR no disponible<br />Entrada anulada
-                        </div>
-                      ) : qrDisponible ? (
-                        <img
-                          src={ent.qrUrl}
-                          alt="Código QR"
-                          className="w-48 h-48 rounded-xl mb-3 object-contain"
+                          width={448}
+                          height={320}
                           loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = '';
+                          }}
                         />
-                      ) : (
-                        <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
-                          QR no disponible
-                        </div>
-                      )}
+                      </div>
+                    ) : (
+                      <div className="w-full h-48 grid place-items-center opacity-70">
+                        Sin imagen
+                      </div>
+                    )}
+                  </div>
+                </div>
 
-                      <div className="text-xs opacity-70 text-center">
-                        <div>
-                          <span className="font-semibold">
-                            Tipo:
-                          </span>{' '}
-                          {ent.dsTipo ||
-                            ent.tipo ||
-                            '—'}
-                        </div>
-                        <div>
-                          <span className="font-semibold">
-                            Precio:
-                          </span>{' '}
-                          {typeof ent.precio === 'number'
-                            ? `$${ent.precio}`
-                            : ent.precio || '—'}
-                        </div>
+                {/* Datos */}
+                <div className="md:col-span-2 flex flex-col justify-center gap-4">
+                  <div className="flex items-start gap-3">
+                    <FaCalendarAlt className="mt-1 size-5 opacity-80" />
+                    <div>
+                      <div className="text-sm opacity-70 font-semibold">
+                        Fecha y hora
+                      </div>
+                      <div className="text-base">
+                        {fechaTexto || '—'}
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <BsGeoAltFill className="mt-1 size-5 opacity-80" />
+                    <div>
+                      <div className="text-sm opacity-70 font-semibold">
+                        Dirección
+                      </div>
+                      <div className="text-base font-semibold">
+                        {ubicacionFormateada || '—'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <AiFillSound className="mt-1 size-6 opacity-80" />
+                    <div>
+                      <div className="text-sm opacity-70 font-semibold">
+                        Artistas
+                      </div>
+                      <div className="text-base">
+                        {artistasStr}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="text-base leading-relaxed whitespace-pre-line">
+                      {descripcionEvento || '—'}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-6 flex flex-col gap-3 xl:flex-row xl:items-center">
-                {/* 🟣 izquierda: los 3 botones que ya tenías */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  {/* 👇 Descargar (o deshabilitado) */}
-                  {disableDownload ? (
-                    <button
-                      type="button"
-                      className="btn btn-disabled rounded-full cursor-not-allowed"
-                      disabled
-                    >
-                      Descargar entrada
-                    </button>
-                  ) : (
-                    <DescargarEntradasPDF
-                      entradas={entradasCompra}
-                      user={user}
-                      evento={evento}
-                      fechaTexto={fechaTexto}
-                      ubicacionFormateada={ubicacionFormateada}
-                      idCompra={idCompra}
-                      numCompra={numCompra}
-                      icons={{
-                        calendarUrl: iconCalendar,
-                        locationUrl: iconLocation,
-                        musicUrl: iconMusic,
-                      }}
-                      logoUrl={logo}
-                      watermarkText="RaveApp"
-                      watermarkOptions={{
-                        angle: 30,
-                        fontSize: 50,
-                        colorRGB: [235, 235, 235],
-                        gapX: 70,
-                        gapY: 85,
-                      }}
-                    />
-                  )}
+              {/* Fila 2: QRs */}
+              <div className="rounded-2xl bg-base-200/70 p-5">
+                {/* fecha de compra */}
+                {fechaCompra && (
+                  <p className="text-sm mb-3 text-base-content/70">
+                    <span className="font-semibold">Fecha de compra:</span> {fechaCompra}
+                  </p>
+                )}
 
-                  <button
-                    type="button"
-                    className="btn bg-cyan-600 rounded-full"
-                    onClick={() => {
-                      const q = encodeURIComponent(
-                        ubicacionFormateada || evento?.nombre || 'Evento'
-                      );
-                      window.open(
-                        `https://www.google.com/maps/search/?api=1&query=${q}&hl=es&gl=AR`,
-                        '_blank'
-                      );
-                    }}
-                  >
-                    Cómo llegar
-                  </button>
+                <h2 className="text-xl font-bold mb-4">
+                  Tus códigos QR
+                </h2>
 
-                  <button
-                    type="button"
-                    className="btn btn-ghost rounded-full"
-                    onClick={() => navigate(-1)}
-                  >
-                    Volver
-                  </button>
-                </div>
-
-                {/* 🟣 derecha: botón de arrepentimiento, con el comportamiento responsive que pediste */}
-                {allPagas && (
-                  <div className="flex w-full sm:justify-end xl:justify-end xl:ml-auto">
-                    <button
-                      type="button"
-                      onClick={() => setShowArrepentimiento(true)}
-                      className="btn btn-outline w-full sm:w-auto"
-                    >
-                      Botón de arrepentimiento
-                    </button>
+                {entradasCompra.length === 0 && (
+                  <div className="text-sm opacity-70">
+                    No se encontraron entradas para esta compra.
                   </div>
                 )}
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {entradasCompra.map((ent) => {
+                    const qrDisponible =
+                      ent.qrUrl &&
+                      ent.qrUrl.trim() !== '';
+                    const esAnulada = Number(ent.cdEstado) === 3;
+
+                    return (
+                      <div
+                        key={`${ent.idCompra}-${ent.numCompra}-${ent.idEntrada || ent.id}-${ent.cdEstado || 'e'}`}
+                        className="border border-base-300 rounded-2xl bg-base-100 p-4 flex flex-col items-center"
+                      >
+                        {esAnulada ? (
+                          <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
+                            QR no disponible<br />Entrada anulada
+                          </div>
+                        ) : qrDisponible ? (
+                          <img
+                            src={ent.qrUrl}
+                            alt="Código QR"
+                            className="w-48 h-48 rounded-xl mb-3 object-contain"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-48 h-48 rounded-xl mb-3 bg-base-200 grid place-items-center text-xs text-center opacity-70 p-2">
+                            QR no disponible
+                          </div>
+                        )}
+
+                        <div className="text-xs opacity-70 text-center">
+                          <div>
+                            <span className="font-semibold">
+                              Tipo:
+                            </span>{' '}
+                            {ent.dsTipo ||
+                              ent.tipo ||
+                              '—'}
+                          </div>
+                          <div>
+                            <span className="font-semibold">
+                              Precio:
+                            </span>{' '}
+                            {typeof ent.precio === 'number'
+                              ? `$${ent.precio}`
+                              : ent.precio || '—'}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3 xl:flex-row xl:items-center">
+                  {/* 🟣 izquierda: los 3 botones que ya tenías */}
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    {/* 👇 Descargar (o deshabilitado) */}
+                    {disableDownload ? (
+                      <button
+                        type="button"
+                        className="btn btn-disabled rounded-full cursor-not-allowed"
+                        disabled
+                      >
+                        Descargar entrada
+                      </button>
+                    ) : (
+                      <DescargarEntradasPDF
+                        entradas={entradasCompra}
+                        user={user}
+                        evento={evento}
+                        fechaTexto={fechaTexto}
+                        ubicacionFormateada={ubicacionFormateada}
+                        idCompra={idCompra}
+                        numCompra={numCompra}
+                        icons={{
+                          calendarUrl: iconCalendar,
+                          locationUrl: iconLocation,
+                          musicUrl: iconMusic,
+                        }}
+                        logoUrl={logo}
+                        watermarkText="RaveApp"
+                        watermarkOptions={{
+                          angle: 30,
+                          fontSize: 50,
+                          colorRGB: [235, 235, 235],
+                          gapX: 70,
+                          gapY: 85,
+                        }}
+                      />
+                    )}
+
+                    <button
+                      type="button"
+                      className="btn bg-cyan-600 rounded-full"
+                      onClick={() => {
+                        const q = encodeURIComponent(
+                          ubicacionFormateada || evento?.nombre || 'Evento'
+                        );
+                        window.open(
+                          `https://www.google.com/maps/search/?api=1&query=${q}&hl=es&gl=AR`,
+                          '_blank'
+                        );
+                      }}
+                    >
+                      Cómo llegar
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-ghost rounded-full"
+                      onClick={() => navigate(-1)}
+                    >
+                      Volver
+                    </button>
+                  </div>
+
+                  {/* 🟣 derecha: botón de arrepentimiento, con el comportamiento responsive que pediste */}
+                  {allPagas && (
+                    <div className="flex w-full sm:justify-end xl:justify-end xl:ml-auto">
+                      <button
+                        type="button"
+                        onClick={() => setShowArrepentimiento(true)}
+                        className="btn btn-outline w-full sm:w-auto"
+                      >
+                        Botón de arrepentimiento
+                      </button>
+                    </div>
+                  )}
+                </div>
+
               </div>
-
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Modal de botón de arrepentimiento */}
+        <BotonDeArrepentimiento
+          open={showArrepentimiento}
+          onClose={() => setShowArrepentimiento(false)}
+          idCompra={idCompra}
+          idUsuario={user?.id}
+          evento={evento}
+          fechaCompraISO={fechaCompraISO}
+          idFecha={idFecha}
+        />
+
       </div>
-
-      {/* Modal de botón de arrepentimiento */}
-      <BotonDeArrepentimiento
-        open={showArrepentimiento}
-        onClose={() => setShowArrepentimiento(false)}
-        idCompra={idCompra}
-        idUsuario={user?.id}
-        evento={evento}
-        fechaCompraISO={fechaCompraISO}
-        idFecha={idFecha}
-      />
-
       <Footer />
+
     </div>
   );
 }

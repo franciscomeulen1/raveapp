@@ -117,51 +117,53 @@ export default function Artistas() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="px-4 sm:px-10 mb-11 flex-1">
-        <NavBar />
+      <div className="flex-1">
+        <div className='sm:px-10'>
+          <NavBar />
+        </div>
+        <div className="px-4 mb-11">
+          <h1 className="px-10 mb-6 mt-1 sm:mt-2 text-3xl font-bold underline underline-offset-8">
+            Artistas
+          </h1>
 
-        <h1 className="px-10 mb-6 mt-1 sm:mt-2 text-3xl font-bold underline underline-offset-8">
-          Artistas
-        </h1>
+          <Buscador
+            value={busqueda}
+            onChange={setBusqueda}
+            placeholder="Buscar artistas..."
+            className="max-w-3xl mx-auto mt-2 mb-4 px-2 sm:px-0"
+          />
 
-        <Buscador
-          value={busqueda}
-          onChange={setBusqueda}
-          placeholder="Buscar artistas..."
-          className="max-w-3xl mx-auto mt-2 mb-4 px-2 sm:px-0"
-        />
-
-        <div className="mx-auto max-w-screen-xl px-2 sm:px-6 lg:px-12">
-          {artistas.length > 0 && artistasFiltrados.length === 0 ? (
-            // 👉 Hay artistas, pero ninguno coincide con la búsqueda
-            <div className="py-10 text-center text-gray-500">
-              No se encontraron artistas que coincidan con la búsqueda.
-            </div>
-          ) : (
-            clavesOrdenadas.map((letra) => (
-              <div key={letra}>
-                <div>
-                  <p className="font-bold text-3xl mb-4">{letra}</p>
-                </div>
-
-                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6 justify-items-center">
-                  {nombresAgrupados[letra].map((artista) => (
-                    <AvatarArtista
-                      key={artista.idArtista}
-                      nombre={artista.nombre}
-                      imagenUrl={artista.imagenUrl}
-                      idArtista={artista.idArtista}
-                    />
-                  ))}
-                </div>
-
-                <div className="divider"></div>
+          <div className="mx-auto max-w-screen-xl px-2 sm:px-6 lg:px-12">
+            {artistas.length > 0 && artistasFiltrados.length === 0 ? (
+              // 👉 Hay artistas, pero ninguno coincide con la búsqueda
+              <div className="py-10 text-center text-gray-500">
+                No se encontraron artistas que coincidan con la búsqueda.
               </div>
-            ))
-          )}
+            ) : (
+              clavesOrdenadas.map((letra) => (
+                <div key={letra}>
+                  <div>
+                    <p className="font-bold text-3xl mb-4">{letra}</p>
+                  </div>
+
+                  <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-6 justify-items-center">
+                    {nombresAgrupados[letra].map((artista) => (
+                      <AvatarArtista
+                        key={artista.idArtista}
+                        nombre={artista.nombre}
+                        imagenUrl={artista.imagenUrl}
+                        idArtista={artista.idArtista}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="divider"></div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );

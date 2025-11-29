@@ -22,7 +22,7 @@ export default function PreCrearEvento() {
             <div className="flex-grow sm:px-10 mb-11">
                 {/* El flex-grow hace que el contenido principal crezca y ocupe todo el espacio disponible, empujando al Footer hacia abajo, para que no quede separado del borde inferior de la pantalla. */}
                 <NavBar />
-                <div className="flex flex-col items-center justify-center bg-white p-4 mt-2">
+                <div className="flex flex-col items-center justify-center bg-white p-6 mt-2">
                     <div className="w-full max-w-lg text-center">
                         <h1 className="text-2xl font-bold mb-2">Crear Evento</h1>
                         <hr className="border-black mb-4" />
