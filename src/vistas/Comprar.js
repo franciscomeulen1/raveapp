@@ -380,7 +380,7 @@ export default function Comprar() {
         eventoProcesado.imagen = img?.url || null;
         eventoProcesado.youtube = vid?.mdVideo || null;
         setImagenEvento(img?.url || null);
-      } catch {}
+      } catch { }
 
       const resTipos = await api.get(`/Entrada/GetTiposEntrada`);
       const tiposMap = {};
@@ -487,6 +487,24 @@ export default function Comprar() {
     setErrors(currentErrors);
     if (Object.keys(currentErrors).length > 0) return;
 
+    // NUEVO: validación de domicilio obligatorio
+    // ✅ VALIDACIÓN DE DOMICILIO (con caso especial CABA)
+    const esCABA = selectedProvincia?.nombre === 'Ciudad Autónoma de Buenos Aires';
+
+    const provinciaNombre = selectedProvincia?.nombre;
+    const municipioNombre = esCABA
+      ? 'Ciudad Autónoma de Buenos Aires'
+      : selectedMunicipio?.nombre;
+    const localidadNombre = esCABA
+      ? 'Ciudad Autónoma de Buenos Aires'
+      : selectedLocalidad?.nombre;
+    const direccionValor = direccion;
+
+    if (!provinciaNombre || !municipioNombre || !localidadNombre || !direccionValor?.trim()) {
+      alert('Debes completar tu domicilio (provincia, municipio, localidad y dirección) para continuar.');
+      return;
+    }
+
     if (!aceptaTyC) {
       alert('Debes aceptar los términos y condiciones para continuar.');
       return false;
@@ -508,7 +526,10 @@ export default function Comprar() {
       let municipioPayload = { nombre: selectedMunicipio?.nombre || '', codigo: selectedMunicipio?.id || '' };
       let localidadPayload = { nombre: selectedLocalidad?.nombre || '', codigo: selectedLocalidad?.id || '' };
       if (selectedProvincia?.nombre === 'Ciudad Autónoma de Buenos Aires') {
-        provinciaPayload = municipioPayload = localidadPayload = { nombre: 'Ciudad Autónoma de Buenos Aires', codigo: '02' };
+        provinciaPayload = municipioPayload = localidadPayload = {
+          nombre: 'Ciudad Autónoma de Buenos Aires',
+          codigo: '02',
+        };
       }
 
       const payload = {
@@ -518,9 +539,11 @@ export default function Comprar() {
         correo: usuarioData?.correo || '',
         dni: usuarioData?.dni || form.numeroId,
         telefono: usuarioData?.telefono || form.telefono,
-        bio: usuarioData?.bio || '',
+        bio: '',
         cbu: usuarioData?.cbu || '',
-        isVerificado: usuarioData?.isVerificado,
+        isVerificado:
+          usuarioData?.isVerificado === true ||
+          usuarioData?.isVerificado === 1,
         dtNacimiento: usuarioData?.dtNacimiento || new Date(form.birthdate).toISOString(),
         cdRoles: usuarioData?.roles?.map((r) => r.cdRol) || [],
         domicilio: {
@@ -533,11 +556,11 @@ export default function Comprar() {
         },
         socials: usuarioData?.socials
           ? {
-              idSocial: usuarioData.socials.idSocial || '',
-              mdInstagram: usuarioData.socials.mdInstagram || '',
-              mdSpotify: usuarioData.socials.mdSpotify || '',
-              mdSoundcloud: usuarioData.socials.mdSoundcloud || '',
-            }
+            idSocial: usuarioData.socials.idSocial || '',
+            mdInstagram: usuarioData.socials.mdInstagram || '',
+            mdSpotify: usuarioData.socials.mdSpotify || '',
+            mdSoundcloud: usuarioData.socials.mdSoundcloud || '',
+          }
           : { idSocial: '', mdInstagram: '', mdSpotify: '', mdSoundcloud: '' },
       };
 
@@ -545,11 +568,13 @@ export default function Comprar() {
         await api.put('/Usuario/UpdateUsuario', payload);
       } catch (err) {
         console.error('Error al actualizar usuario:', err);
+        console.log('Detalle del backend:', err.response?.data);
       }
     }
 
     setModalVisible(true);
   };
+
 
   const handleConfirmIrAPago = async () => {
     if (!compraId) {
