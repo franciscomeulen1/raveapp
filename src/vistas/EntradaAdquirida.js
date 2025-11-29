@@ -431,20 +431,39 @@ export default function EntradaAdquirida() {
         {!loading && !error && (
           <div className="space-y-8">
             {/* Fila 1: Imagen + Datos */}
-            <div className="grid md:grid-cols-5 gap-6">
+            <div className="grid md:grid-cols-4 gap-6 max-w-6xl">
               {/* Imagen evento */}
               <div className="md:col-span-2">
-                <div className="rounded-2xl bg-base-200 p-2">
+                <div className="rounded-2xl p-2">
                   {imagenUrl ? (
+                    <div
+                         className="
+                           w-full
+                           max-w-md        /* ← igual que tu versión original */
+                           aspect-[1.4]    /* relación un poco más cuadrada que 1.4, para flyers medianos */
+                           bg-gray-100
+                           rounded-xl
+                           overflow-hidden
+                           flex items-center justify-center
+                         "
+                       >
                     <img
                       src={imagenUrl}
                       alt={evento?.nombre || 'Imagen del evento'}
-                      className="w-full h-auto max-h-72 md:max-h-80 lg:max-h-64 xl:max-h-60 object-contain rounded-xl"
+                      className="
+                                 block
+                                 w-full h-full
+                                 object-cover object-center
+                                 rounded-xl
+                               "
+                      width={448}
+                      height={320} 
                       loading="lazy"
                       onError={(e) => {
                         e.currentTarget.src = '';
                       }}
                     />
+                    </div>
                   ) : (
                     <div className="w-full h-48 grid place-items-center opacity-70">
                       Sin imagen
@@ -454,7 +473,7 @@ export default function EntradaAdquirida() {
               </div>
 
               {/* Datos */}
-              <div className="md:col-span-3 flex flex-col justify-center gap-4">
+              <div className="md:col-span-2 flex flex-col justify-center gap-4">
                 <div className="flex items-start gap-3">
                   <FaCalendarAlt className="mt-1 size-5 opacity-80" />
                   <div>
