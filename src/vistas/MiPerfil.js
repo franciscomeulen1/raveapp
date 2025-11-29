@@ -141,6 +141,7 @@ export default function MiPerfil() {
       dtNacimiento: formData.dtNacimiento
         ? new Date(formData.dtNacimiento).toISOString()
         : null,
+      bio: "",
       // ⬇️ IMPORTANTE: el backend espera true/false
       isVerificado: isVerificadoActualizado,
       cdRoles: userData.roles ? userData.roles.map((r) => r.cdRol) : [],
@@ -162,7 +163,8 @@ export default function MiPerfil() {
       setShowSuccessModal(true);
     } catch (err) {
       console.error('Error al actualizar datos:', err);
-      alert('Error al actualizar los datos. Intenta más tarde.');
+      console.log('Detalle del backend:', err.response?.data);
+      alert('Error al actualizar los datos. Revisá la consola para más info.');
     }
   };
 
@@ -290,11 +292,10 @@ export default function MiPerfil() {
                   <button
                     onClick={handleSendVerificationEmail}
                     disabled={isSendingEmail}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition ${
-                      isSendingEmail
+                    className={`px-3 py-1 rounded-md text-xs font-medium transition ${isSendingEmail
                         ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                         : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
-                    }`}
+                      }`}
                   >
                     {isSendingEmail ? 'Enviando...' : 'Verificar correo'}
                   </button>
