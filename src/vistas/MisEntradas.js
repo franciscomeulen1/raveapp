@@ -267,7 +267,14 @@ export default function MisEntradas() {
         setCompras(ordenadas);
       } catch (err) {
         console.error(err);
-        setError('Ocurrió un error al cargar tus entradas. Intenta más tarde.');
+
+        // 👇 Si el backend devuelve 404, lo interpretamos como "no tiene entradas"
+        if (err?.response?.status === 404) {
+          setCompras([]);   // sin compras
+          setError('');     // no mostramos mensaje de error
+        } else {
+          setError('Ocurrió un error al cargar tus entradas. Intenta más tarde.');
+        }
       } finally {
         setLoading(false);
       }
@@ -360,11 +367,24 @@ export default function MisEntradas() {
             </div>
           )}
 
-          {isLogged && !loading && !error && comprasFiltradas.length === 0 && (
+          {/* Usuario logueado, sin errores, sin ninguna compra */}
+          {isLogged && !loading && !error && compras.length === 0 && (
             <div className="text-sm opacity-70">
-              No hay entradas para “{selectedFilter.label}”.
+              Actualmente no tienes entradas adquiridas.
             </div>
           )}
+
+          {/* Hay compras, pero ninguna coincide con el filtro seleccionado */}
+          {isLogged &&
+            !loading &&
+            !error &&
+            compras.length > 0 &&
+            comprasFiltradas.length === 0 && (
+              <div className="text-sm opacity-70">
+                No hay entradas para “{selectedFilter.label}”.
+              </div>
+            )}
+
 
           {isLogged && !loading && !error && comprasFiltradas.length > 0 && (
             <div className="space-y-6">
