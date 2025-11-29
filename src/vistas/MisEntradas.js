@@ -354,7 +354,6 @@ export default function MisEntradas() {
             </div>
           )}
 
-
           {isLogged && !loading && error && (
             <div className="alert alert-error max-w-3xl">
               <span>{error}</span>

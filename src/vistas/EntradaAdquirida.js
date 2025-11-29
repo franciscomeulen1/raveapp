@@ -375,9 +375,9 @@ export default function EntradaAdquirida() {
 
   return (
     <div className="flex flex-col min-h-screen bg-base-100">
+    <div className="px-4 sm:px-10 mb-14 flex-1">
       <NavBar />
 
-      <div className="flex-grow px-6 sm:px-10 md:px-16 mb-14">
         <h1 className="mb-4 mt-4 text-xl sm:text-2xl font-bold">
           {titulo}
         </h1>
