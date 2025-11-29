@@ -14,12 +14,13 @@ import api from '../componenteapi/api';
 import { FaSearch, FaTimes, FaChevronDown, FaCheckCircle } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
 
-const ESTADOS_REPORTABLES = [2, 3, 4, 5];
+// 👉 Solo estados permitidos para reporte (sin cancelados)
+const ESTADOS_REPORTABLES = [2, 3, 4];
+
 const MAP_ESTADOS = {
   2: 'En venta',
   3: 'Venta finalizada',
   4: 'Finalizado',
-  5: 'Cancelado',
 };
 
 export default function ReporteDeMisVentas() {
@@ -31,7 +32,7 @@ export default function ReporteDeMisVentas() {
   const [abierto, setAbierto] = useState(false);
   const dropdownRef = useRef(null);
 
-  const organizadorId = user?.id; // ✅ acá tomamos el id del usuario logueado
+  const organizadorId = user?.id; // ✅ id del usuario logueado
 
   // cierra el dropdown al hacer click afuera
   useEffect(() => {
@@ -87,7 +88,6 @@ export default function ReporteDeMisVentas() {
   };
 
   const fetchEventos = useCallback(async () => {
-    // si no hay id, no pedimos nada
     if (!organizadorId) {
       setIsLoading(false);
       return;
@@ -95,7 +95,7 @@ export default function ReporteDeMisVentas() {
 
     setIsLoading(true);
     try {
-      // pedimos los 4 estados pero SIEMPRE filtrando por el organizador
+      // pedimos solo los estados reportables (2,3,4) del organizador
       const peticiones = ESTADOS_REPORTABLES.map((st) =>
         api.get(`/Evento/GetEventos?Estado=${st}&IdUsuarioOrg=${organizadorId}`)
       );
@@ -157,7 +157,6 @@ export default function ReporteDeMisVentas() {
       .filter((ev) => ev.cdEstado === estadoSeleccionado)
       .filter((ev) => {
         if (texto === '') return true;
-        // solo buscamos por nombre del evento
         return (ev?.nombre || '').toLowerCase().includes(texto);
       });
 
@@ -212,14 +211,15 @@ export default function ReporteDeMisVentas() {
                     {`Filtrar: ${MAP_ESTADOS[estadoSeleccionado]}`}
                   </span>
                   <FaChevronDown
-                    className={`ml-2 transition-transform ${abierto ? 'rotate-180' : ''
-                      }`}
+                    className={`ml-2 transition-transform ${
+                      abierto ? 'rotate-180' : ''
+                    }`}
                   />
                 </button>
 
                 {abierto && (
                   <ul className="menu bg-base-100 rounded-box shadow-lg absolute z-10 mt-2 w-full sm:w-64">
-                    {[2, 3, 4, 5].map((cd) => (
+                    {ESTADOS_REPORTABLES.map((cd) => (
                       <li key={cd}>
                         <button
                           className="flex items-center justify-between"
@@ -288,24 +288,24 @@ export default function ReporteDeMisVentas() {
                     {evento.imagen ? (
                       <div
                         className="
-                                   w-full
-                                   max-w-md        /* ← igual que tu versión original */
-                                   aspect-[1.4]    /* relación un poco más cuadrada que 1.4, para flyers medianos */
-                                   bg-gray-100
-                                   rounded-xl
-                                   overflow-hidden
-                                   flex items-center justify-center
-                                 "
+                          w-full
+                          max-w-md
+                          aspect-[1.4]
+                          bg-gray-100
+                          rounded-xl
+                          overflow-hidden
+                          flex items-center justify-center
+                        "
                       >
                         <img
                           src={evento.imagen}
                           alt={`Imagen del evento ${evento.nombre}`}
                           className="
-                                   block
-                                   w-full h-full
-                                   object-cover object-center
-                                   rounded-xl
-                                 "
+                            block
+                            w-full h-full
+                            object-cover object-center
+                            rounded-xl
+                          "
                           width={448}
                           height={320}
                           loading="lazy"
@@ -313,7 +313,6 @@ export default function ReporteDeMisVentas() {
                           draggable={false}
                         />
                       </div>
-
                     ) : (
                       <div className="relative w-full pt-[56.25%] bg-gray-300">
                         <div className="absolute inset-0 flex items-center justify-center text-gray-600">
@@ -336,20 +335,19 @@ export default function ReporteDeMisVentas() {
                         <p className="text-sm mt-2">
                           <strong>Fecha(s):</strong>{' '}
                           {Array.isArray(evento.fechas) &&
-                            evento.fechas.length > 0
+                          evento.fechas.length > 0
                             ? evento.fechas
-                              .map((f) =>
-                                f?.inicio
-                                  ? new Date(f.inicio).toLocaleDateString()
-                                  : ''
-                              )
-                              .filter(Boolean)
-                              .join(', ')
+                                .map((f) =>
+                                  f?.inicio
+                                    ? new Date(f.inicio).toLocaleDateString()
+                                    : ''
+                                )
+                                .filter(Boolean)
+                                .join(', ')
                             : '—'}
                         </p>
                       </div>
 
-                      {/* acá lo mandás a tus ventas por evento */}
                       <Link
                         to={`/entradas-vendidas/${evento.idEvento}`}
                         className="btn bg-fuchsia-600 hover:bg-fuchsia-700 border-fuchsia-600 text-white text-center"
