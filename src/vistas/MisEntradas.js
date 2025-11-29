@@ -346,12 +346,14 @@ export default function MisEntradas() {
           )}
 
           {isLogged && loading && (
-            <div className="animate-pulse space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-28 bg-base-200 rounded-2xl" />
-              ))}
+            <div className="flex items-center justify-center py-10">
+              <div className="text-center">
+                <div className="w-10 h-10 mx-auto rounded-full border-4 border-gray-200 border-b-gray-500 animate-spin mb-4" />
+                <p className="text-gray-600">Cargando entradas...</p>
+              </div>
             </div>
           )}
+
 
           {isLogged && !loading && error && (
             <div className="alert alert-error max-w-3xl">
