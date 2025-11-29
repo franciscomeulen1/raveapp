@@ -55,6 +55,12 @@ const Register = () => {
     } else {
       setFormData((f) => ({ ...f, [name]: value }));
     }
+
+    if (name === 'dni') {
+      const limitado = value.slice(0, 10); // máximo 10 caracteres
+      setFormData((f) => ({ ...f, dni: limitado }));
+      return;
+    }
   };
 
   const esPasswordSegura = (password) => {
@@ -237,7 +243,7 @@ const Register = () => {
               </label>
 
               <label className="block">
-                <span>Tu DNI/Pasaporte:</span>
+                <span>Tu DNI / Pasaporte:</span>
                 <input
                   type="text"
                   name="dni"
@@ -245,9 +251,11 @@ const Register = () => {
                   onChange={handleChange}
                   className="input input-bordered w-full"
                   placeholder="123456789"
+                  maxLength={10}     // capa extra de seguridad
                   required
                 />
               </label>
+
 
               <label className="block">
                 <span>Tu fecha de nacimiento:</span>
