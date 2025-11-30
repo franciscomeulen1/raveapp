@@ -50,10 +50,10 @@ function Footer() {
                 onClick={abrirModal}
                 className="underline"
               >
-                Ver Términos y Condiciones
+                Ver Términos y Condiciones, y Política de Privacidad
               </button>
             ) : (
-              <span className="underline">Ver Términos y Condiciones</span>
+              <span className="underline">Ver Términos y Condiciones, y Política de Privacidad</span>
             )}
           </p>
         </div>
@@ -64,7 +64,7 @@ function Footer() {
         <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center px-4">
           <div className="bg-white w-full max-w-3xl h-[90vh] rounded-lg shadow-lg overflow-hidden relative">
             <div className="flex justify-between items-center p-4 border-b">
-              <h3 className="text-lg font-semibold">Términos y Condiciones</h3>
+              <h3 className="text-lg font-semibold">Términos y Condiciones, y Política de Privacidad</h3>
               <button
                 onClick={() => setMostrarModal(false)}
                 className="text-gray-600 hover:text-black text-xl font-bold"

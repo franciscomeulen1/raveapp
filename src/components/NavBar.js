@@ -117,7 +117,7 @@ export default function NavBar({ onFilter }) {
           </li>
 
           <li><Link to="/editar-carrusel">Editar Carrusel</Link></li>
-          <li><Link to="/actualizar-tyc">Actualizar TyC</Link></li>
+          <li><Link to="/actualizar-tyc">Actualizar TyC y PP</Link></li>
         </>
       );
     }

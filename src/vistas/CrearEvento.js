@@ -380,9 +380,9 @@ function CrearEvento() {
     <div>
       <div className="sm:px-10 mb-11">
         <NavBar />
-        <h1 className='px-10 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Crear Evento</h1>
+        <h1 className='px-7 mb-8 mt-2 text-3xl font-bold underline underline-offset-8'>Crear Evento</h1>
 
-        <form className='px-10'>
+        <form className='px-7'>
           <h2 className='text-xl font-bold'>Datos del evento:</h2>
           <div className='form-control w-full mb-4'>
             <label className="label">

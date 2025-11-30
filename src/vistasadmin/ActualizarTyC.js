@@ -79,7 +79,7 @@ function ActualizarTyC() {
                     <NavBar />
                 </div>
                 <div className="p-4 sm:p-6 max-w-full sm:max-w-4xl mx-auto w-full">
-                    <h2 className="text-2xl font-bold mb-6 text-center">Actualizar Términos y Condiciones</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-center">Actualizar Términos y Condiciones, y Política de Privacidad</h2>
 
                     {archivoActual && (
                         <div className="mb-6">
