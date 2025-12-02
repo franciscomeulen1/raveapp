@@ -50,7 +50,7 @@ import ReporteVentasEventoAdmin from "./vistasadmin/ReporteVentasEventoAdmin";
 import RequireAuthCrearEvento from "./components/componentsCrearEvento/RequireAuthCrearEvento";
 import CrearUsuarioControlador from "./vistasduenioevento/CrearUsuarioControlador";
 import ReporteDeMisVentas from "./vistasduenioevento/ReporteDeMisVentas";
-
+import MpReturnMobile from './vistas/MpReturnMobile';
 
 
 function App() {
@@ -73,6 +73,7 @@ function App() {
           <Route path="/olvide-contrasena" element={<OlvideContrasena />} />
           <Route path="/restablecer-contrasena" element={<RestablecerContrasena />} />
           <Route path="/confirmacion-mail" element={<ConfirmacionMail />} />
+          <Route path="/mp-return" element={<MpReturnMobile />} />
 
           {/* Rutas para usuarios logueados */}
 
