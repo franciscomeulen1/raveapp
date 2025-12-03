@@ -9,18 +9,21 @@ export default function MpReturnMobile() {
   const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
-    const id = searchParams.get('id');
+    // 👇 Leer el payment_id que manda MercadoPago
+    const paymentId = searchParams.get('payment_id');
 
     // Deep link base que usa la app mobile
     let target = 'raveapp:///tickets/screens/BackBuyScreen';
-    if (id) {
-      target += `?id=${encodeURIComponent(id)}`;
+
+    // Si hay paymentId, lo mandamos como "id" 
+    if (paymentId) {
+      target += `?id=${encodeURIComponent(paymentId)}`;
     }
 
     // Intentar abrir la app apenas carga la página
     window.location.href = target;
 
-    // Fallback: si en ~2 segundos no pasó nada, mostramos un botón
+    // Fallback: si en ~2 segundos no pasa nada, mostramos un botón
     const timer = setTimeout(() => {
       setShowFallback(true);
     }, 2000);
@@ -53,10 +56,10 @@ export default function MpReturnMobile() {
                   <button
                     className="btn btn-secondary rounded-xl"
                     onClick={() => {
-                      const id = searchParams.get('id');
+                      const paymentId = searchParams.get('payment_id');
                       let target = 'raveapp:///tickets/screens/BackBuyScreen';
-                      if (id) {
-                        target += `?id=${encodeURIComponent(id)}`;
+                      if (paymentId) {
+                        target += `?id=${encodeURIComponent(paymentId)}`;
                       }
                       window.location.href = target;
                     }}
